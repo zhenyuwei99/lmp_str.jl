@@ -1,0 +1,6 @@
+##ignore this file
+
+/target/
+
+# OS generated files #
+.DS_Store
