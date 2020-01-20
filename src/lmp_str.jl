@@ -242,7 +242,6 @@ function genr_cell(cell_vec)
             end
         end
     end
-    print(typeof(cell_vec))
     Data_Cell(cell_mat, cell_vec, num_cells)
 end
 
