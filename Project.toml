@@ -1,6 +1,6 @@
 name = "lmp_str"
 uuid = "3f6172cb-8b69-401b-9f4b-fa3d4af45650"
-authors = ["zhenyuwei99 <zhenyuwei99@gmail.com>"]
+authors = ["Zhenyu Wei <zhenyuwei99@gmail.com>"]
 version = "0.1.0"
 
 [deps]

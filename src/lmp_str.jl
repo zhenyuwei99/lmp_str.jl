@@ -227,6 +227,24 @@ function min(vec::Vector{Atom})
     min
 end
 
+function conv(vec::Array{Int64, 1})
+    len = length(vec)
+    result = convert.(Int64, zeros(1, len))
+    for i in 1 : len
+        result[i] = vec[i]
+    end
+    result
+end
+
+function conv(vec::Array{Int64, 2})
+    len = length(vec)
+    result = convert.(Int64, zeros(len, 1))
+    for i in 1 : len
+        result[i] = vec[i]
+    end
+    result
+end
+
 function genr_cell(cell_vec)
     num_cells = 1
     for i in cell_vec
@@ -242,6 +260,11 @@ function genr_cell(cell_vec)
             end
         end
     end
+
+    if typeof(cell_vec) == Array{Int64,1}
+        cell_vec = conv(cell_vec)
+    end
+
     Data_Cell(cell_mat, cell_vec, num_cells)
 end
 
@@ -369,7 +392,5 @@ function write_info(info::Vector{Atom}, name_file::AbstractString)
 
     close(io)
 end
-
-
 
 end # module
