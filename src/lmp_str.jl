@@ -211,12 +211,29 @@ mutable struct Bond
     atom_02::Int64
 end
 
+function Bond(bond::Bond)
+    id = bond.id
+    bond_type = bond.bond_type
+    atom_01 = bond.atom_01
+    atom_02 = bond.atom_02
+    Bond(id, bond_type, atom_01, atom_02)
+end
+
 mutable struct Angle
     id::Int64
     angle_type::Int64
     atom_01::Int64
     atom_02::Int64
     atom_03::Int64
+end
+
+function Angle(angle::Angle)
+    id = angle.id
+    angle_type = angle.angle_type
+    atom_01 = angle.atom_01
+    atom_02 = angle.atom_02
+    atom_03 = angle.atom_03
+    Angle(id, angle_type, atom_01, atom_02, atom_03)
 end
 
 mutable struct Data_Cell
