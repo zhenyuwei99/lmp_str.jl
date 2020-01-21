@@ -34,6 +34,66 @@ ns2s = 1e-9;
 # Type of Structure
 abstract type Str end
 
+mutable struct Tip3p <: Str
+    atom_vec
+    cell_vec
+    atom_type
+    atom_charge
+    atom_mass
+    atom_name
+    num_atoms
+    num_atom_types
+    bond_mode
+    num_bonds
+    num_bond_types
+    angle_mode
+    num_angles
+    num_angle_types
+end
+
+function Tip3p()
+    # Parameters of water
+    density = 1 / cm2an^3;      # Unit: g/A^3
+    angle = 104.25;
+    angle = angle / 180 * pi;   # Convert int to rad
+    ratio = [4, 5]              # Ratio to determing shape of box
+    bond_len = 0.9572;          # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
+
+    atom_type = [1, 2, 1]
+    atom_charge = [0.41, -0.82, 0.41]
+    atom_mass = [1.00784, 15.9994]
+    atom_name = split("H O")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+
+    # Setting Atom Args
+    atom_vec = [
+        0          0          0
+        1/ratio[1] 1/ratio[2] 0
+        2/ratio[1] 0          0
+    ]
+    cell_vec = [
+        ratio[1] * bond_len * sin(angle/2)
+        ratio[2] * bond_len * cos(angle/2)
+        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+    ]
+    cell_vec = diag(cell_vec)
+
+    # Setting Bond Modes
+    bond_mode = Vector{Bond}(undef, 2)
+    bond_mode[1] = Bond(0, 1, 1, 2)
+    bond_mode[2] = Bond(0, 1, 2, 3)
+    num_bonds = length(bond_mode)
+    num_bond_types = 1
+
+    # Setting Angle Modes
+    angle_mode = Vector{Angle}(undef, 1)
+    angle_mode[1] = Angle(1, 1, 1, 2, 3)
+    num_angles = length(angle_mode)
+    num_angle_types = 1
+    Tip3p(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+end
+
 mutable struct Si3N4 <: Str
     cell_vec
     atom_vec
@@ -245,6 +305,15 @@ function conv(vec::Array{Int64, 2})
     result
 end
 
+function diag(vec::AbstractArray)
+    len = length(vec)
+    result = zeros(len, len)
+    for i = 1 : len
+        result[i, i] = vec[i]
+    end
+    result
+end
+
 function genr_cell(cell_vec)
     num_cells = 1
     for i in cell_vec
@@ -308,6 +377,67 @@ function genr_atom(data_cell::Data_Cell, str::Str; pbc="x y z", bond_arg=1, r_cu
 
     # Output
     Data_Atom(data_basic, str, vec_atom)
+end
+
+function genr_bond(data_cell::Data_Cell, data::Data)
+    # Reading Input
+    data_basic = data.data_basic
+    data_str = data.data_str
+    num_cells = data_cell.num_cells
+    num_cell_bonds = data_str.num_bonds
+    num_bonds = num_cells * num_cell_bonds
+    num_bond_types = data_str.num_bond_types
+
+    data_basic.num_bonds = num_bonds
+    data_basic.num_bond_types = num_bond_types
+
+    # Generate Bonds
+    vec_bond = Vector{Bond}(undef, num_bonds)
+    for cell in 1 : num_cells
+        for bond = 1 : num_cell_bonds
+            id_now = (cell-1) * num_cell_bonds + bond
+            bond_now = Bond(data_str.bond_mode[bond])
+            bond_now.id = id_now
+            atom_tilt = (cell-1) * data_str.num_atoms
+            bond_now.atom_01 += atom_tilt
+            bond_now.atom_02 += atom_tilt
+            vec_bond[id_now] = bond_now
+        end
+    end
+
+    # Output
+    Data_Bond(data_basic, data_str, data.vec_atom, vec_bond)
+end
+
+function genr_angle(data_cell::Data_Cell, data::Data)
+    # Reading Input
+    data_basic = data.data_basic
+    data_str = data.data_str
+    num_cells = data_cell.num_cells
+    num_cell_angles = data_str.num_angles
+    num_angles = num_cells * num_cell_angles
+    num_angle_types = data_str.num_angle_types
+
+    data_basic.num_angles = num_angles
+    data_basic.num_angle_types = num_angle_types
+
+    # Generate Angle
+    vec_angle = Vector{Angle}(undef, num_angles)
+    for cell in 1 : num_cells
+        for angle in 1 : num_cell_angles
+            id_now = (cell-1) * num_cell_angles + angle
+            angle_now = Angle(data_str.angle_mode[angle])
+            angle_now.id = id_now
+            atom_tilt = (cell-1) * data_str.num_atoms
+            angle_now.atom_01 += atom_tilt
+            angle_now.atom_02 += atom_tilt
+            angle_now.atom_03 += atom_tilt
+            vec_angle[id_now] = angle_now
+        end
+    end
+
+    # Output
+    Data_Angle(data_basic, data_str, data.vec_atom, data.vec_bond, vec_angle)
 end
 
 function write_data(data::Data, name_file::AbstractString)
@@ -385,6 +515,46 @@ function write_info(info::Vector{Atom}, name_file::AbstractString)
         coord = getfield(atom,fields[para])
         for dim = 1 : 3
             write(io, join([string(coord[dim])," "]))
+        end
+        write(io, "\n")
+    end
+    write(io, "\n\n")
+
+    close(io)
+end
+
+function write_info(info::Vector{Bond}, name_file::AbstractString)
+    # Reading Input
+    io = open(name_file, "a")
+    fields = fieldnames(typeof(info[1]))
+    num_fields = length(fields)
+
+    # Writing Output
+    write(io, "Bonds\n\n")
+
+    for bond in info
+        for para in fields
+            write(io, join([string(getfield(bond, para)), " "]))
+        end
+        write(io, "\n")
+    end
+    write(io, "\n\n")
+
+    close(io)
+end
+
+function write_info(info::Vector{Angle}, name_file::AbstractString)
+    # Reading Input
+    io = open(name_file, "a")
+    fields = fieldnames(typeof(info[1]))
+    num_fields = length(fields)
+
+    # Writing Output
+    write(io, "Angles\n\n")
+
+    for angle in info
+        for para in fields
+            write(io, join([string(getfield(angle, para)), " "]))
         end
         write(io, "\n")
     end
