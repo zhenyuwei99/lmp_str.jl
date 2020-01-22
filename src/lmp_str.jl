@@ -767,7 +767,7 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
 
     # Writing Output
     para = string(typeof(info[1]))
-    write(io, join([para[findall(x->in('.', x), para)+1 : end], "s\n\n"]))
+    write(io, join([para[findall(x->in('.', x), para)[1]+1 : end], "s\n\n"])) # Get "xxx" from "lmp_str.xxx"
 
     for bond in info
         for para in 1 : num_fields - 1
