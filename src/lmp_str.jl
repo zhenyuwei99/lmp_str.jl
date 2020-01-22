@@ -442,7 +442,7 @@ function genr_atom(data_cell::Data_Cell, str::Str)
     str_vec[3,1] = 0
     str_vec[3,2] = 0
     box_size[:, 1] = min(vec_atom, "coord")
-    box_size[:, 2] = conv(min(vec_atom, "coord")+data_cell.cell_vec, 1) * str_vec
+    box_size[:, 2] = conv(conv(min(vec_atom, "coord"), 1) + conv(data_cell.cell_vec, 1)*str_vec, 1)
     box_tilt = Vector{Float64}(undef, 3)
     box_tilt[1] = data_cell.cell_vec[2] * str.cell_vec[2,1]
     box_tilt[2] = data_cell.cell_vec[3] * str.cell_vec[3,1]
