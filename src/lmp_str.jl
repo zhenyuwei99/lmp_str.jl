@@ -373,17 +373,6 @@ function dist(pos::Array, org::Array, dim)
     sqrt(r)
 end
 
-function delete(mat; id=1, dim=1)
-    if dim == 1
-        result = mat[1:end .!= id, :]
-    elseif dim == 2
-        result = mat[:, 1:end .!= id]
-    else
-        error("Error, dim should be 1 or 2, representing row or column respectively!")
-    end
-    result
-end
-
 # genr_cell
 
 function genr_cell(cell_vec)
