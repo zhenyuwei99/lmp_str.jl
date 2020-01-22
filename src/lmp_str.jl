@@ -34,7 +34,7 @@ ns2s = 1e-9;
 # Type of Structure
 abstract type Str end
 
-mutable struct Tip3p <: Str
+mutable struct Family_Wat <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
@@ -91,10 +91,99 @@ function Tip3p()
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
-    Tip3p(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
 end
 
-mutable struct Si3N4 <: Str
+function SPC()
+    # Parameters of water
+    density = 1 / cm2an^3;      # Unit: g/A^3
+    angle = 109.47;
+    angle = angle / 180 * pi;   # Convert int to rad
+    ratio = [4, 5]              # Ratio to determing shape of box
+    bond_len = 1.0;          # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
+
+    atom_type = [1, 2, 1]
+    atom_charge = [0.41, -0.82, 0.41]
+    atom_mass = [1.00784, 15.9994]
+    atom_name = split("H O")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+
+    # Setting Atom Args
+    atom_vec = [
+        0          0          0
+        1/ratio[1] 1/ratio[2] 0
+        2/ratio[1] 0          0
+    ]
+    cell_vec = [
+        ratio[1] * bond_len * sin(angle/2)
+        ratio[2] * bond_len * cos(angle/2)
+        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+    ]
+    cell_vec = diag(cell_vec)
+
+    # Setting Bond Modes
+    bond_mode = Vector{Bond}(undef, 2)
+    bond_mode[1] = Bond(0, 1, [1, 2])
+    bond_mode[2] = Bond(0, 1, [2, 3])
+    num_bonds = length(bond_mode)
+    num_bond_types = 1
+
+    # Setting Angle Modes
+    angle_mode = Vector{Angle}(undef, 1)
+    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    num_angles = length(angle_mode)
+    num_angle_types = 1
+
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+end
+
+function SPCE()
+    # Parameters of water
+    density = 1 / cm2an^3;      # Unit: g/A^3
+    angle = 109.47;
+    angle = angle / 180 * pi;   # Convert int to rad
+    ratio = [4, 5]              # Ratio to determing shape of box
+    bond_len = 1.0;          # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
+
+    atom_type = [1, 2, 1]
+    atom_charge = [0.4238, -0.8476, 0.4238]
+    atom_mass = [1.00784, 15.9994]
+    atom_name = split("H O")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+
+    # Setting Atom Args
+    atom_vec = [
+        0          0          0
+        1/ratio[1] 1/ratio[2] 0
+        2/ratio[1] 0          0
+    ]
+    cell_vec = [
+        ratio[1] * bond_len * sin(angle/2)
+        ratio[2] * bond_len * cos(angle/2)
+        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+    ]
+    cell_vec = diag(cell_vec)
+
+    # Setting Bond Modes
+    bond_mode = Vector{Bond}(undef, 2)
+    bond_mode[1] = Bond(0, 1, [1, 2])
+    bond_mode[2] = Bond(0, 1, [2, 3])
+    num_bonds = length(bond_mode)
+    num_bond_types = 1
+
+    # Setting Angle Modes
+    angle_mode = Vector{Angle}(undef, 1)
+    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    num_angles = length(angle_mode)
+    num_angle_types = 1
+
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+end
+
+mutable struct Family_Si <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
@@ -103,6 +192,31 @@ mutable struct Si3N4 <: Str
     atom_name
     num_atoms
     num_atom_types
+end
+
+function Si()
+    atom_vec = [
+        0       0       0
+        0       0.5     0.5
+        0.5     0       0.5
+        0.5     0.5     0
+        0.25    0.25    0.25
+        0.25    0.75    0.75
+        0.75    0.25    0.75
+        0.75    0.75    0.25
+    ]
+    cell_vec = [
+        5.4310      0           0
+        0           5.4310      0
+        0           0           5.4310
+    ]
+    atom_type = [1 1 1 1 1 1 1]
+    atom_charge = 0 .* atom_type
+    atom_mass = [28.085501] # Si: 28.085501. Unit: g/mol
+    atom_name = split("Si")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
 function Si3N4()
@@ -132,19 +246,8 @@ function Si3N4()
     atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
-    num_atom_types = 2
-    Si3N4(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
-end
-
-mutable struct Si3N4_Ort <: Str
-    atom_vec::Matrix{Float64}
-    cell_vec::Matrix{Float64}
-    atom_type
-    atom_charge
-    atom_mass
-    atom_name
-    num_atoms
-    num_atom_types
+    num_atom_types = length(atom_name)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
 function Si3N4_Ort()
@@ -188,10 +291,38 @@ function Si3N4_Ort()
     atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
-    num_atom_types = 2
-    Si3N4_Ort(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    num_atom_types = length(atom_name)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
+function SiO2()
+    atom_vec = [
+        0.196866211329851   0.196866211329851   0
+        0.136601044596223   0                   0.178468624064479
+        0.596625150662917   0.596625150662917   0.500000000000000
+        0.656890317396545   0.793491361992768   0.678468624064479
+        0.0966251506629169  0.696866211329852   0.250000000000000
+        0.293491361992768   0.636601044596224   0.428468624064479
+        0.696866211329852   0.0966251506629169  0.750000000000000
+        0.500000000000000   0.156890317396545   0.928468624064479
+        0.156890317396545   0.500000000000000   0.0715313759355211
+        0.636601044596224   0.293491361992768   0.571531375935521
+        0                   0.136601044596223   0.821531375935521
+        0.793491361992768   0.656890317396545   0.321531375935521
+    ]
+    cell_vec = [
+        4.9780  0           0
+        0       4.9780      0
+        0       0           6.9480
+    ]
+    atom_type = [2 1 2 1 2 1 2 1 1 1 1 1]
+    atom_charge = 1.5 .* atom_type .- 2 # N: -0.57825. Si: 0.7710. Unit: e
+    atom_mass = [15.999400 28.085501] # O: 15.999400. Si: 28.085501. Unit: g/mol
+    atom_name = split("O Si")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+end
 
 # Type of Data
 abstract type Data end
@@ -286,11 +417,26 @@ function max(vec::Vector{Atom}, para)
     if !in(para, fields)
         error(join(["Data_Type Atom doesn't have field: ", string(para)]))
     end
-    max = getfield(vec[1], para)
-    for i = 2 : length(vec)
-        data_now = getfield(vec[i], para)
-        if max <= data_now
-            max = data_now
+    data_para = getfield(vec[1], para)
+    len = length(data_para)
+    if len != 1
+        max = Vector{typeof(data_para).parameters[1]}(undef, len)
+        max[:] = data_para[:]
+        for i = 2 : length(vec)
+            data_now = getfield(vec[i], para)
+            for j = 1 : len
+                if max[j] <= data_now[j]
+                    max[j] = data_now[j]
+                end
+            end
+        end
+    else
+        max = getfield(vec[1], para)
+        for i = 2 : length(vec)
+            data_now = getfield(vec[i], para)
+            if max <= data_now
+                max = data_now
+            end
         end
     end
     max
@@ -302,11 +448,26 @@ function min(vec::Vector{Atom}, para)
     if !in(para, fields)
         error(join(["Data_Type Atom doesn't have field: ", string(para)]))
     end
-    min = getfield(vec[1], para)
-    for i = 2 : length(vec)
-        data_now = getfield(vec[i], para)
-        if min >= data_now
-            min = data_now
+    data_para = getfield(vec[1], para)
+    len = length(data_para)
+    if len != 1
+        min = Vector{typeof(data_para).parameters[1]}(undef, len)
+        min[:] = data_para[:]
+        for i = 2 : length(vec)
+            data_now = getfield(vec[i], para)
+            for j = 1 : len
+                if min[j] >= data_now[j]
+                    min[j] = data_now[j]
+                end
+            end
+        end
+    else
+        min = getfield(vec[1], para)
+        for i = 2 : length(vec)
+            data_now = getfield(vec[i], para)
+            if min >= data_now
+                min = data_now
+            end
         end
     end
     min
@@ -419,11 +580,12 @@ function genr_atom(data_cell::Data_Cell, str::Str)
     for cell in 1 : data_cell.num_cells
         for atom in 1 : str.num_atoms
             id_now = (cell-1) * str.num_atoms + atom
-            coord = conv((data_cell.cell_mat[cell,:]+str.atom_vec[atom,:]), 1) * str.cell_vec
+            coord = conv((data_cell.cell_mat[cell, :]+str.atom_vec[atom, :]), 1) * str.cell_vec
             coord = conv(coord, 1) # Reduce Matrix to Vector
             vec_atom[id_now] = Atom(id_now, cell, str.atom_type[atom], str.atom_charge[atom], coord)
         end
     end
+
     # Generate Basic Data
     num_atoms = data_cell.num_cells * str.num_atoms
     num_bonds = 0
