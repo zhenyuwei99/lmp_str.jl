@@ -691,7 +691,7 @@ function write_info(info::Data_Basic, name_file::AbstractString)
 
     # Writting Para info
     io = open(name_file, "w")
-    write(io, join(["Lammps .data file creat at ", now(), """ by Julia Package "lmp_str"\n\n"""]))
+    write(io, join(["Lammps .data file creat at ", Dates.now(), """ by Julia Package "lmp_str"\n\n"""]))
 
     fields = fieldnames(typeof(info))
 
