@@ -195,8 +195,9 @@ end
 # Type of Data
 
 abstract type Data end
+abstract type Unit end
 
-mutable struct Atom
+mutable struct Atom <: Unit
     id::Int64
     mol::Int64
     atom_type::Int64
@@ -204,7 +205,7 @@ mutable struct Atom
     coord::AbstractArray
 end
 
-mutable struct Bond
+mutable struct Bond <: Unit
     id::Int64
     bond_type::Int64
     atom_01::Int64
@@ -219,7 +220,7 @@ function Bond(bond::Bond)
     Bond(id, bond_type, atom_01, atom_02)
 end
 
-mutable struct Angle
+mutable struct Angle <: Unit
     id::Int64
     angle_type::Int64
     atom_01::Int64
@@ -278,7 +279,10 @@ mutable struct Data_Angle <: Data
     vec_angle::Vector{Angle}
 end
 
+
 ## Definations of Functions
+
+# Useful Functions
 
 function max(vec::Vector{Atom})
     max = vec[1].coord
@@ -289,7 +293,8 @@ function max(vec::Vector{Atom})
             end
         end
     end
-    max
+    result = Vector{Float64}(undef, 3)
+    result[:] = max[:]
 end
 
 function min(vec::Vector{Atom})
@@ -301,7 +306,17 @@ function min(vec::Vector{Atom})
             end
         end
     end
-    min
+    result = Vector{Float64}(undef, 3)
+    result[:] = min[:]
+end
+
+function diag(vec::AbstractArray)
+    len = length(vec)
+    result = zeros(len, len)
+    for i = 1 : len
+        result[i, i] = vec[i]
+    end
+    result
 end
 
 function conv(vec::Array{Int64, 1})
@@ -322,14 +337,54 @@ function conv(vec::Array{Int64, 2})
     result
 end
 
-function diag(vec::AbstractArray)
-    len = length(vec)
-    result = zeros(len, len)
-    for i = 1 : len
-        result[i, i] = vec[i]
+function dist(atom::Atom, org::Array)
+    r = 0
+    for dim = 1 : 3
+        r += (org[dim] - atom.coord[dim])^2
+    end
+    sqrt(r)
+end
+
+function dist(atom::Atom, org::Array, dim)
+    r = 0
+    dim_range = [1 2 3]
+    dim_range = dim_range[1:end .!= dim]
+    for i in dim_range
+        r += (org[i] - atom.coord[i])^2
+    end
+    sqrt(r)
+end
+
+function dist(pos::Array, org::Array)
+    r = 0
+    for dim = 1 : 3
+    r += (org[dim] - pos[dim])^2
+    end
+    sqrt(r)
+end
+
+function dist(pos::Array, org::Array, dim)
+    r = 0
+    dim_range = [1 2 3]
+    dim_range = dim_range[1:end .!= dim]
+    for i in dim_range
+        r += (org[i] - pos[i])^2
+    end
+    sqrt(r)
+end
+
+function delete(mat; id=1, dim=1)
+    if dim == 1
+        result = mat[1:end .!= id, :]
+    elseif dim == 2
+        result = mat[:, 1:end .!= id]
+    else
+        error("Error, dim should be 1 or 2, representing row or column respectively!")
     end
     result
 end
+
+# genr_cell
 
 function genr_cell(cell_vec)
     num_cells = 1
@@ -342,19 +397,19 @@ function genr_cell(cell_vec)
         for y in 0 : cell_vec[2] - 1
             for z in 0 : cell_vec[3] - 1
                 id = x*cell_vec[2]*cell_vec[3] + y*cell_vec[3] + z + 1
-                cell_mat[id, :] = [x, y, z]
+                cell_mat[id, :] = [x y z]
             end
         end
     end
-
     if typeof(cell_vec) == Array{Int64,1}
         cell_vec = conv(cell_vec)
     end
-
     Data_Cell(cell_mat, cell_vec, num_cells)
 end
 
-function genr_atom(data_cell::Data_Cell, str::Str; pbc="x y z", bond_arg=1, r_cut=1.9)
+# genr_atom
+
+function genr_atom(data_cell::Data_Cell, str::Str)
     # Variables Setting
     vec_atom = Vector{Atom}(undef, data_cell.num_cells*str.num_atoms)
 
@@ -384,7 +439,7 @@ function genr_atom(data_cell::Data_Cell, str::Str; pbc="x y z", bond_arg=1, r_cu
     str_vec[3,1] = 0
     str_vec[3,2] = 0
     box_size[:, 1] = min(vec_atom)
-    box_size[:, 2] = min(vec_atom) + data_cell.cell_vec*str_vec
+    box_size[:, 2] = min(vec_atom)' + data_cell.cell_vec*str_vec
     box_tilt = Vector{Float64}(undef, 3)
     box_tilt[1] = data_cell.cell_vec[2] * str.cell_vec[2,1]
     box_tilt[2] = data_cell.cell_vec[3] * str.cell_vec[3,1]
@@ -395,6 +450,8 @@ function genr_atom(data_cell::Data_Cell, str::Str; pbc="x y z", bond_arg=1, r_cu
     # Output
     Data_Atom(data_basic, str, vec_atom)
 end
+
+# genr_bond
 
 function genr_bond(data_cell::Data_Cell, data::Data)
     # Reading Input
@@ -425,6 +482,8 @@ function genr_bond(data_cell::Data_Cell, data::Data)
     # Output
     Data_Bond(data_basic, data_str, data.vec_atom, vec_bond)
 end
+
+# genr_angle
 
 function genr_angle(data_cell::Data_Cell, data::Data)
     # Reading Input
@@ -457,6 +516,219 @@ function genr_angle(data_cell::Data_Cell, data::Data)
     Data_Angle(data_basic, data_str, data.vec_atom, data.vec_bond, vec_angle)
 end
 
+# move
+
+function move(data::Data, move_vec)
+    # Motion of box
+    if typeof(move_vec) == Array{Int64,2}
+        move_vec_box = conv(move_vec)
+        move_vec_atom = move_vec
+    else
+        move_vec_atom = conv(move_vec)
+        move_vec_box = move_vec
+    end
+    data.data_basic.box_size = broadcast(+, data.data_basic.box_size, move_vec_box)
+
+    # Motion of atoms
+    for atom = 1 : data.data_basic.num_atoms
+        data.vec_atom[atom].coord += move_vec_atom
+    end
+    data
+end
+
+# select and delete
+
+function select(data_cell::Data_Cell; mode::String, para, dim=3)
+    list_mode = split("cylinder sphere")
+    if !in(mode, list_mode)
+        error(join(["Error, mode: ",mode," is not supported."]))
+    end
+
+    center = data_cell.cell_vec ./ 2
+
+    cell_list = 0
+
+    if mode == "cylinder"
+        for cell in 1:data_cell.num_cells
+            if dist(data_cell.cell_mat[cell, :], center, dim) <= para
+                cell_list = vcat(cell_list, cell)
+            end
+        end
+    end
+
+    if mode == "sphere"
+        for cell in 1:data_cell.num_cells
+            if dist(data_cell.cell_mat[cell, :], center) <= para
+                cell_list = vcat(cell_list, cell)
+            end
+        end
+    end
+
+    cell_list[2:end]
+end
+
+function select(data_atom::Data; mode::String, para, dim=3)
+    list_mode = split("cylinder sphere")
+    if !in(mode, list_mode)
+        error(join(["Error, mode: ",mode," is not supported."]))
+    end
+
+    box_size = data_atom.data_basic.box_size
+    box_tilt = data_atom.data_basic.box_tilt
+    center = (max(data_atom.vec_atom)-min(data_atom.vec_atom)) ./ 2
+    #center[1] += box_tilt[1] + box_tilt[2]
+    #center[2] += box_tilt[3]
+
+    atom_list = 0
+
+    if mode == "cylinder"
+        for atom in 1:data_atom.data_basic.num_atoms
+            if dist(data_atom.vec_atom[atom], center, dim) <= para
+                atom_list = vcat(atom_list, atom)
+            end
+        end
+    end
+
+    if mode == "sphere"
+        for atom in 1:data_atom.data_basic.num_atoms
+            if dist(data_atom.vec_atom[atom], center) <= para
+                atom_list = vcat(atom_list, atom)
+            end
+        end
+    end
+    atom_list[2:end]
+end
+
+function sort(vec::Union{Vector{Atom}, Vector{Bond}, Vector{Angle}})
+    for unit in 1 : length(vec)
+        vec[unit].id = unit
+    end
+    vec
+end
+
+function delete(vec::Union{Vector{Atom}, Vector{Bond}, Vector{Angle}}, id::Array)
+    len = length(vec)
+    judge = trues(len)
+    for i in id
+        judge .&= 1 : len .!= i
+    end
+    vec[judge]
+end
+
+function delete(mat; id=1, dim=1)
+    if dim == 1
+        result = mat[1:end .!= id, :]
+    elseif dim == 2
+        result = mat[:, 1:end .!= id]
+    else
+        error("Error, dim should be 1 or 2, representing row or column respectively!")
+    end
+    result
+end
+
+function delete(data_cell::Data_Cell, list_cell)
+    # Reading Input
+    cell_mat = data_cell.cell_mat
+    len = size(cell_mat)[1]
+    # Deleting Cells
+    judge = trues(len)
+    for id in list_cell
+        judge .&= 1:len .!= id
+    end
+    data_cell.cell_mat = cell_mat[judge, :]
+    data_cell.num_cells = size(data_cell.cell_mat)[1]
+
+    # Output
+    data_cell
+end
+
+function delete(data::Data, list_atom::Array)
+    fields = fieldnames(typeof(data))
+    name_fields = [string(fields[n]) for n = 1:length(fields)]
+    num_fields = length(fields)
+    list_fields = findall(x->occursin("vec", x), name_fields)
+
+    for field in  list_fields
+        # Find all elements that need to be deleted
+        list_id = find(getfield(data, fields[field]), list_atom)
+        # Changing # of specifc field
+        num_ids = length(list_id) - 1 # First elements is "Array"
+        para_now = name_fields[field][findall(x->in('_', x), name_fields[field])[1]+1 : end]
+        para_now = Meta.parse(join(["num_",para_now,"s"]))
+        para_result = getfield(data.data_basic, para_now) - num_ids
+        setfield!(data.data_basic, para_now, para_result)
+        # Changing Vector of each field
+        setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id))
+    end
+
+    data
+end
+
+function find(vec_atom::Vector{Atom}, list_atom)
+    len = length(vec_atom)
+    judge = falses(len)
+
+    id = [vec_atom[n].id for n = 1:len]
+    for atom in list_atom
+        judge .|= id .== atom
+    end
+
+    list = Vector{Int64}
+    for vec in vec_atom[judge]
+        list = vcat(list, vec.id)
+    end
+    list
+end
+
+function find(vec_bond::Vector{Bond}, list_atom)
+    len = length(vec_bond)
+    judge_01 = falses(len)
+    judge_02 = falses(len)
+
+    atom_01 = [vec_bond[n].atom_01 for n = 1:len]
+    atom_02 = [vec_bond[n].atom_02 for n = 1:len]
+
+    for atom in list_atom
+        judge_01 .|= atom_01 .== atom
+        judge_02 .|= atom_02 .== atom
+    end
+
+    judge = judge_01 .| judge_02
+
+    list = Vector{Int64}
+    for vec in vec_bond[judge]
+        list = vcat(list, vec.id)
+    end
+    list
+end
+
+function find(vec_angle::Vector{Angle}, list_atom)
+    len = length(vec_angle)
+    judge_01 = falses(len)
+    judge_02 = falses(len)
+    judge_03 = falses(len)
+
+    atom_01 = [vec_angle[n].atom_01 for n = 1:len]
+    atom_02 = [vec_angle[n].atom_02 for n = 1:len]
+    atom_03 = [vec_angle[n].atom_02 for n = 1:len]
+
+    for atom in list_atom
+        judge_01 .|= atom_01 .== atom
+        judge_02 .|= atom_02 .== atom
+        judge_03 .|= atom_03 .== atom
+    end
+
+    judge = judge_01 .| judge_02 .| judge_03
+
+    list = Vector{Int64}
+    for vec in vec_angle[judge]
+        list = vcat(list, vec.id)
+    end
+    list
+end
+
+# write_data and write_info
+
 function write_data(data::Data, name_file::AbstractString)
     for info in fieldnames(typeof(data))
         write_info(getfield(data, info), name_file)
@@ -472,7 +744,7 @@ function write_info(info::Data_Basic, name_file::AbstractString)
 
     # Writting Para info
     io = open(name_file, "w")
-    write(io, join(["Lammps .data file creat at ", Dates.now(), """ by Julia Package "lmp_str"\n\n"""]))
+    write(io, join(["Lammps .data file creat at ", now(), """ by Julia Package "lmp_str"\n\n"""]))
 
     fields = fieldnames(typeof(info))
 
