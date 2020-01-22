@@ -35,8 +35,8 @@ ns2s = 1e-9;
 abstract type Str end
 
 mutable struct Tip3p <: Str
-    atom_vec
-    cell_vec
+    atom_vec::Matrix{Float64}
+    cell_vec::Matrix{Float64}
     atom_type
     atom_charge
     atom_mass
@@ -81,22 +81,22 @@ function Tip3p()
 
     # Setting Bond Modes
     bond_mode = Vector{Bond}(undef, 2)
-    bond_mode[1] = Bond(0, 1, 1, 2)
-    bond_mode[2] = Bond(0, 1, 2, 3)
+    bond_mode[1] = Bond(0, 1, [1, 2])
+    bond_mode[2] = Bond(0, 1, [2, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 1)
-    angle_mode[1] = Angle(1, 1, 1, 2, 3)
+    angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
     Tip3p(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
 end
 
 mutable struct Si3N4 <: Str
-    cell_vec
-    atom_vec
+    atom_vec::Matrix{Float64}
+    cell_vec::Matrix{Float64}
     atom_type
     atom_charge
     atom_mass
@@ -106,11 +106,6 @@ mutable struct Si3N4 <: Str
 end
 
 function Si3N4()
-   cell_vec = [
-        7.595  0         0
-        3.7975 6.577463  0
-        0      0         2.902
-        ]
     atom_vec = [
         -0.0977580565637542 0.195516113127508   0
         0.0588368288671674  0.307869462739661   0
@@ -127,18 +122,23 @@ function Si3N4()
         -0.291760564557441  0.683850293038517   0
         0.0514815980747357  0.957207969090818   0
     ]
+    cell_vec = [
+        7.595  0         0
+        3.7975 6.577463  0
+        0      0         2.902
+    ]
     atom_type = [2 1 2 2 1 1 1 1 2 2 1 2 1 1]
     atom_charge = 1.34925 .* atom_type .- 1.9275 # N: -0.57825. Si: 0.7710. Unit: e
     atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = 2
-    Si3N4(cell_vec, atom_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Si3N4(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
 mutable struct Si3N4_Ort <: Str
-    cell_vec
-    atom_vec
+    atom_vec::Matrix{Float64}
+    cell_vec::Matrix{Float64}
     atom_type
     atom_charge
     atom_mass
@@ -148,11 +148,6 @@ mutable struct Si3N4_Ort <: Str
 end
 
 function Si3N4_Ort()
-    cell_vec = [
-    7.595   0           0
-    0       13.154964   0
-    0       0           2.902
-    ]
     atom_vec = [
     0                       0.597031356376194   0
     0.000658327847268042    0.521394509327430   0.500000000000000
@@ -183,63 +178,64 @@ function Si3N4_Ort()
     0.937327188940092       0.844010367493214   0.500000000000000
     0.982422646477946       0.157542278336908   0.500000000000000
     ]
+    cell_vec = [
+    7.595   0           0
+    0       13.154964   0
+    0       0           2.902
+    ]
     atom_type = [2 1 2 2 1 2 1 1 2 1 1 2 1 1 2 1 2 2 1 2 1 1 2 1 1 2 1 1]
     atom_charge = 1.34925 .* atom_type .- 1.9275 # N: -0.57825. Si: 0.7710. Unit: e
     atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = 2
-    Si3N4_Ort(cell_vec, atom_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Si3N4_Ort(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
-# Type of Data
 
+# Type of Data
 abstract type Data end
 abstract type Unit end
 
 mutable struct Atom <: Unit
-    id::Int64
+    atom::Int64
     mol::Int64
     atom_type::Int64
     charge::Float64
-    coord::AbstractArray
+    coord::Vector{Float64}
 end
 
 mutable struct Bond <: Unit
     id::Int64
-    bond_type::Int64
-    atom_01::Int64
-    atom_02::Int64
+    type::Int64
+    atom::Vector{Int64}
 end
 
 function Bond(bond::Bond)
     id = bond.id
-    bond_type = bond.bond_type
-    atom_01 = bond.atom_01
-    atom_02 = bond.atom_02
-    Bond(id, bond_type, atom_01, atom_02)
+    type = bond.type
+    atom = Vector{Int64}(undef, length(bond.atom))
+    atom[:] = bond.atom[:]
+    Bond(id, type, atom)
 end
 
 mutable struct Angle <: Unit
     id::Int64
-    angle_type::Int64
-    atom_01::Int64
-    atom_02::Int64
-    atom_03::Int64
+    type::Int64
+    atom::Vector{Int64}
 end
 
 function Angle(angle::Angle)
     id = angle.id
-    angle_type = angle.angle_type
-    atom_01 = angle.atom_01
-    atom_02 = angle.atom_02
-    atom_03 = angle.atom_03
-    Angle(id, angle_type, atom_01, atom_02, atom_03)
+    type = angle.type
+    atom = Vector{Int64}(undef, length(angle.atom))
+    atom[:] = angle.atom[:]
+    Angle(id, type, atom)
 end
 
 mutable struct Data_Cell
     cell_mat::Matrix{Int64}
-    cell_vec
+    cell_vec::Vector{Int64}
     num_cells::Int64
 end
 
@@ -254,8 +250,8 @@ mutable struct Data_Basic <:Data
     num_angle_types::Int64
     num_dihedral_types::Int64
     num_improper_types::Int64
-    box_size
-    box_tilt
+    box_size::Matrix{Float64}
+    box_tilt::Vector{Float64}
 end
 
 mutable struct Data_Atom <: Data
@@ -284,30 +280,36 @@ end
 
 # Useful Functions
 
-function max(vec::Vector{Atom})
-    max = vec[1].coord
+function max(vec::Vector{Atom}, para)
+    fields = fieldnames(typeof(vec[1]))
+    para = Meta.parse(para)
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    max = getfield(vec[1], para)
     for i = 2 : length(vec)
-        for j = 1 : 3
-            if max[j] < vec[i].coord[j]
-                max[j] = vec[i].coord[j]
-            end
+        data_now = getfield(vec[i], para)
+        if max <= data_now
+            max = data_now
         end
     end
-    result = Vector{Float64}(undef, 3)
-    result[:] = max[:]
+    max
 end
 
-function min(vec::Vector{Atom})
-    min = vec[1].coord
+function min(vec::Vector{Atom}, para)
+    fields = fieldnames(typeof(vec[1]))
+    para = Meta.parse(para)
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    min = getfield(vec[1], para)
     for i = 2 : length(vec)
-        for j = 1 : 3
-            if min[j] > vec[i].coord[j]
-                min[j] = vec[i].coord[j]
-            end
+        data_now = getfield(vec[i], para)
+        if min >= data_now
+            min = data_now
         end
     end
-    result = Vector{Float64}(undef, 3)
-    result[:] = min[:]
+    min
 end
 
 function diag(vec::AbstractArray)
@@ -319,22 +321,34 @@ function diag(vec::AbstractArray)
     result
 end
 
-function conv(vec::Array{Int64, 1})
+function conv(vec::Vector, dim)
     len = length(vec)
-    result = convert.(Int64, zeros(1, len))
+    para = typeof(vec).parameters
+    if dim == 1
+        result = convert.(para[1], zeros(1, len))
+    elseif dim == 2
+        result = convert.(para[1], zeros(len, 1))
+    else
+        error("dim should be 1 or 2, representing Row or Column vector respectively")
+    end
     for i in 1 : len
         result[i] = vec[i]
     end
     result
 end
 
-function conv(vec::Array{Int64, 2})
-    len = length(vec)
-    result = convert.(Int64, zeros(len, 1))
-    for i in 1 : len
-        result[i] = vec[i]
+function conv(mat::Matrix, redu=0)
+    para = typeof(mat).parameters
+    if redu == 1
+        (row, col) = size(mat)
+        len = row>col ? row : col
+        result = convert.(para[1], zeros(len))
+    elseif redu == 0
+        result = convert.(para[1], zeros(size(mat)[2], size(mat)[1]))
+    else
+        error("redu should be 0 or 1, representing wether Martix will be reduced to Vector.")
     end
-    result
+    result[:] = mat[:]
 end
 
 function dist(atom::Atom, org::Array)
@@ -373,8 +387,8 @@ function dist(pos::Array, org::Array, dim)
     sqrt(r)
 end
 
-# genr_cell
 
+# genr_cell
 function genr_cell(cell_vec)
     num_cells = 1
     for i in cell_vec
@@ -390,14 +404,13 @@ function genr_cell(cell_vec)
             end
         end
     end
-    if typeof(cell_vec) == Array{Int64,1}
-        cell_vec = conv(cell_vec)
+    if typeof(cell_vec) == Array{Int64,2}
+        cell_vec = conv(cell_vec, 1)
     end
     Data_Cell(cell_mat, cell_vec, num_cells)
 end
 
 # genr_atom
-
 function genr_atom(data_cell::Data_Cell, str::Str)
     # Variables Setting
     vec_atom = Vector{Atom}(undef, data_cell.num_cells*str.num_atoms)
@@ -406,7 +419,8 @@ function genr_atom(data_cell::Data_Cell, str::Str)
     for cell in 1 : data_cell.num_cells
         for atom in 1 : str.num_atoms
             id_now = (cell-1) * str.num_atoms + atom
-            coord = (data_cell.cell_mat[cell,:]+str.atom_vec[atom,:])' * str.cell_vec
+            coord = conv((data_cell.cell_mat[cell,:]+str.atom_vec[atom,:]), 1) * str.cell_vec
+            coord = conv(coord, 1) # Reduce Matrix to Vector
             vec_atom[id_now] = Atom(id_now, cell, str.atom_type[atom], str.atom_charge[atom], coord)
         end
     end
@@ -427,8 +441,8 @@ function genr_atom(data_cell::Data_Cell, str::Str)
     str_vec[2,1] = 0
     str_vec[3,1] = 0
     str_vec[3,2] = 0
-    box_size[:, 1] = min(vec_atom)
-    box_size[:, 2] = min(vec_atom)' + data_cell.cell_vec*str_vec
+    box_size[:, 1] = min(vec_atom, "coord")
+    box_size[:, 2] = conv(min(vec_atom, "coord")+data_cell.cell_vec, 1) * str_vec
     box_tilt = Vector{Float64}(undef, 3)
     box_tilt[1] = data_cell.cell_vec[2] * str.cell_vec[2,1]
     box_tilt[2] = data_cell.cell_vec[3] * str.cell_vec[3,1]
@@ -441,7 +455,6 @@ function genr_atom(data_cell::Data_Cell, str::Str)
 end
 
 # genr_bond
-
 function genr_bond(data_cell::Data_Cell, data::Data)
     # Reading Input
     data_basic = data.data_basic
@@ -462,8 +475,7 @@ function genr_bond(data_cell::Data_Cell, data::Data)
             bond_now = Bond(data_str.bond_mode[bond])
             bond_now.id = id_now
             atom_tilt = (cell-1) * data_str.num_atoms
-            bond_now.atom_01 += atom_tilt
-            bond_now.atom_02 += atom_tilt
+            bond_now.atom .+= atom_tilt
             vec_bond[id_now] = bond_now
         end
     end
@@ -473,7 +485,6 @@ function genr_bond(data_cell::Data_Cell, data::Data)
 end
 
 # genr_angle
-
 function genr_angle(data_cell::Data_Cell, data::Data)
     # Reading Input
     data_basic = data.data_basic
@@ -494,9 +505,7 @@ function genr_angle(data_cell::Data_Cell, data::Data)
             angle_now = Angle(data_str.angle_mode[angle])
             angle_now.id = id_now
             atom_tilt = (cell-1) * data_str.num_atoms
-            angle_now.atom_01 += atom_tilt
-            angle_now.atom_02 += atom_tilt
-            angle_now.atom_03 += atom_tilt
+            angle_now.atom .+= atom_tilt
             vec_angle[id_now] = angle_now
         end
     end
@@ -506,27 +515,21 @@ function genr_angle(data_cell::Data_Cell, data::Data)
 end
 
 # move
-
 function move(data::Data, move_vec)
     # Motion of box
     if typeof(move_vec) == Array{Int64,2}
-        move_vec_box = conv(move_vec)
-        move_vec_atom = move_vec
-    else
-        move_vec_atom = conv(move_vec)
-        move_vec_box = move_vec
+        move_vec = conv(move_vec, 1)
     end
-    data.data_basic.box_size = broadcast(+, data.data_basic.box_size, move_vec_box)
+    data.data_basic.box_size = broadcast(+, data.data_basic.box_size, move_vec)
 
     # Motion of atoms
     for atom = 1 : data.data_basic.num_atoms
-        data.vec_atom[atom].coord += move_vec_atom
+        data.vec_atom[atom].coord += move_vec
     end
     data
 end
 
 # select and delete
-
 function select(data_cell::Data_Cell; mode::String, para, dim=3)
     list_mode = split("cylinder sphere")
     if !in(mode, list_mode)
@@ -564,7 +567,7 @@ function select(data_atom::Data; mode::String, para, dim=3)
 
     box_size = data_atom.data_basic.box_size
     box_tilt = data_atom.data_basic.box_tilt
-    center = (max(data_atom.vec_atom)-min(data_atom.vec_atom)) ./ 2
+    center = (max(data_atom.vec_atom, "coord")-min(data_atom.vec_atom, "coord")) ./ 2
     #center[1] += box_tilt[1] + box_tilt[2]
     #center[2] += box_tilt[3]
 
@@ -588,31 +591,11 @@ function select(data_atom::Data; mode::String, para, dim=3)
     atom_list[2:end]
 end
 
-function sort(vec::Union{Vector{Atom}, Vector{Bond}, Vector{Angle}})
+function sort(vec::Vector{T}) where T<:Unit
     for unit in 1 : length(vec)
         vec[unit].id = unit
     end
     vec
-end
-
-function delete(vec::Union{Vector{Atom}, Vector{Bond}, Vector{Angle}}, id::Array)
-    len = length(vec)
-    judge = trues(len)
-    for i in id
-        judge .&= 1 : len .!= i
-    end
-    vec[judge]
-end
-
-function delete(mat; id=1, dim=1)
-    if dim == 1
-        result = mat[1:end .!= id, :]
-    elseif dim == 2
-        result = mat[:, 1:end .!= id]
-    else
-        error("Error, dim should be 1 or 2, representing row or column respectively!")
-    end
-    result
 end
 
 function delete(data_cell::Data_Cell, list_cell)
@@ -640,84 +623,59 @@ function delete(data::Data, list_atom::Array)
     for field in  list_fields
         # Find all elements that need to be deleted
         list_id = find(getfield(data, fields[field]), list_atom)
+
         # Changing # of specifc field
-        num_ids = length(list_id) - 1 # First elements is "Array"
+        num_ids = length(list_id)
         para_now = name_fields[field][findall(x->in('_', x), name_fields[field])[1]+1 : end]
-        para_now = Meta.parse(join(["num_",para_now,"s"]))
+        para_now = Meta.parse(join(["num_", para_now, "s"]))
         para_result = getfield(data.data_basic, para_now) - num_ids
         setfield!(data.data_basic, para_now, para_result)
+
         # Changing Vector of each field
-        setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id))
+        setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id)) # delete(vec::Vector{T} , id::Array) where T<:Unit
     end
 
     data
 end
 
-function find(vec_atom::Vector{Atom}, list_atom)
-    len = length(vec_atom)
-    judge = falses(len)
-
-    id = [vec_atom[n].id for n = 1:len]
-    for atom in list_atom
-        judge .|= id .== atom
+function delete(vec::Vector{T} , id::Array) where T <: Unit
+    len = length(vec)
+    judge = trues(len)
+    for i in id
+        judge .&= 1 : len .!= i
     end
-
-    list = Vector{Int64}
-    for vec in vec_atom[judge]
-        list = vcat(list, vec.id)
-    end
-    list
+    vec[judge]
 end
 
-function find(vec_bond::Vector{Bond}, list_atom)
-    len = length(vec_bond)
-    judge_01 = falses(len)
-    judge_02 = falses(len)
-
-    atom_01 = [vec_bond[n].atom_01 for n = 1:len]
-    atom_02 = [vec_bond[n].atom_02 for n = 1:len]
-
-    for atom in list_atom
-        judge_01 .|= atom_01 .== atom
-        judge_02 .|= atom_02 .== atom
+function delete(mat; id=1, dim=1)
+    if dim == 1
+        result = mat[1:end .!= id, :]
+    elseif dim == 2
+        result = mat[:, 1:end .!= id]
+    else
+        error("Error, dim should be 1 or 2, representing row or column respectively!")
     end
-
-    judge = judge_01 .| judge_02
-
-    list = Vector{Int64}
-    for vec in vec_bond[judge]
-        list = vcat(list, vec.id)
-    end
-    list
+    result
 end
 
-function find(vec_angle::Vector{Angle}, list_atom)
-    len = length(vec_angle)
-    judge_01 = falses(len)
-    judge_02 = falses(len)
-    judge_03 = falses(len)
-
-    atom_01 = [vec_angle[n].atom_01 for n = 1:len]
-    atom_02 = [vec_angle[n].atom_02 for n = 1:len]
-    atom_03 = [vec_angle[n].atom_02 for n = 1:len]
-
-    for atom in list_atom
-        judge_01 .|= atom_01 .== atom
-        judge_02 .|= atom_02 .== atom
-        judge_03 .|= atom_03 .== atom
+function find(vec_unit::Vector{T}, list_atom) where T <: Unit
+    len = length(vec_unit)
+    atom = [vec_unit[n].atom for n = 1:len]
+    list = 0
+    id = 0
+    for i in atom
+        id += 1
+        for j in i
+            if sum(list_atom .== j) == 1
+                list = vcat(list, id)
+                break
+            end
+        end
     end
-
-    judge = judge_01 .| judge_02 .| judge_03
-
-    list = Vector{Int64}
-    for vec in vec_angle[judge]
-        list = vcat(list, vec.id)
-    end
-    list
+    list[2:end]
 end
 
 # write_data and write_info
-
 function write_data(data::Data, name_file::AbstractString)
     for info in fieldnames(typeof(data))
         write_info(getfield(data, info), name_file)
@@ -733,7 +691,7 @@ function write_info(info::Data_Basic, name_file::AbstractString)
 
     # Writting Para info
     io = open(name_file, "w")
-    write(io, join(["Lammps .data file creat at ", Dates.now(), """ by Julia Package "lmp_str"\n\n"""]))
+    write(io, join(["Lammps .data file creat at ", now(), """ by Julia Package "lmp_str"\n\n"""]))
 
     fields = fieldnames(typeof(info))
 
@@ -801,38 +759,22 @@ function write_info(info::Vector{Atom}, name_file::AbstractString)
     close(io)
 end
 
-function write_info(info::Vector{Bond}, name_file::AbstractString)
+function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union{Bond, Angle}
     # Reading Input
     io = open(name_file, "a")
     fields = fieldnames(typeof(info[1]))
     num_fields = length(fields)
 
     # Writing Output
-    write(io, "Bonds\n\n")
+    write(io, join([string(typeof(info[1])), "s\n\n"]))
 
     for bond in info
-        for para in fields
-            write(io, join([string(getfield(bond, para)), " "]))
+        for para in 1 : num_fields - 1
+            write(io, join([string(getfield(bond, fields[para])), " "]))
         end
-        write(io, "\n")
-    end
-    write(io, "\n\n")
-
-    close(io)
-end
-
-function write_info(info::Vector{Angle}, name_file::AbstractString)
-    # Reading Input
-    io = open(name_file, "a")
-    fields = fieldnames(typeof(info[1]))
-    num_fields = length(fields)
-
-    # Writing Output
-    write(io, "Angles\n\n")
-
-    for angle in info
-        for para in fields
-            write(io, join([string(getfield(angle, para)), " "]))
+        atom = getfield(bond, fields[end])
+        for para in atom
+            write(io, join([string(para), " "]))
         end
         write(io, "\n")
     end
