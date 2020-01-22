@@ -766,8 +766,8 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
     num_fields = length(fields)
 
     # Writing Output
-    para = string(typeof(info[1])
-    write(io, join([para[findall(x->in('.', x), para)[1]+1 : end], "s\n\n"]))
+    para = string(typeof(info[1]))
+    write(io, join([para[findall(x->in('.', x), para)+1 : end], "s\n\n"]))
 
     for bond in info
         for para in 1 : num_fields - 1
