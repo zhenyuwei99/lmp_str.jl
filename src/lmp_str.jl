@@ -691,7 +691,7 @@ function write_info(info::Data_Basic, name_file::AbstractString)
 
     # Writting Para info
     io = open(name_file, "w")
-    write(io, join(["Lammps .data file creat at ", Dates.now(), """ by Julia Package "lmp_str"\n\n"""]))
+    write(io, join(["Lammps .data file creat at ", now(), """ by Julia Package "lmp_str"\n\n"""]))
 
     fields = fieldnames(typeof(info))
 
@@ -766,7 +766,8 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
     num_fields = length(fields)
 
     # Writing Output
-    write(io, join([string(typeof(info[1])), "s\n\n"]))
+    para = string(typeof(info[1])
+    write(io, join([para[findall(x->in('.', x), para)[1]+1 : end], "s\n\n"]))
 
     for bond in info
         for para in 1 : num_fields - 1
