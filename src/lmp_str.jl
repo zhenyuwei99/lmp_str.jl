@@ -40,7 +40,9 @@ abstract type Str end
 This contains information for model constructing of the famliy of water models.
 
 # Supported list:
-Tip3p SPC SPCE
+ - Tip3p
+ - SPC
+ - SPCE
 Notice:Case sensetive
 """
 mutable struct Family_Wat <: Str
@@ -216,7 +218,10 @@ end
 This contains information for model constructing of Si and its compounds.
 
 # Supported list:
-Si SiN4 SiN4_Ort SiO2
+- Si
+- SiN4
+- SiN4_Ort
+- SiO2
 Notice:Case sensetive
 """
 mutable struct Family_Si <: Str
