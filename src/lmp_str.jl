@@ -401,9 +401,24 @@ This contains information needed to describe an atom in Lammps Data File.
 mutable struct Atom <: Unit
     atom::Int64
     mol::Int64
-    atom_type::Int64
+    type::Int64
     charge::Float64
     coord::Vector{Float64}
+end
+
+"""
+    Atom(atom::Atom)
+
+Do this will generate a new variable of `Atom` type same as variable `atom`.
+"""
+function Atom(atom::Atom)
+    id = atom.atom
+    mol = atom.mol
+    type = atom.type
+    charge = atom.charge
+    coord = Vector{Float64}(undef, 3)
+    coord[:] = atom.coord[:]
+    Atom(id, mol, type, charge, coord)
 end
 
 """
@@ -420,7 +435,7 @@ end
 """
     Bond(bond::Bond)
 
-Do this will generate a new Bond variable same as variable `bond`.
+Do this will generate a new variable of `Bond` type same as variable `bond`.
 """
 function Bond(bond::Bond)
     id = bond.id
@@ -444,7 +459,7 @@ end
 """
     Angle(angle::Angle)
 
-Do this will generate a new Angle variable same as variable `angle`.
+Do this will generate a new variable of `Angle` type same as variable `angle`.
 """
 function Angle(angle::Angle)
     id = angle.id
@@ -951,6 +966,81 @@ function move(data::Data, move_vec::Array)
     for atom = 1 : data.data_basic.num_atoms
         data.vec_atom[atom].coord += move_vec
     end
+    data
+end
+
+# addions
+"""
+    addions(data::Data, ion_type::String, conc::Float64)
+
+Do this to addions into water model
+
+# Supported List
+- Type          Mass(g/mol)
+- `Na^+`        22.99
+- `K^+`         39.09
+- `Al^{3+}`     26.98
+- `Cl^-`        35.453
+Notcice: `ion_type` is case sensetive and space is needed for recogonition
+
+# Example
+```julia-repl
+cell = genr_cell([30,20,3])
+str = Tip3p()
+data = genr_atom(cell, str)
+data = addions(data, "Na Cl", 0.5)
+```
+"""
+function addions(data::Data, ion_type::String, conc::Float64)
+    # Supported List
+    list_ion = split("K Na Al Cl")
+    list_charge = [1, 1, 3, -1]
+    list_mass = [39.09, 22.99, 26.98, 35.453]
+
+    # Reading Input
+    ion = split(ion_type)
+    len = length(ion)
+    ion_id =  [findall(x->x==ion[n], list_ion)[1] for n = 1:len]
+    ion_charge = [list_charge[ion_id[n]] for n = 1:len]
+
+    # Genrate ion_mode
+    num_unit_ions = lcm(ion_charge[1], ion_charge[2])
+    num_ions = convert.(Int64, [abs(num_unit_ions/ion_charge[1]), abs(num_unit_ions/ion_charge[2])])
+    num_unit_ions = sum(num_ions)
+
+    unit_type = vcat([1 for i = 1:num_ions[1]], [2 for i = 1:num_ions[2]])
+    unit_charge = vcat([ion_charge[1] for i = 1:num_ions[1]], [ion_charge[2] for i = 1:num_ions[2]])
+    ion_mode = [Atom(i, i, unit_type[i], unit_charge[i], [0, 0, 0]) for i = 1:num_unit_ions]
+
+    # Calculate # of solute molecules
+    ratio_sol2wat = conc / (density_wat * kg2g / m2dm^3 / sum(data.data_str.atom_mass))
+
+    num_wat = data.data_basic.num_atoms
+    num_sol = convert(Int64, round(num_wat * ratio_sol2wat))
+    num_atoms = num_sol * num_unit_ions
+
+    # Generate new Atoms
+    vec_atom = data.vec_atom
+    vec_atom_new = Vector{Atom}(undef, num_atoms)
+    box_vec = data.data_basic.box_size[:,2] - data.data_basic.box_size[:,1]
+    for sol = 1:num_sol
+        for ion = 1:num_unit_ions
+            id_now = (sol-1) * num_unit_ions + ion
+            atom_now = Atom(ion_mode[ion])
+            atom_now.atom = data.data_basic.num_atoms + id_now
+            atom_now.mol = max(vec_atom, "mol") + id_now
+            atom_now.type += max(vec_atom, "type")
+            atom_now.coord .+= rand(3) .* box_vec
+            vec_atom_new[id_now] = atom_now
+        end
+    end
+
+    # Generate new Data
+    data.data_basic.num_atoms +=  num_atoms
+    data.data_basic.num_atom_types += 2
+    data.vec_atom = vcat(vec_atom, vec_atom_new)
+
+    # Output
     data
 end
 
