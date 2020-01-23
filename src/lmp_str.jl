@@ -964,8 +964,8 @@ variables `mode` and `para`
 
 # Parameters List
 
-- "cylinder": [radius dim], `dim` represents which axies cylinder will be prallel to
-- "sphere": [radius]
+- `"cylinder"`: `[radius dim]`, `dim` represents which axies cylinder will be prallel to
+- `"sphere"`: `[radius]`
 
 # Example
 ```julia-repl
@@ -1015,8 +1015,8 @@ variables `mode` and `para`
 
 # Parameters List
 
-- "cylinder": [radius dim], `dim` represents which axies cylinder will be prallel to
-- "sphere": [radius]
+- `"cylinder"`: `[radius dim]`, `dim` represents which axies cylinder will be prallel to
+- `"sphere"`: `[radius]`
 
 # Example
 ```julia-repl
