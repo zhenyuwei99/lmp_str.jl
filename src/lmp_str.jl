@@ -51,6 +51,12 @@ mutable struct Family_Wat <: Str
     num_angle_types
 end
 
+"""
+    Tip3p()
+
+    Construct a Famliy_Wat type which contains all information needed
+    to build a Tip3p moedel
+"""
 function Tip3p()
     # Parameters of water
     density = 1 / cm2an^3;      # Unit: g/A^3
