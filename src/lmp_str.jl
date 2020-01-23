@@ -37,11 +37,11 @@ abstract type Str end
 """
     mutable struct Family_Wat
 
-    Data Type for famliy of water models,
+Contain information for model constructing of the famliy of water models.
 
-    current supported list:
-    Tip3p SPC SPCE (**Case sensetive**)
-
+# Supported list:
+Tip3p SPC SPCE
+Notice:Case sensetive
 """
 mutable struct Family_Wat <: Str
     atom_vec::Matrix{Float64}
@@ -63,8 +63,8 @@ end
 """
     Tip3p()
 
-    Construct a Famliy_Wat type which contains all information needed
-    to build a Tip3p moedel
+Construct a Famliy_Wat type which contains all information needed to build
+a Tip3p moedel.
 """
 function Tip3p()
     # Parameters of water
@@ -110,6 +110,12 @@ function Tip3p()
     Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
 end
 
+"""
+    SPC()
+
+Construct a Famliy_Wat type which contains all information needed to build
+a SPC moedel.
+"""
 function SPC()
     # Parameters of water
     density = 1 / cm2an^3;      # Unit: g/A^3
@@ -154,6 +160,12 @@ function SPC()
     Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
 end
 
+"""
+    SPCE()
+
+Construct a Famliy_Wat type which contains all information needed to build
+a SPCE moedel.
+"""
 function SPCE()
     # Parameters of water
     density = 1 / cm2an^3;      # Unit: g/A^3
@@ -198,6 +210,15 @@ function SPCE()
     Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
 end
 
+"""
+    mutable struct Family_Si
+
+Contain information for model constructing of Si and its compounds.
+
+# Supported list:
+Si SiN4 SiN4_Ort SiO2
+Notice:Case sensetive
+"""
 mutable struct Family_Si <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
@@ -209,6 +230,12 @@ mutable struct Family_Si <: Str
     num_atom_types
 end
 
+"""
+    Si()
+
+Construct a Famliy_Si type which contains all information needed to build
+a Si moedel.
+"""
 function Si()
     atom_vec = [
         0       0       0
@@ -234,6 +261,12 @@ function Si()
     Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
+"""
+    Si3N4()
+
+Construct a Famliy_Si type which contains all information needed to build
+a Si3N4 moedel.
+"""
 function Si3N4()
     atom_vec = [
         -0.0977580565637542 0.195516113127508   0
@@ -265,6 +298,12 @@ function Si3N4()
     Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
+"""
+    Si3N4_Ort()
+
+Construct a Famliy_Si type which contains all information needed to build a
+Si3N4 moedel with orthogonal unit cell.
+"""
 function Si3N4_Ort()
     atom_vec = [
     0                       0.597031356376194   0
@@ -310,6 +349,12 @@ function Si3N4_Ort()
     Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
 end
 
+"""
+    SiO2()
+
+Construct a Famliy_Si type which contains all information needed
+to build a SiO2 moedel.
+"""
 function SiO2()
     atom_vec = [
         0.196866211329851   0.196866211329851   0
@@ -343,6 +388,11 @@ end
 abstract type Data end
 abstract type Unit end
 
+"""
+    mutable struct Atom
+
+Contain information needed to describe an atom in Lammps Data File.
+"""
 mutable struct Atom <: Unit
     atom::Int64
     mol::Int64
@@ -351,12 +401,22 @@ mutable struct Atom <: Unit
     coord::Vector{Float64}
 end
 
+"""
+    mutable struct Bond
+
+Contain information needed to describe a bond in Lammps Data File.
+"""
 mutable struct Bond <: Unit
     id::Int64
     type::Int64
     atom::Vector{Int64}
 end
 
+"""
+    Bond(bond::Bond)
+
+Generate a new Bond variable same as variable `bond`
+"""
 function Bond(bond::Bond)
     id = bond.id
     type = bond.type
@@ -365,12 +425,22 @@ function Bond(bond::Bond)
     Bond(id, type, atom)
 end
 
+"""
+    mutable struct Angle
+
+Contains information needed to describe an angle in Lammps Data File.
+"""
 mutable struct Angle <: Unit
     id::Int64
     type::Int64
     atom::Vector{Int64}
 end
 
+"""
+    Angle(angle::Angle)
+
+Generate a new Angle variable same as variable `angle`
+"""
 function Angle(angle::Angle)
     id = angle.id
     type = angle.type
@@ -379,6 +449,16 @@ function Angle(angle::Angle)
     Angle(id, type, atom)
 end
 
+"""
+    mutable struct Data_Cell
+
+Contains information of cell matrix
+
+# Arguments
+- `cell_mat::Matrix{Int64}`: postion of each cell point
+- `cell_vec::Vector{Int64}`: # of cells in 3 direction
+- `num_cells::Int64`: # of cells in total
+"""
 mutable struct Data_Cell
     cell_mat::Matrix{Int64}
     cell_vec::Vector{Int64}
