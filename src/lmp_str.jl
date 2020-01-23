@@ -840,7 +840,7 @@ Do this will add information of bonds to origin model, returning a variable in
 `Date_Bond` type.
 
 # Notice
-This function could only be used when `bond_mode` is contained in `str`
+This function can only be used when `bond_mode` is contained in `data.data_str`
 
 # Example
 ```julia-repl
@@ -887,7 +887,7 @@ Do this will add information of angles to origin model, returning a variable in
 `Data_Angle` type.
 
 # Notice
-This function could only be used when `angle_mode` is contained in `str`
+This function can only be used when `angle_mode` is contained in `data.data_str`
 # Example
 ```julia-repl
 data_cell = lmp_str.genr_cell([1 1 1])
