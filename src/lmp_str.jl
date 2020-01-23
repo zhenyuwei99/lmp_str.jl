@@ -34,6 +34,15 @@ ns2s = 1e-9;
 # Type of Structure
 abstract type Str end
 
+"""
+    mutable struct Family_Wat
+
+    Data Type for famliy of water models,
+
+    current supported list:
+    Tip3p SPC SPCE (**Case sensetive**)
+
+"""
 mutable struct Family_Wat <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
