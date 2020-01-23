@@ -541,7 +541,16 @@ end
 ## Definations of Functions
 
 # Useful Functions
+"""
+    max(vec::Vector{Atom}, para)
 
+Do this will return the maximum data of `para` in `vec_atom`.
+
+# Example
+```julia-repl
+max_data = max(vec_atom, "coord")
+```
+"""
 function max(vec::Vector{Atom}, para)
     fields = fieldnames(typeof(vec[1]))
     para = Meta.parse(para)
@@ -573,6 +582,16 @@ function max(vec::Vector{Atom}, para)
     max
 end
 
+"""
+    min(vec::Vector{Atom}, para)
+
+Do this will return the minimum data of `para` in `vec_atom`.
+
+# Example
+```julia-repl
+min_data = min(vec_atom, "coord")
+```
+"""
 function min(vec::Vector{Atom}, para)
     fields = fieldnames(typeof(vec[1]))
     para = Meta.parse(para)
@@ -643,6 +662,16 @@ function conv(mat::Matrix, redu=0)
     result[:] = mat[:]
 end
 
+"""
+    dist(atom::Atom, org::Array)
+
+Do this will return the distance between coord of `atom` and coord of `org`
+
+# Example
+```julia-repl
+r = dist(atom, [0 0 0])
+```
+"""
 function dist(atom::Atom, org::Array)
     r = 0
     for dim = 1 : 3
@@ -651,6 +680,18 @@ function dist(atom::Atom, org::Array)
     sqrt(r)
 end
 
+"""
+    dist(pos::Array, org::Array)
+
+Do this will return the 2-d distance between coord of `atom` and coord of `org`
+in plane vertical to axies `dim`.
+`dim = 1, 2, 3` represents axies x, y, z respectively
+
+# Example
+```julia-repl
+r = dist(atom, [0 0 0], 1)
+```
+"""
 function dist(atom::Atom, org::Array, dim)
     r = 0
     dim_range = [1 2 3]
@@ -661,6 +702,16 @@ function dist(atom::Atom, org::Array, dim)
     sqrt(r)
 end
 
+"""
+    dist(pos::Array, org::Array)
+
+Do this will return the distance between coord of `pos` and coord of `org`
+
+# Example
+```julia-repl
+r = dist(atom, [0 0 0], 1)
+```
+"""
 function dist(pos::Array, org::Array)
     r = 0
     for dim = 1 : 3
@@ -669,6 +720,18 @@ function dist(pos::Array, org::Array)
     sqrt(r)
 end
 
+"""
+    dist(pos::Array, org::Array, dim)
+
+Do this will return the 2-d distance between coord of `pos` and coord of `org`
+in plane vertical to axies `dim`.
+`dim = 1, 2, 3` represents axies x, y, z respectively
+
+# Example
+```julia-repl
+r = dist([1 2 3], [0 0 0], 1)
+```
+"""
 function dist(pos::Array, org::Array, dim)
     r = 0
     dim_range = [1 2 3]
