@@ -747,7 +747,7 @@ end
 """
     genr_cell(cell_vec)
 
-Do this will return a variable in Data_Cell type
+Do this will return a variable in `Data_Cell` type
 
 # Example
 ```julia-repl
@@ -779,7 +779,7 @@ end
 """
     genr_atom(data_cell::Data_Cell, str::Str)
 
-Do this will return a variable in Data_Atom type
+Do this will return a variable in `Data_Atom` type
 
 # Example
 ```julia-repl
@@ -837,7 +837,7 @@ end
     genr_bond(data_cell::Data_Cell, data::Data)
 
 Do this will add information of bonds to origin model, returning a variable in
-Date_Bond type.
+`Date_Bond` type.
 
 # Example
 ```julia-repl
@@ -881,7 +881,7 @@ end
     genr_angle(data_cell::Data_Cell, data::Data)
 
 Do this will add information of angles to origin model, returning a variable in
-Data_Angle type.
+`Data_Angle` type.
 
 # Example
 ```julia-repl
@@ -925,7 +925,7 @@ end
 """
     move(data::Data, move_vec::Array)
 
-Do this will move the model uniformly respect to move_vec in unit of Angstrom
+Do this will move the model uniformly respect to `move_vec` in unit of Angstrom
 
 # Example
 ```julia-repl
@@ -1003,7 +1003,7 @@ function select(data_cell::Data_Cell; mode::String, para)
 end
 
 """
-    data_atom::Data; mode::String, para
+    select(data_atom::Data; mode::String, para)
 
 Do this will return a list of id of atoms in specific region controled by
 variables `mode` and `para`
