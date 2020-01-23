@@ -460,9 +460,9 @@ end
 This contains information of cell matrix.
 
 # Arguments
-- `cell_mat::Matrix{Int64}`: postion of each cell point.
-- `cell_vec::Vector{Int64}`: # of cells in 3 direction.
-- `num_cells::Int64`: # of cells in total.
+- `cell_mat`: postion of each cell point.
+- `cell_vec`: # of cells in 3 direction.
+- `num_cells`: # of cells in total.
 """
 mutable struct Data_Cell
     cell_mat::Matrix{Int64}
@@ -476,12 +476,12 @@ end
 This contains basic information of Lammps Model.
 
 # Arguments
-- `num_atoms::Int64`: # of atoms in total.
+- `num_atoms`: # of atoms in total.
 - ... Same formate for bonds, angles, dihedrals, and impropers.
-- `num_atom_types::Int64`: # of types of atoms.
+- `num_atom_types`: # of types of atoms.
 - ... Same fromate for types of bonds, angles, dihedrals, and impropers.
-- `box_size::Matrix{Float64}`: 3 x 2 Matrix of lowest and highest postion.
-- `box_tilt::Vector{Float64}`: Represent xy xz yz respectively.
+- `box_size`: 3 x 2 Matrix of lowest and highest postion.
+- `box_tilt`: Represent xy xz yz respectively.
 """
 mutable struct Data_Basic <:Data
     num_atoms::Int64
@@ -548,7 +548,7 @@ Do this will return the maximum data of `para` in `vec_atom`.
 
 # Example
 ```julia-repl
-max_data = max(vec_atom, "coord")
+max_data = lmp_str.max(vec_atom, "coord")
 ```
 """
 function max(vec::Vector{Atom}, para)
@@ -589,7 +589,7 @@ Do this will return the minimum data of `para` in `vec_atom`.
 
 # Example
 ```julia-repl
-min_data = min(vec_atom, "coord")
+in_data = lmp_str.min(vec_atom, "coord")
 ```
 """
 function min(vec::Vector{Atom}, para)
@@ -669,7 +669,7 @@ Do this will return the distance between coord of `atom` and coord of `org`
 
 # Example
 ```julia-repl
-r = dist(atom, [0 0 0])
+r = lmp_str.dist(atom, [0 0 0])
 ```
 """
 function dist(atom::Atom, org::Array)
@@ -681,7 +681,7 @@ function dist(atom::Atom, org::Array)
 end
 
 """
-    dist(pos::Array, org::Array)
+    dist(atom::Atom, org::Array, dim)
 
 Do this will return the 2-d distance between coord of `atom` and coord of `org`
 in plane vertical to axies `dim`.
@@ -689,7 +689,7 @@ in plane vertical to axies `dim`.
 
 # Example
 ```julia-repl
-r = dist(atom, [0 0 0], 1)
+r = lmp_str.dist(atom, [0 0 0], 1)
 ```
 """
 function dist(atom::Atom, org::Array, dim)
@@ -709,7 +709,7 @@ Do this will return the distance between coord of `pos` and coord of `org`
 
 # Example
 ```julia-repl
-r = dist(atom, [0 0 0], 1)
+r = lmp_str.dist([1 2 3], [0 0 0], 1)
 ```
 """
 function dist(pos::Array, org::Array)
@@ -729,7 +729,7 @@ in plane vertical to axies `dim`.
 
 # Example
 ```julia-repl
-r = dist([1 2 3], [0 0 0], 1)
+r = lmp_str.dist([1 2 3], [0 0 0], 1)
 ```
 """
 function dist(pos::Array, org::Array, dim)
@@ -744,6 +744,16 @@ end
 
 
 # genr_cell
+"""
+    genr_cell(cell_vec)
+
+Do this will return a variable in Data_Cell type
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([1 2 3])
+```
+"""
 function genr_cell(cell_vec)
     num_cells = 1
     for i in cell_vec
@@ -766,6 +776,18 @@ function genr_cell(cell_vec)
 end
 
 # genr_atom
+"""
+    genr_atom(data_cell::Data_Cell, str::Str)
+
+Do this will return a variable in Data_Atom type
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([1 1 1])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+```
+"""
 function genr_atom(data_cell::Data_Cell, str::Str)
     # Variables Setting
     vec_atom = Vector{Atom}(undef, data_cell.num_cells*str.num_atoms)
@@ -811,6 +833,20 @@ function genr_atom(data_cell::Data_Cell, str::Str)
 end
 
 # genr_bond
+"""
+    genr_bond(data_cell::Data_Cell, data::Data)
+
+Do this will add information of bonds to origin model, returning a variable in
+Date_Bond type.
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([1 1 1])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+data_bond = lmp_str.genr_bond(data_cell, data_atom)
+```
+"""
 function genr_bond(data_cell::Data_Cell, data::Data)
     # Reading Input
     data_basic = data.data_basic
@@ -841,6 +877,21 @@ function genr_bond(data_cell::Data_Cell, data::Data)
 end
 
 # genr_angle
+"""
+    genr_angle(data_cell::Data_Cell, data::Data)
+
+Do this will add information of angles to origin model, returning a variable in
+Data_Angle type.
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([1 1 1])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+data_bond = lmp_str.genr_bond(data_cell, data_atom)
+data_angle = lmp_str.genr_angle(data_cell, data_bond)
+```
+"""
 function genr_angle(data_cell::Data_Cell, data::Data)
     # Reading Input
     data_basic = data.data_basic
@@ -871,7 +922,20 @@ function genr_angle(data_cell::Data_Cell, data::Data)
 end
 
 # move
-function move(data::Data, move_vec)
+"""
+    move(data::Data, move_vec::Array)
+
+Do this will move the model uniformly respect to move_vec in unit of Angstrom
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([1 1 1])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+data_move = lmp_str.move(data_atom, [10 10 10])
+```
+"""
+function move(data::Data, move_vec::Array)
     # Motion of box
     if typeof(move_vec) == Array{Int64,2}
         move_vec = conv(move_vec, 1)
@@ -886,7 +950,30 @@ function move(data::Data, move_vec)
 end
 
 # select and delete
-function select(data_cell::Data_Cell; mode::String, para, dim=3)
+
+"""
+    select(data_cell::Data_Cell; mode::String, para)
+
+Do this will return a list of id of cells in specific region controled by
+variables `mode` and `para`
+
+# Arguments
+- `data_cell`:
+- `mode`: "cylinder" and "sphere" are supported currently.
+- `para`: parameters needed to describe a region correspond to each modes
+
+# Parameters List
+
+- "cylinder": [radius dim], `dim` represents which axies cylinder will be prallel to
+- "sphere": [radius]
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([10 10 2])
+data_select = lmp_str.select(data_cell, mode="cylinder", para=[3, 3])
+```
+"""
+function select(data_cell::Data_Cell; mode::String, para)
     list_mode = split("cylinder sphere")
     if !in(mode, list_mode)
         error(join(["Error, mode: ",mode," is not supported."]))
@@ -898,7 +985,7 @@ function select(data_cell::Data_Cell; mode::String, para, dim=3)
 
     if mode == "cylinder"
         for cell in 1:data_cell.num_cells
-            if dist(data_cell.cell_mat[cell, :], center, dim) <= para
+            if dist(data_cell.cell_mat[cell, :], center, para[2]) <= para[1]
                 cell_list = vcat(cell_list, cell)
             end
         end
@@ -906,7 +993,7 @@ function select(data_cell::Data_Cell; mode::String, para, dim=3)
 
     if mode == "sphere"
         for cell in 1:data_cell.num_cells
-            if dist(data_cell.cell_mat[cell, :], center) <= para
+            if dist(data_cell.cell_mat[cell, :], center) <= para[1]
                 cell_list = vcat(cell_list, cell)
             end
         end
@@ -915,7 +1002,31 @@ function select(data_cell::Data_Cell; mode::String, para, dim=3)
     cell_list[2:end]
 end
 
-function select(data_atom::Data; mode::String, para, dim=3)
+"""
+    data_atom::Data; mode::String, para
+
+Do this will return a list of id of atoms in specific region controled by
+variables `mode` and `para`
+
+# Arguments
+- `data_cell`:
+- `mode`: "cylinder" and "sphere" are supported currently.
+- `para`: parameters needed to describe a region correspond to each modes
+
+# Parameters List
+
+- "cylinder": [radius dim], `dim` represents which axies cylinder will be prallel to
+- "sphere": [radius]
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([10 10 2])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+data_select = lmp_str.select(data_atom, mode="cylinder", para=[10, 3])
+```
+"""
+function select(data_atom::Data; mode::String, para)
     list_mode = split("cylinder sphere")
     if !in(mode, list_mode)
         error(join(["Error, mode: ",mode," is not supported."]))
@@ -931,7 +1042,7 @@ function select(data_atom::Data; mode::String, para, dim=3)
 
     if mode == "cylinder"
         for atom in 1:data_atom.data_basic.num_atoms
-            if dist(data_atom.vec_atom[atom], center, dim) <= para
+            if dist(data_atom.vec_atom[atom], center, para[2]) <= para[1]
                 atom_list = vcat(atom_list, atom)
             end
         end
@@ -939,7 +1050,7 @@ function select(data_atom::Data; mode::String, para, dim=3)
 
     if mode == "sphere"
         for atom in 1:data_atom.data_basic.num_atoms
-            if dist(data_atom.vec_atom[atom], center) <= para
+            if dist(data_atom.vec_atom[atom], center) <= para[1]
                 atom_list = vcat(atom_list, atom)
             end
         end
@@ -954,7 +1065,19 @@ function sort(vec::Vector{T}) where T<:Unit
     vec
 end
 
-function delete(data_cell::Data_Cell, list_cell)
+"""
+    delete(data_cell::Data_Cell, list_cell::Array)
+
+Do this will delete all cells in `list_cell` from `data_cell`
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([10 10 2])
+data_select = lmp_str.select(data_cell, mode="cylinder", para=[3, 3])
+data_new = lmp_str.delete(data_cell, data_select)
+```
+"""
+function delete(data_cell::Data_Cell, list_cell::Array)
     # Reading Input
     cell_mat = data_cell.cell_mat
     len = size(cell_mat)[1]
@@ -970,6 +1093,21 @@ function delete(data_cell::Data_Cell, list_cell)
     data_cell
 end
 
+"""
+    delete(data::Data, list_atom::Array)
+
+Do this will delete all atoms in `list_atom` themselves and other infomation
+related to them  from `data`
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([10 10 2])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+data_select = lmp_str.select(data_atom, mode="cylinder", para=[3, 3])
+data_new = lmp_str.delete(data_atom, data_select)
+```
+"""
 function delete(data::Data, list_atom::Array)
     fields = fieldnames(typeof(data))
     name_fields = [string(fields[n]) for n = 1:length(fields)]
@@ -1032,6 +1170,19 @@ function find(vec_unit::Vector{T}, list_atom) where T <: Unit
 end
 
 # write_data and write_info
+"""
+    write_data(data::Data, name_file::AbstractString)
+
+Do this will write all information in `data` to file `name_file`
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([10 10 3])
+str = lmp_str.Si3N4()
+data_atom = lmp_str.genr_atom(data_cell, str)
+write(data_atom, "test.data")
+```
+"""
 function write_data(data::Data, name_file::AbstractString)
     for info in fieldnames(typeof(data))
         write_info(getfield(data, info), name_file)
