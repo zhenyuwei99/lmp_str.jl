@@ -1023,13 +1023,15 @@ function addions(data::Data, ion_type::String, conc::Float64)
     vec_atom = data.vec_atom
     vec_atom_new = Vector{Atom}(undef, num_atoms)
     box_vec = data.data_basic.box_size[:,2] - data.data_basic.box_size[:,1]
-    for sol = 1:num_sol
+    max_mol = max(vec_atom, "mol")
+    max_type = max(vec_atom, "type")
+    @time for sol = 1:num_sol
         for ion = 1:num_unit_ions
             id_now = (sol-1) * num_unit_ions + ion
             atom_now = Atom(ion_mode[ion])
             atom_now.atom = data.data_basic.num_atoms + id_now
-            atom_now.mol = max(vec_atom, "mol") + id_now
-            atom_now.type += max(vec_atom, "type")
+            atom_now.mol = max_mol + id_now
+            atom_now.type += max_type
             atom_now.coord .+= rand(3) .* box_vec
             vec_atom_new[id_now] = atom_now
         end
