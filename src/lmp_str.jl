@@ -1025,7 +1025,7 @@ function addions(data::Data, ion_type::String, conc::Float64)
     box_vec = data.data_basic.box_size[:,2] - data.data_basic.box_size[:,1]
     max_mol = max(vec_atom, "mol")
     max_type = max(vec_atom, "type")
-    @time for sol = 1:num_sol
+    for sol = 1:num_sol
         for ion = 1:num_unit_ions
             id_now = (sol-1) * num_unit_ions + ion
             atom_now = Atom(ion_mode[ion])
