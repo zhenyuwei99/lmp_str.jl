@@ -763,18 +763,45 @@ function genr_cell(cell_vec)
     Data_Cell(cell_mat, cell_vec, num_cells)
 end
 
+# genr
+"""
+    genr(data_cell::Data_Cell, str::Str)
+
+Do this will return a variable in `Data_Unit` type, containing all infomation
+needed for model of `str`.
+
+# Example
+```julia-repl
+data_cell = lmp_str.genr_cell([5, 5, 5])
+str = lmp_str.Tip3p()
+data = lmp_str.genr(data_cell, str)
+```
+"""
+function genr(data_cell::Data_Cell, str::Str)
+    data = genr_atom(data_cell, str)
+    str_fields = fieldnames(typeof(str))
+
+    vec_bond = 0
+    vec_angle = 0
+
+    if in(:bond_mode, str_fields)
+        data_bond = genr_bond(data_cell, data)
+        vec_bond = data_bond.vec_bond
+    end
+
+    if in(:angle_mode, str_fields)
+        data_angle = genr_angle(data_cell, data)
+        vec_angle = data_angle.vec_angle
+    end
+
+    Data_Unit(data.data_basic, data.data_str, data.vec_atom, vec_bond, vec_angle)
+end
+
 # genr_atom
 """
     genr_atom(data_cell::Data_Cell, str::Str)
 
-Do this will return a variable in `Data_Atom` type
-
-# Example
-```julia-repl
-data_cell = lmp_str.genr_cell([1 1 1])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-```
+This will be called by `genr(...)`, genrating atomic information
 """
 function genr_atom(data_cell::Data_Cell, str::Str)
     # Variables Setting
@@ -824,19 +851,8 @@ end
 """
     genr_bond(data_cell::Data_Cell, data::Data)
 
-Do this will add information of bonds to origin model, returning a variable in
-`Date_Bond` type.
-
-# Notice
-This function can only be used when `bond_mode` is contained in `data.data_str`
-
-# Example
-```julia-repl
-data_cell = lmp_str.genr_cell([1 1 1])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-data_bond = lmp_str.genr_bond(data_cell, data_atom)
-```
+This will be called by `genr(...)` if `bond_mode` is contained in `str`,
+genrating information of bonds
 """
 function genr_bond(data_cell::Data_Cell, data::Data)
     # Reading Input
@@ -869,21 +885,10 @@ end
 
 # genr_angle
 """
-    genr_angle(data_cell::Data_Cell, data::Data)
+    genr_bond(data_cell::Data_Cell, data::Data)
 
-Do this will add information of angles to origin model, returning a variable in
-`Data_Angle` type.
-
-# Notice
-This function can only be used when `angle_mode` is contained in `data.data_str`
-# Example
-```julia-repl
-data_cell = lmp_str.genr_cell([1 1 1])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-data_bond = lmp_str.genr_bond(data_cell, data_atom)
-data_angle = lmp_str.genr_angle(data_cell, data_bond)
-```
+This will be called by `genr(...)` if `angle_mode` is contained in `str`,
+genrating information of angles
 """
 function genr_angle(data_cell::Data_Cell, data::Data)
     # Reading Input
