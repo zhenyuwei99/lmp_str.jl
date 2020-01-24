@@ -418,7 +418,7 @@ function Atom(atom::Atom)
     charge = atom.charge
     coord = Vector{Float64}(undef, 3)
     coord[:] = atom.coord[:]
-    Atom(id, mol, type, charge, coord)
+    Atom(id, mol, typ, charge, coord)
 end
 
 """
