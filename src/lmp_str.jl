@@ -401,7 +401,7 @@ This contains information needed to describe an atom in Lammps Data File.
 mutable struct Atom <: Unit
     atom::Int64
     mol::Int64
-    type::Int64
+    typ::Int64
     charge::Float64
     coord::Vector{Float64}
 end
@@ -414,7 +414,7 @@ Do this will generate a new variable of `Atom` type same as variable `atom`.
 function Atom(atom::Atom)
     id = atom.atom
     mol = atom.mol
-    type = atom.type
+    typ = atom.typ
     charge = atom.charge
     coord = Vector{Float64}(undef, 3)
     coord[:] = atom.coord[:]
@@ -428,7 +428,7 @@ This contains information needed to describe a bond in Lammps Data File.
 """
 mutable struct Bond <: Unit
     id::Int64
-    type::Int64
+    typ::Int64
     atom::Vector{Int64}
 end
 
@@ -439,10 +439,10 @@ Do this will generate a new variable of `Bond` type same as variable `bond`.
 """
 function Bond(bond::Bond)
     id = bond.id
-    type = bond.type
+    typ = bond.typ
     atom = Vector{Int64}(undef, length(bond.atom))
     atom[:] = bond.atom[:]
-    Bond(id, type, atom)
+    Bond(id, typ, atom)
 end
 
 """
@@ -452,7 +452,7 @@ This contains information needed to describe an angle in Lammps Data File.
 """
 mutable struct Angle <: Unit
     id::Int64
-    type::Int64
+    typ::Int64
     atom::Vector{Int64}
 end
 
@@ -463,10 +463,10 @@ Do this will generate a new variable of `Angle` type same as variable `angle`.
 """
 function Angle(angle::Angle)
     id = angle.id
-    type = angle.type
+    typ = angle.typ
     atom = Vector{Int64}(undef, length(angle.atom))
     atom[:] = angle.atom[:]
-    Angle(id, type, atom)
+    Angle(id, typ, atom)
 end
 
 """
@@ -514,44 +514,17 @@ mutable struct Data_Basic <:Data
 end
 
 """
-    mutable struct Data_Atom <:Data
+    mutable struct Data_Unit <:Data
 
-This contains all information needed for  Lammps Model with only atoms (no bond,
-angles, impropers, and dihedrals).
+This contains all information needed for an unit Lammps Model (only one structure).
 """
-mutable struct Data_Atom <: Data
+mutable struct Data_Unit <: Data
     data_basic::Data_Basic
     data_str::Str
-    vec_atom::Vector{Atom}
+    vec_atom::Union{Vector{Atom}, Int64}
+    vec_bond::Union{Vector{Bond}, Int64}
+    vec_angle::Union{Vector{Angle}, Int64}
 end
-
-"""
-    mutable struct Data_Bond <:Data
-
-This contains all information needed for Lammps Model with atoms and bonds
-(no angle impropers, and dihedrals).
-"""
-mutable struct Data_Bond <: Data
-    data_basic::Data_Basic
-    data_str::Str
-    vec_atom::Vector{Atom}
-    vec_bond::Vector{Bond}
-end
-
-"""
-    mutable struct Data_Atom <:Data
-
-This contains all information needed for Lammps Model with atoms, bonds,
-and angles (no impropers and dihedrals).
-"""
-mutable struct Data_Angle <: Data
-    data_basic::Data_Basic
-    data_str::Str
-    vec_atom::Vector{Atom}
-    vec_bond::Vector{Bond}
-    vec_angle::Vector{Angle}
-end
-
 
 ## Definations of Functions
 
@@ -844,7 +817,7 @@ function genr_atom(data_cell::Data_Cell, str::Str)
     data_basic = Data_Basic(num_atoms, num_bonds, num_angles, num_dihedrals, num_impropers, num_atom_types, num_bond_types, num_angle_types, num_dihedral_types, num_improper_types, box_size, box_tilt)
 
     # Output
-    Data_Atom(data_basic, str, vec_atom)
+    Data_Unit(data_basic, str, vec_atom, 0, 0)
 end
 
 # genr_bond
@@ -891,7 +864,7 @@ function genr_bond(data_cell::Data_Cell, data::Data)
     end
 
     # Output
-    Data_Bond(data_basic, data_str, data.vec_atom, vec_bond)
+    Data_Unit(data_basic, data_str, data.vec_atom, vec_bond, 0)
 end
 
 # genr_angle
@@ -938,7 +911,7 @@ function genr_angle(data_cell::Data_Cell, data::Data)
     end
 
     # Output
-    Data_Angle(data_basic, data_str, data.vec_atom, data.vec_bond, vec_angle)
+    Data_Unit(data_basic, data_str, data.vec_atom, data.vec_bond, vec_angle)
 end
 
 # move
@@ -1024,14 +997,14 @@ function addions(data::Data, ion_type::String, conc::Float64)
     vec_atom_new = Vector{Atom}(undef, num_atoms)
     box_vec = data.data_basic.box_size[:,2] - data.data_basic.box_size[:,1]
     max_mol = max(vec_atom, "mol")
-    max_type = max(vec_atom, "type")
+    max_type = max(vec_atom, "typ")
     for sol = 1:num_sol
         for ion = 1:num_unit_ions
             id_now = (sol-1) * num_unit_ions + ion
             atom_now = Atom(ion_mode[ion])
             atom_now.atom = data.data_basic.num_atoms + id_now
             atom_now.mol = max_mol + id_now
-            atom_now.type += max_type
+            atom_now.typ += max_type
             atom_now.coord .+= rand(3) .* box_vec
             vec_atom_new[id_now] = atom_now
         end
@@ -1386,6 +1359,9 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
     write(io, "\n\n")
 
     close(io)
+end
+
+function write_info(info::Int64, name_file::AbstractString)
 end
 
 end # module
