@@ -1320,7 +1320,7 @@ data_select = lmp_str.select(data_cell, mode="cylinder", para=[3, 3])
 data_new = lmp_str.delete(data_cell, data_select)
 ```
 """
-function delete(data_cell::Data_Cell, list_cell::Array)
+function delete(data_cell::Data_Cell, list_cell)
     # Reading Input
     cell_mat = data_cell.cell_mat
     len = size(cell_mat)[1]
@@ -1359,23 +1359,27 @@ function delete(data::Data, list_atom::Array)
 
     for field in  list_fields
         # Find all elements that need to be deleted
-        list_id = lmp_str.find(getfield(data, fields[field]), list_atom)
+        list_id = find(getfield(data, fields[field]), list_atom)
 
-        # Changing # of specifc field
-        num_ids = length(list_id)
-        para_now = name_fields[field][findall(x->in('_', x), name_fields[field])[1]+1 : end]
-        para_now = Meta.parse(join(["num_", para_now, "s"]))
-        para_result = getfield(data.data_basic, para_now) - num_ids
-        setfield!(data.data_basic, para_now, para_result)
+        if list_id == 0
+            continue
+        else
+            # Changing # of specifc field
+            num_ids = length(list_id)
+            para_now = name_fields[field][findall(x->in('_', x), name_fields[field])[1]+1 : end]
+            para_now = Meta.parse(join(["num_", para_now, "s"]))
+            para_result = getfield(data.data_basic, para_now) - num_ids
+            setfield!(data.data_basic, para_now, para_result)
 
-        # Changing Vector of each field
-        setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id)) # delete(vec::Vector{T} , id::Array) where T<:Unit
+            # Changing Vector of each field
+            setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id)) # delete(vec::Vector{T} , id::Array) where T<:Unit
+        end
     end
 
     data
 end
 
-function delete(vec::Vector{T} , id::Array) where T <: Unit
+function delete(vec::Union{Vector{T}, Int64}, id::Array) where T <: Union{Unit}
     len = length(vec)
     judge = trues(len)
     for i in id
@@ -1395,21 +1399,25 @@ function delete(mat; id=1, dim=1)
     result
 end
 
-function find(vec_unit::Vector{T}, list_atom) where T <: Unit
+function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Union{Unit}
     len = length(vec_unit)
-    atom = [vec_unit[n].atom for n = 1:len]
-    list = 0
-    id = 0
-    for i in atom
-        id += 1
-        for j in i
-            if sum(list_atom .== j) == 1
-                list = vcat(list, id)
-                break
+    if typeof(vec_unit) == Int64
+        return 0
+    else
+        atom = [vec_unit[n].atom for n = 1:len]
+        list = 0
+        id = 0
+        for i in atom
+            id += 1
+            for j in i
+                if sum(list_atom .== j) == 1
+                    list = vcat(list, id)
+                    break
+                end
             end
         end
+        list[2:end]
     end
-    list[2:end]
 end
 
 # write_data and write_info
