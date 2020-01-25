@@ -258,7 +258,7 @@ function Tip3p()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
@@ -308,7 +308,7 @@ function SPC()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
@@ -358,7 +358,7 @@ function SPCE()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
