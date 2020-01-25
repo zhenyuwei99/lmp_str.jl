@@ -1359,7 +1359,7 @@ function delete(data::Data, list_atom::Array)
 
     for field in  list_fields
         # Find all elements that need to be deleted
-        list_id = find(getfield(data, fields[field]), list_atom)
+        list_id = lmp_str.find(getfield(data, fields[field]), list_atom)
 
         # Changing # of specifc field
         num_ids = length(list_id)
