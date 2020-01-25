@@ -5,29 +5,29 @@ import Dates
 ## Global Variables
 
 # Physical Constants
-k_b = 1.38065e-23;
-n_a = 6.02214e23;
-density_wat = 1e3;      # Unit: kg/m^3
+Const_k_b = 1.38065e-23;
+Const_n_a = 6.02214e23;
+Const_density_wat = 1e3;      # Unit: kg/m^3
 # Energy Converters
-kcal2j = 4.184e3;
-kcalm2j = kcal2j/n_a;
-kcalm2t = kcalm2j/k_b;
+Const_kcal2j = 4.184e3;
+Const_kcalm2j = Const_kcal2j/Const_n_a;
+Const_kcalm2t = Const_kcalm2j/Const_k_b;
 # Mass Converters
-g2kg = 1e-3;
-kg2g = 1e3;
-gm2g = 1/n_a;
-gm2kg = g2kg/n_a;
+Const_g2kg = 1e-3;
+Const_kg2g = 1e3;
+Const_gm2g = 1/Const_n_a;
+Const_gm2kg = Const_g2kg/Const_n_a;
 # Length Converters
-an2m = 1e-10;
-an2nm = 1e-1;
-nm2m = 1e-9;
-cm2an = 1e8;
-dm2m = 1e-1;
-m2dm = 1/dm2m;
+Const_an2m = 1e-10;
+Const_an2nm = 1e-1;
+Const_nm2m = 1e-9;
+Const_cm2an = 1e8;
+Const_dm2m = 1e-1;
+Const_m2dm = 1/Const_dm2m;
 # Time Converters
-fs2s = 1e-15;
-ps2s = 1e-12;
-ns2s = 1e-9;
+Const_fs2s = 1e-15;
+Const_ps2s = 1e-12;
+Const_ns2s = 1e-9;
 
 ## Definations of Types
 
@@ -1159,7 +1159,7 @@ function addions(data::Data, ion_type::String, conc::Float64)
     ion_mode = [Atom(i, i, unit_type[i], unit_charge[i], center) for i = 1:num_unit_ions]
 
     # Calculate # of solute molecules
-    ratio_sol2wat = conc / (density_wat * kg2g / m2dm^3 / sum(data.data_str.atom_mass))
+    ratio_sol2wat = conc / (density_wat * Const_kg2g / Const_m2dm^3 / sum(data.data_str.atom_mass))
 
     num_wat = data.data_basic.num_atoms
     num_sol = convert(Int64, round(num_wat * ratio_sol2wat))
