@@ -236,7 +236,7 @@ to build a Tip3p moedel.
 """
 function Tip3p()
     # Parameters of water
-    density = 1 / cm2an^3;      # Unit: g/A^3
+    density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.25;
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
@@ -286,7 +286,7 @@ to build a SPC moedel.
 """
 function SPC()
     # Parameters of water
-    density = 1 / cm2an^3;      # Unit: g/A^3
+    density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 109.47;
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
@@ -336,7 +336,7 @@ to build a SPCE moedel.
 """
 function SPCE()
     # Parameters of water
-    density = 1 / cm2an^3;      # Unit: g/A^3
+    density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 109.47;
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
