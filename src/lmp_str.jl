@@ -1159,7 +1159,7 @@ function addions(data::Data, ion_type::String, conc::Float64)
     ion_mode = [Atom(i, i, unit_type[i], unit_charge[i], center) for i = 1:num_unit_ions]
 
     # Calculate # of solute molecules
-    ratio_sol2wat = conc / (density_wat * Const_kg2g / Const_m2dm^3 / sum(data.data_str.atom_mass))
+    ratio_sol2wat = conc / (Const_density_wat * Const_kg2g / Const_m2dm^3 / sum(data.data_str.atom_mass))
 
     num_wat = data.data_basic.num_atoms
     num_sol = convert(Int64, round(num_wat * ratio_sol2wat))
