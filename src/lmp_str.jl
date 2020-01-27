@@ -1231,10 +1231,10 @@ Do this to addions into water model
 
 # Supported List
 - Type          Mass(g/mol)
-- `Na^+`        22.99
-- `K^+`         39.09
-- `Al^{3+}`     26.98
-- `Cl^-`        35.453
+- ``Na⁺`      22.99
+- ``K⁺``         39.09
+- ``Al³⁺``     26.98
+- ``Cl⁻``        35.453
 Notcice: `ion_type` is case sensetive and space is needed for recogonition
 
 # Example
