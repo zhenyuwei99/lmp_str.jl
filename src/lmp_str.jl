@@ -679,6 +679,14 @@ mutable struct Data_Basic <:Data
     box_tilt::Vector{Float64}
 end
 
+function Data_Basic(data::Data_Basic)
+    box_size = Matrix{Float64}(undef, (3, 2))
+    box_tilt = Vector{Float64}(undef, 3)
+    box_size[:, :] = data.box_size[:, :]
+    box_tilt[:] = data.box_tilt[:]
+    Data_Basic(data.num_atoms, data.num_bonds, data.num_angles, data.num_dihedrals, data.num_impropers, data.num_atom_types, data.num_bond_types, data.num_angle_types, data.num_dihedral_types, data.num_improper_types, box_size, box_tilt)
+end
+
 """
     mutable struct Data_Unit <:Data
 
@@ -690,6 +698,18 @@ mutable struct Data_Unit <: Data
     vec_atom::Union{Vector{Atom}, Int64}
     vec_bond::Union{Vector{Bond}, Int64}
     vec_angle::Union{Vector{Angle}, Int64}
+end
+
+mutable struct Data_Sum <: Data
+    data_basic::Data_Basic
+    vec_str::Vector{Str}
+    vec_atom::Union{Vector{Atom}, Int64}
+    vec_bond::Union{Vector{Bond}, Int64}
+    vec_angle::Union{Vector{Angle}, Int64}
+end
+
+function Data_Sum(data::Data_Unit)
+    Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], data.vec_bond[:], data.vec_angle[:])
 end
 
 ## Definations of Functions
@@ -736,6 +756,15 @@ function max(vec::Vector{Atom}, para)
     max
 end
 
+function max(array_01::AbstractArray, array_02::AbstractArray)
+    if typeof(array_01).parameters[2] == 1
+        num_cols = 1
+        num_rows = length(array_01)
+    else
+        num_rows, num_cols = size(array_01)
+    end
+    [array_01[row, col]>array_02[row, col] ? array_01[row, col] : array_02[row, col] for row = 1:num_rows, col = 1:num_cols]
+end
 """
     min(vec::Vector{Atom}, para)
 
@@ -775,6 +804,36 @@ function min(vec::Vector{Atom}, para)
         end
     end
     min
+end
+
+function min(array_01::AbstractArray, array_02::AbstractArray)
+    if typeof(array_01).parameters[2] == 1
+        num_cols = 1
+        num_rows = length(array_01)
+    else
+        num_rows, num_cols = size(array_01)
+    end
+    [array_01[row, col]<array_02[row, col] ? array_01[row, col] : array_02[row, col] for row = 1:num_rows, col = 1:num_cols]
+end
+
+function add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+    fields = fieldnames(typeof(vec_unit[1]))
+    para = Meta.parse(para)
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    num_units = length(vec_unit)
+
+    for unit = 1 : num_units
+        data = getfield(vec_unit[unit], para)
+        len = length(data)
+        if len == 1
+            data += tilt
+        else
+            data .+= tilt
+        end
+        setfield!(vec_unit[unit], para, data)
+    end
 end
 
 function diag(vec::AbstractArray)
@@ -1420,6 +1479,70 @@ function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Union{Uni
     end
 end
 
+# cat_data
+function cat_data(vec_data::Data...)
+    data = Data_Sum(vec_data[1])
+    num_data = length(vec_data)
+    if num_data == 1
+        return
+    else
+        for id = 2 : num_data
+            # Str Info
+            str_now = [typeof(data.vec_str[n]) for n = 1:id-1]
+            if !in(typeof(vec_data[id].data_str), str_now)
+                flag_str = 1  # Differnet Structure
+                data.vec_str = vcat(data.vec_str, vec_data[id].data_str)
+                add(vec_data[id].vec_atom, max(data.vec_atom, "typ"), "typ")
+            else
+                flag_str = 0 # Same Structure
+            end
+
+            # Basic Info
+            data.data_basic.num_atoms += vec_data[id].data_basic.num_atoms
+            data.data_basic.num_bonds += vec_data[id].data_basic.num_bonds
+            data.data_basic.num_angles += vec_data[id].data_basic.num_angles
+            if flag_str == 1
+                data.data_basic.num_atom_types += vec_data[id].data_basic.num_atom_types
+                data.data_basic.num_bond_types += vec_data[id].data_basic.num_bond_types
+                data.data_basic.num_angle_types += vec_data[id].data_basic.num_angle_types
+            end
+            data.data_basic.box_size[:, 2] = max(data.data_basic.box_size[:, 2], vec_data[id].data_basic.box_size[:, 2])
+            data.data_basic.box_size[:, 1] = min(data.data_basic.box_size[:, 1], vec_data[id].data_basic.box_size[:, 1])
+            data.data_basic.box_tilt = conv(max(data.data_basic.box_tilt, vec_data[id].data_basic.box_tilt), 1)
+
+            atom_tilt = max(data.vec_atom, "atom")
+            # Atom Info
+            add(vec_data[id].vec_atom, atom_tilt, "atom")
+            data.vec_atom = vcat(data.vec_atom, vec_data[id].vec_atom)
+
+            # Bond Info
+            if typeof(data.vec_bond) == Int64
+                if typeof(vec_data[id].vec_bond) != Int64
+                    data.vec_bond = vec_data[id].vec_bond
+                end
+            else
+                if typeof(vec_data[id].vec_bond) != Int64
+                    add(vec_data[id].vec_bond, atom_tilt, "atom")
+                    data.vec_bond = vcat(data.vec_bond, vec_data[id].vec_bond)
+                end
+            end
+
+            # Angle Info
+            if typeof(data.vec_angle) == Int64
+                if typeof(vec_data[id].vec_angle) != Int64
+                    data.vec_angle = vec_data[id].vec_angle
+                end
+            else
+                if typeof(vec_data[id].vec_angle) != Int64
+                    add(vec_data[id].vec_angle, atom_tilt, "atom")
+                    data.vec_angle = vcat(data.vec_angle, vec_data[id].vec_angle)
+                end
+            end
+        end
+    end
+    data
+end
+
 # write_data and write_info
 """
     write_data(data::Data, name_file::AbstractString)
@@ -1475,16 +1598,18 @@ function write_info(info::Data_Basic, name_file::AbstractString)
     close(io)
 end
 
-function write_info(info::Str, name_file::AbstractString)
+function write_info(info::Union{Str, Vector{Str}}, name_file::AbstractString)
     # Reading Input
-    fields = fieldnames(typeof(info))
+    fields = fieldnames(typeof(info[1]))
     io = open(name_file, "a")
 
     # Judgement and Output
     if in(:atom_mass, fields)
         write(io, "\n\nMasses\n\n")
-        for atom = 1 : info.num_atom_types
-            write(io, join([string(info.atom_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
+        for str = 1 : length(info)
+            for atom = 1 : info[str].num_atom_types
+                write(io, join([string(info[str].atom_mass[atom]), "\t\t# ", info[str].atom_name[atom], "\n"]))
+            end
         end
     end
     write(io, "\n\n")
