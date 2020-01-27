@@ -700,6 +700,7 @@ mutable struct Data_Unit <: Data
     vec_angle::Union{Vector{Angle}, Int64}
 end
 
+
 mutable struct Data_Sum <: Data
     data_basic::Data_Basic
     vec_str::Vector{Str}
@@ -1598,7 +1599,24 @@ function write_info(info::Data_Basic, name_file::AbstractString)
     close(io)
 end
 
-function write_info(info::Union{Str, Vector{Str}}, name_file::AbstractString)
+function write_info(info::Str, name_file::AbstractString)
+    # Reading Input
+    fields = fieldnames(typeof(info))
+    io = open(name_file, "a")
+
+    # Judgement and Output
+    if in(:atom_mass, fields)
+        write(io, "\n\nMasses\n\n")
+        for atom = 1 : info.num_atom_types
+            write(io, join([string(info.atom_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
+        end
+    end
+    write(io, "\n\n")
+
+    close(io)
+end
+
+function write_info(info::Vector{Str}, name_file::AbstractString)
     # Reading Input
     fields = fieldnames(typeof(info[1]))
     io = open(name_file, "a")
