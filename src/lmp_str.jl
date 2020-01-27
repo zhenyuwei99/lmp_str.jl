@@ -76,8 +76,7 @@ end
 """
     SC(;atom_type=1, atom_charge=0, lattice_const=1)
 
-Do this will return a Family_Basic type which contains all information needed
-to build a SC structure.
+Do this will return a Family_Basic type which contains all information needed to build a SC structure.
 
 # Example
 ```julia-replr
@@ -98,8 +97,7 @@ end
 """
     BCC(;atom_type=1, atom_charge=0, lattice_const=1)
 
-Do this will return a Family_Basic type which contains all information needed
-to build a BCC structure.
+Do this will return a Family_Basic type which contains all information needed to build a BCC structure.
 
 # Arguments
 - `atom_type`: type of each atoms, could be a interger or a vector represent type of all atoms or each atoms repectively.
@@ -130,8 +128,7 @@ end
 """
     FCC(;atom_type=1, atom_charge=0, lattice_const=1)
 
-Do this will return a Family_Basic type which contains all information needed
-to build a FCC structure.
+Do this will return a Family_Basic type which contains all information needed to build a FCC structure.
 
 # Arguments
 - `atom_type`: type of each atoms, could be a interger or a vector represent type of all atoms or each atoms repectively.
@@ -164,8 +161,7 @@ end
 """
     DC(;atom_type=1, atom_charge=0, lattice_const=1)
 
-Do this will return a Family_Basic type which contains all information needed
-to build a DC structure.
+Do this will return a Family_Basic type which contains all information needed to build a DC structure.
 
 # Arguments
 - `atom_type`: type of each atoms, could be a interger or a vector represent type of all atoms or each atoms repectively.
@@ -232,8 +228,7 @@ end
 """
     Tip3p()
 
-Do this will generate a Famliy_Wat type which contains all information needed
-to build a Tip3p moedel.
+Do this will generate a Famliy_Wat type which contains all information needed to build a Tip3p moedel.
 """
 function Tip3p()
     # Parameters of water
@@ -282,8 +277,7 @@ end
 """
     SPC()
 
-Do this will generate a Famliy_Wat type which contains all information needed
-to build a SPC moedel.
+Do this will generate a Famliy_Wat type which contains all information needed to build a SPC moedel.
 """
 function SPC()
     # Parameters of water
@@ -332,8 +326,7 @@ end
 """
     SPCE()
 
-Do this will generate a Famliy_Wat type which contains all information needed
-to build a SPCE moedel.
+Do this will generate a Famliy_Wat type which contains all information needed to build a SPCE moedel.
 """
 function SPCE()
     # Parameters of water
@@ -406,8 +399,7 @@ end
 """
     Si()
 
-Do this will generate a Famliy_Si type which contains all information needed
-to build a Si moedel.
+Do this will generate a Famliy_Si type which contains all information needed to build a Si moedel.
 """
 function Si()
     atom_vec = [
@@ -437,8 +429,7 @@ end
 """
     Si3N4()
 
-Do this will generate a Famliy_Si type which contains all information needed
-to build a Si3N4 moedel.
+Do this will generate a Famliy_Si type which contains all information needed to build a Si3N4 moedel.
 """
 function Si3N4()
     atom_vec = [
@@ -474,8 +465,7 @@ end
 """
     Si3N4_Ort()
 
-Do this will generate a Famliy_Si type which contains all information needed
-to build a Si3N4 moedel with orthogonal unit cell.
+Do this will generate a Famliy_Si type which contains all information needed to build a Si3N4 moedel with orthogonal unit cell.
 """
 function Si3N4_Ort()
     atom_vec = [
@@ -525,8 +515,7 @@ end
 """
     SiO2()
 
-Do this will generate a Famliy_Si type which contains all information needed
-to build a SiO2 moedel.
+Do this will generate a Famliy_Si type which contains all information needed to build a SiO2 moedel.
 """
 function SiO2()
     atom_vec = [
@@ -947,9 +936,8 @@ end
 """
     dist(atom::Atom, org::Array, dim)
 
-Do this will return the 2-d distance between coord of `atom` and coord of `org`
-in plane vertical to axies `dim`.
-`dim = 1, 2, 3` represents axies x, y, z respectively
+Do this will return the 2-d distance between coord of `atom` and coord of `org` in plane vertical to axies `dim`.
+`dim = 1, 2, 3` represents axies x, y, z respectively.
 
 # Example
 ```julia-repl
@@ -987,9 +975,8 @@ end
 """
     dist(pos::Array, org::Array, dim)
 
-Do this will return the 2-d distance between coord of `pos` and coord of `org`
-in plane vertical to axies `dim`.
-`dim = 1, 2, 3` represents axies x, y, z respectively
+Do this will return the 2-d distance between coord of `pos` and coord of `org` in plane vertical to axies `dim`.
+`dim = 1, 2, 3` represents axies x, y, z respectively.
 
 # Example
 ```julia-repl
@@ -1043,8 +1030,7 @@ end
 """
     genr(data_cell::Data_Cell, str::Str)
 
-Do this will return a variable in `Data_Unit` type, containing all infomation
-needed for model of `str`.
+Do this will return a variable in `Data_Unit` type, containing all infomation needed for model of `str`.
 
 # Example
 ```julia-repl
@@ -1127,8 +1113,7 @@ end
 """
     genr_bond(data_cell::Data_Cell, data::Data)
 
-This will be called by `genr(...)` if `bond_mode` is contained in `str`,
-genrating information of bonds
+This will be called by `genr(...)` if `bond_mode` is contained in `str`, genrating information of bonds
 """
 function genr_bond(data_cell::Data_Cell, data::Data)
     # Reading Input
@@ -1311,8 +1296,7 @@ end
 """
     select(data_cell::Data_Cell; mode::String, para)
 
-Do this will return a list of id of cells in specific region controled by
-variables `mode` and `para`
+Do this will return a list of id of cells in specific region controled by variables `mode` and `para`
 
 # Arguments
 - `data_cell`:
@@ -1362,8 +1346,7 @@ end
 """
     select(data_atom::Data; mode::String, para)
 
-Do this will return a list of id of atoms in specific region controled by
-variables `mode` and `para`
+Do this will return a list of id of atoms in specific region controled by variables `mode` and `para`
 
 # Arguments
 - `data_cell`:
@@ -1453,8 +1436,7 @@ end
 """
     delete(data::Data, list_atom::Array)
 
-Do this will delete all atoms in `list_atom` themselves and other infomation
-related to them  from `data`
+Do this will delete all atoms in `list_atom` themselves and other infomation related to them  from `data`
 
 # Example
 ```julia-repl
