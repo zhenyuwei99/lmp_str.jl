@@ -215,9 +215,9 @@ mutable struct Family_Wat <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
+    atom_name
     atom_charge
     atom_mass
-    atom_name
     num_atoms
     num_atom_types
     bond_mode
@@ -226,6 +226,7 @@ mutable struct Family_Wat <: Str
     angle_mode
     num_angles
     num_angle_types
+    vec_type_id
 end
 
 """
@@ -275,7 +276,7 @@ function Tip3p()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
@@ -325,7 +326,7 @@ function SPC()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
@@ -375,7 +376,7 @@ function SPCE()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types)
+    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
@@ -394,11 +395,12 @@ mutable struct Family_Si <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
+    atom_name
     atom_charge
     atom_mass
-    atom_name
     num_atoms
     num_atom_types
+    vec_type_id
 end
 
 """
@@ -429,7 +431,7 @@ function Si()
     atom_name = split("Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
@@ -466,7 +468,7 @@ function Si3N4()
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
@@ -517,7 +519,7 @@ function Si3N4_Ort()
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
@@ -552,7 +554,14 @@ function SiO2()
     atom_name = split("O Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_charge, atom_mass, atom_name, num_atoms, num_atom_types)
+    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+end
+
+mutable struct Family_Ion <: Str
+    atom_name
+    atom_charge
+    atom_mass
+    num_atom_types
 end
 
 # Type of Data
@@ -710,7 +719,7 @@ mutable struct Data_Sum <: Data
 end
 
 function Data_Sum(data::Data_Unit)
-    Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], data.vec_bond[:], data.vec_angle[:])
+    Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:])
 end
 
 ## Definations of Functions
@@ -833,6 +842,21 @@ function add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
         else
             data .+= tilt
         end
+        setfield!(vec_unit[unit], para, data)
+    end
+end
+
+function change(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
+    fields = fieldnames(typeof(vec_unit[1]))
+    para = Meta.parse(para)
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    num_units = length(vec_unit)
+
+    for unit = 1 : num_units
+        data = getfield(vec_unit[unit], para)
+        data = goal
         setfield!(vec_unit[unit], para, data)
     end
 end
@@ -1206,6 +1230,7 @@ function addions(data::Data, ion_type::String, conc::Float64)
     len = length(ion)
     ion_id =  [findall(x->x==ion[n], list_ion)[1] for n = 1:len]
     ion_charge = [list_charge[ion_id[n]] for n = 1:len]
+    ion_mass = [list_mass[ion_id[n]] for n = 1:len]
 
     # Genrate ion_mode
     num_unit_ions = lcm(ion_charge[1], ion_charge[2])
@@ -1248,8 +1273,11 @@ function addions(data::Data, ion_type::String, conc::Float64)
     data.data_basic.num_atom_types += 2
     data.vec_atom = vcat(vec_atom, vec_atom_new)
 
+    # Add Str Info
+    data_sum = Data_Sum(data)
+    data_sum.vec_str = vcat(data_sum.vec_str, Family_Ion(ion, ion_charge, ion_mass, len))
     # Output
-    data
+    data_sum
 end
 
 # select and delete
@@ -1439,7 +1467,7 @@ function delete(data::Data, list_atom::Array)
     data
 end
 
-function delete(vec::Union{Vector{T}, Int64}, id::Array) where T <: Union{Unit}
+function delete(vec::Union{Vector{T}, Int64}, id::Array) where T <: Unit
     len = length(vec)
     judge = trues(len)
     for i in id
@@ -1459,7 +1487,7 @@ function delete(mat; id=1, dim=1)
     result
 end
 
-function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Union{Unit}
+function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Unit
     len = length(vec_unit)
     if typeof(vec_unit) == Int64
         return 0
@@ -1488,16 +1516,21 @@ function cat_data(vec_data::Data...)
         return
     else
         for id = 2 : num_data
+            flag_str = 0
             # Str Info
-            str_now = [typeof(data.vec_str[n]) for n = 1:id-1]
+            str_now = [typeof(data.vec_str[n]) for n = 1:length(data.vec_str)]
             if !in(typeof(vec_data[id].data_str), str_now)
                 flag_str = 1  # Differnet Structure
+                typ_tilt = max(data.vec_atom, "typ")
+                vec_data[id].data_str.vec_type_id .+= typ_tilt
                 data.vec_str = vcat(data.vec_str, vec_data[id].data_str)
-                add(vec_data[id].vec_atom, max(data.vec_atom, "typ"), "typ")
+                add(vec_data[id].vec_atom, typ_tilt, "typ")
             else
                 flag_str = 0 # Same Structure
+                typ_tilt = data.vec_str[findall(x->x==typeof(vec_data[id].data_str), str_now)[1]].vec_type_id[1]
+                typ_tilt = typ_tilt - vec_data[id].vec_atom[1].typ
+                add(vec_data[id].vec_atom, typ_tilt, "typ")
             end
-
             # Basic Info
             data.data_basic.num_atoms += vec_data[id].data_basic.num_atoms
             data.data_basic.num_bonds += vec_data[id].data_basic.num_bonds
@@ -1519,6 +1552,7 @@ function cat_data(vec_data::Data...)
             # Bond Info
             if typeof(data.vec_bond) == Int64
                 if typeof(vec_data[id].vec_bond) != Int64
+                    add(vec_data[id].vec_bond, atom_tilt, "atom")
                     data.vec_bond = vec_data[id].vec_bond
                 end
             else
@@ -1531,6 +1565,7 @@ function cat_data(vec_data::Data...)
             # Angle Info
             if typeof(data.vec_angle) == Int64
                 if typeof(vec_data[id].vec_angle) != Int64
+                    add(vec_data[id].vec_angle, atom_tilt, "atom")
                     data.vec_angle = vec_data[id].vec_angle
                 end
             else
