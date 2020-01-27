@@ -1231,7 +1231,7 @@ Do this to addions into water model
 
 # Supported List
 - Type          Mass(g/mol)
-- ``Na⁺`      22.99
+- ``Na⁺``      22.99
 - ``K⁺``         39.09
 - ``Al³⁺``     26.98
 - ``Cl⁻``        35.453
