@@ -826,6 +826,19 @@ function min(array_01::AbstractArray, array_02::AbstractArray)
     [array_01[row, col]<array_02[row, col] ? array_01[row, col] : array_02[row, col] for row = 1:num_rows, col = 1:num_cols]
 end
 
+"""
+    add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+
+Do this will add `tilt` to variable `para` for all types in `vec_unit`
+
+# Example
+```julia-repl
+str = lmp_str.Si3N4()
+cell = lmp_str.genr_cell([10, 10, 10])
+data = genr(cell, str)
+add(data.vec_bond, 3, "typ")
+```
+"""
 function add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
@@ -846,6 +859,19 @@ function add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
     end
 end
 
+"""
+    change(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+
+Do this will change variable `para` of all types in `vec_unit` to `tilt`
+
+# Example
+```julia-repl
+str = lmp_str.Si3N4()
+cell = lmp_str.genr_cell([10, 10, 10])
+data = genr(cell, str)
+change(data.vec_bond, 3, "typ")
+```
+"""
 function change(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
@@ -1509,6 +1535,11 @@ function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Unit
 end
 
 # cat_data
+"""
+    cat_data(vec_data::Data...)
+
+Do this will concatinate all model in `vec_data`, returning a variable in `Data_Sum` type
+"""
 function cat_data(vec_data::Data...)
     data = Data_Sum(vec_data[1])
     num_data = length(vec_data)
