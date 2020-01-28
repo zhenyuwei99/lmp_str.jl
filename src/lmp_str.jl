@@ -551,6 +551,7 @@ mutable struct Family_Ion <: Str
     atom_charge
     atom_mass
     num_atom_types
+    vec_type_id
 end
 
 # Type of Data
@@ -678,10 +679,8 @@ mutable struct Data_Basic <:Data
 end
 
 function Data_Basic(data::Data_Basic)
-    box_size = Matrix{Float64}(undef, (3, 2))
-    box_tilt = Vector{Float64}(undef, 3)
-    box_size[:, :] = data.box_size[:, :]
-    box_tilt[:] = data.box_tilt[:]
+    box_size = [data.box_size[i, j] for i = 1 : 3, j = 1 :2]
+    box_tilt = [data.box_tilt[i] for i = 1 : 3]
     Data_Basic(data.num_atoms, data.num_bonds, data.num_angles, data.num_dihedrals, data.num_impropers, data.num_atom_types, data.num_bond_types, data.num_angle_types, data.num_dihedral_types, data.num_improper_types, box_size, box_tilt)
 end
 
@@ -709,6 +708,10 @@ end
 
 function Data_Sum(data::Data_Unit)
     Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:])
+end
+
+function Data_Sum(data::Data_Sum)
+    Data_Sum(Data_Basic(data.data_basic), [data.vec_str[n] for n = 1:length(data.vec_str)], data.vec_atom[:], typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:])
 end
 
 ## Definations of Functions
@@ -1194,25 +1197,25 @@ data_atom = lmp_str.genr_atom(data_cell, str)
 data_move = lmp_str.move(data_atom, [10 10 10])
 ```
 """
-function move(data::Data, move_vec::Array)
+function move(data::Data, move_vec)
     # Motion of box
+    data_new = Data_Unit(data)
     if typeof(move_vec) == Array{Int64,2}
         move_vec = conv(move_vec, 1)
     end
-    data.data_basic.box_size = broadcast(+, data.data_basic.box_size, move_vec)
-
+    data_new.data_basic.box_size = broadcast(+, data_new.data_basic.box_size, move_vec)
     # Motion of atoms
-    for atom = 1 : data.data_basic.num_atoms
-        data.vec_atom[atom].coord += move_vec
+    for atom = 1 : data_new.data_basic.num_atoms
+        data_new.vec_atom[atom].coord += move_vec
     end
-    data
+    data_new
 end
 
 # addions
 """
     addions(data::Data, ion_type::String, conc::Float64)
 
-Do this to addions into water model
+Do this will return a variable in "Data_Unit" type containing information of ions to make a solution with `conc`.
 
 # Supported List
 - Type          Mass(g/mol)
@@ -1265,30 +1268,31 @@ function addions(data::Data, ion_type::String, conc::Float64)
     vec_atom = data.vec_atom
     vec_atom_new = Vector{Atom}(undef, num_atoms)
     box_vec = data.data_basic.box_size[:,2] - data.data_basic.box_size[:,1]
-    max_mol = max(vec_atom, "mol")
-    max_type = max(vec_atom, "typ")
+    #max_mol = max(vec_atom, "mol")
+    #max_type = max(vec_atom, "typ")
     for sol = 1:num_sol
         for ion = 1:num_unit_ions
             id_now = (sol-1) * num_unit_ions + ion
             atom_now = Atom(ion_mode[ion])
-            atom_now.atom = data.data_basic.num_atoms + id_now
-            atom_now.mol = max_mol + id_now
-            atom_now.typ += max_type
+            atom_now.atom = id_now
+            atom_now.mol = id_now
             atom_now.coord .+= (rand(3).-0.5) .* box_vec
             vec_atom_new[id_now] = atom_now
         end
     end
 
     # Generate new Data
-    data.data_basic.num_atoms +=  num_atoms
-    data.data_basic.num_atom_types += 2
-    data.vec_atom = vcat(vec_atom, vec_atom_new)
+    data_str = Family_Ion(ion, ion_charge, ion_mass, len, [n for n = 1:len])
+    data_basic = Data_Basic(data.data_basic)
+    data_basic.num_atoms = num_atoms
+    data_basic.num_atom_types = len
+    data_basic.num_bonds = 0
+    data_basic.num_bond_types = 0
+    data_basic.num_angles = 0
+    data_basic.num_angle_types = 0
 
-    # Add Str Info
-    data_sum = Data_Sum(data)
-    data_sum.vec_str = vcat(data_sum.vec_str, Family_Ion(ion, ion_charge, ion_mass, len))
     # Output
-    data_sum
+    data_ion = Data_Unit(data_basic, data_str, vec_atom_new, 0, 0)
 end
 
 # select and delete
@@ -1529,6 +1533,7 @@ function cat_data(vec_data::Data...)
         return
     else
         for id = 2 : num_data
+
             flag_str = 0
             # Str Info
             str_now = [typeof(data.vec_str[n]) for n = 1:length(data.vec_str)]
@@ -1544,6 +1549,7 @@ function cat_data(vec_data::Data...)
                 typ_tilt = typ_tilt - vec_data[id].vec_atom[1].typ
                 add(vec_data[id].vec_atom, typ_tilt, "typ")
             end
+
             # Basic Info
             data.data_basic.num_atoms += vec_data[id].data_basic.num_atoms
             data.data_basic.num_bonds += vec_data[id].data_basic.num_bonds
