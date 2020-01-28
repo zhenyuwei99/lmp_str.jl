@@ -697,6 +697,20 @@ mutable struct Data_Unit <: Data
     vec_angle::Union{Vector{Angle}, Int64}
 end
 
+function Data_Unit(data::Data_Unit)
+    vec_atom = [Atom(data.vec_atom[n]) for n = 1 : length(data.vec_atom)]
+    if typeof(data.vec_bond) != Int64
+        vec_bond = [Bond(data.vec_bond[n]) for n = 1 : length(data.vec_bond)]
+    else
+        vec_bond = 0
+    end
+    if typeof(data.vec_angle) != Int64
+        vec_angle = [Angle(data.vec_angle[n]) for n = 1 : length(data.vec_angle)]
+    else
+        vec_angle = 0
+    end
+    Data_Unit(Data_Basic(data.data_basic), data.data_str, vec_atom[:], vec_bond, vec_angle)
+end
 
 mutable struct Data_Sum <: Data
     data_basic::Data_Basic
