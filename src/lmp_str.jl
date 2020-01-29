@@ -454,8 +454,8 @@ function Si3N4()
         0      0         2.902
     ]
     atom_type = [2 1 2 2 1 1 1 1 2 2 1 2 1 1]
-    atom_charge = 1.34925 .* atom_type .- 1.9275 # N: -0.57825. Si: 0.7710. Unit: e
-    atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
+    atom_charge = 0 .* atom_type
+    atom_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -504,8 +504,8 @@ function Si3N4_Ort()
     0       0           2.902
     ]
     atom_type = [2 1 2 2 1 2 1 1 2 1 1 2 1 1 2 1 2 2 1 2 1 1 2 1 1 2 1 1]
-    atom_charge = 1.34925 .* atom_type .- 1.9275 # N: -0.57825. Si: 0.7710. Unit: e
-    atom_mass = [14.0067 28.085501] # N: 14.0067. Si: 28.085501. Unit: g/mol
+    atom_charge = 0 .* atom_type
+    atom_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -538,8 +538,8 @@ function SiO2()
         0       0           6.9480
     ]
     atom_type = [2 1 2 1 2 1 2 1 1 1 1 1]
-    atom_charge = 1.5 .* atom_type .- 2 # N: -0.57825. Si: 0.7710. Unit: e
-    atom_mass = [15.999400 28.085501] # O: 15.999400. Si: 28.085501. Unit: g/mol
+    atom_charge = 0 .* atom_type
+    atom_mass = [15.999400 28.0855] # O: 15.999400. Si: 28.085501. Unit: g/mol
     atom_name = split("O Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
