@@ -1676,7 +1676,7 @@ function write_info(info::Str, name_file::AbstractString)
     if in(:atom_mass, fields)
         write(io, "\n\nMasses\n\n")
         for atom = 1 : info.num_atom_types
-            write(io, join([string(info.atom_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
+            write(io, join([string(atom), "\t", string(info.atom_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
         end
     end
     write(io, "\n\n")
@@ -1692,9 +1692,11 @@ function write_info(info::Vector{Str}, name_file::AbstractString)
     # Judgement and Output
     if in(:atom_mass, fields)
         write(io, "\n\nMasses\n\n")
+        id = 1
         for str = 1 : length(info)
             for atom = 1 : info[str].num_atom_types
-                write(io, join([string(info[str].atom_mass[atom]), "\t\t# ", info[str].atom_name[atom], "\n"]))
+                write(io, join([string(id), "\t", string(info[str].atom_mass[atom]), "\t\t# ", info[str].atom_name[atom], "\n"]))
+                id += 1
             end
         end
     end
