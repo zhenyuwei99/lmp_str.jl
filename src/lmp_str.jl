@@ -893,6 +893,26 @@ function change(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     end
 end
 
+function change(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
+    fields = fieldnames(typeof(vec_unit[1]))
+    para = Meta.parse(para)
+    dims = size(goal)[2]
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    num_units = length(vec_unit)
+
+    for unit = 1 : num_units
+        data = getfield(vec_unit[unit], para)
+        if dims == 1
+            data = goal[unit]
+        else
+            data = goal[unit, :]
+        end
+        setfield!(vec_unit[unit], para, data)
+    end
+end
+
 function diag(vec::AbstractArray)
     len = length(vec)
     result = zeros(len, len)
