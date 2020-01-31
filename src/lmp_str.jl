@@ -1416,13 +1416,6 @@ function select(data_atom::Data; mode::String, para)
     atom_list[2:end]
 end
 
-function sort(vec::Vector{T}) where T<:Unit
-    for unit in 1 : length(vec)
-        vec[unit].id = unit
-    end
-    vec
-end
-
 """
     delete(data_cell::Data_Cell, list_cell::Array)
 
@@ -1489,8 +1482,7 @@ function delete(data::Data, list_atom::Array)
             setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id)) # delete(vec::Vector{T} , id::Array) where T<:Unit
         end
     end
-
-    data
+    sort_data(data, list_atom)
 end
 
 function delete(vec::Union{Vector{T}, Int64}, id::Array) where T <: Unit
@@ -1532,6 +1524,42 @@ function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Unit
         end
         list[2:end]
     end
+end
+
+# sort_data
+"""
+    sort_data(data::Data_Unit, list_atom::Array)
+
+Do this will rearrange the atom id to consecutive one after calling `delete`
+"""
+function sort_data(data::Data_Unit, list_atom::Array)
+    fields = fieldnames(typeof(data))
+    name_fields = [string(fields[n]) for n = 1:length(fields)]
+    num_fields = length(fields)
+    list_fields = findall(x->occursin("vec", x), name_fields)
+    list_atom .-= 1    # Find atom next to the deleted one
+    num_atoms = length(list_atom)
+
+    for field in list_fields
+        vec_now = getfield(data, fields[field])
+        if typeof(vec_now) != Int64
+            len = length(vec_now)
+            dims = length(vec_now[1].atom)
+            vec_id = [vec_now[n].atom[i] for n = 1 : len, i = 1 : dims]
+            atom_now = 1
+            for id = 1 : len-1
+                for dim = 1 : dims
+                    diff = vec_id[id+1, dim] - vec_id[id, dim]
+                    if diff >= 1
+                        vec_id[1:id, dim] .+= diff - 1
+                    end
+                end
+            end
+            vec_id .-= num_atoms
+            change(vec_now, vec_id, "atom")
+        end
+    end
+    data
 end
 
 # cat_data
