@@ -20,7 +20,7 @@ include("./Family/Family_Wat.jl")
 export Family_Wat, Tip3p, SPC, SPCE
 
 include("./Family/Family_Si.jl")
-export Family_Si, Si, SiN4, SiN4_Ort, SiO2
+export Family_Si, Si, Si3N4, Si3N4_Ort, SiO2
 
 include("./Family/Family_C.jl")
 export Family_C, Graphene, Graphene_Ort
