@@ -6,7 +6,7 @@ Do this will return a variable in `Data_Cell` type
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([1 2 3])
+data_cell = genr_cell([1 2 3])
 ```
 """
 function genr_cell(cell_vec)
@@ -38,9 +38,9 @@ Do this will return a variable in `Data_Unit` type, containing all infomation ne
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([5, 5, 5])
-str = lmp_str.Tip3p()
-data = lmp_str.genr(data_cell, str)
+data_cell = genr_cell([5, 5, 5])
+str = Tip3p()
+data = genr(data_cell, str)
 ```
 """
 function genr(data_cell::Data_Cell, str::Str)

@@ -7,7 +7,7 @@ Do this will return the maximum data of `para` in `vec_atom`.
 
 # Example
 ```julia-repl
-max_data = lmp_str.max(vec_atom, "coord")
+max_data = max(vec_atom, "coord")
 ```
 """
 function max(vec::Vector{Atom}, para)
@@ -57,7 +57,7 @@ Do this will return the minimum data of `para` in `vec_atom`.
 
 # Example
 ```julia-repl
-in_data = lmp_str.min(vec_atom, "coord")
+in_data = min(vec_atom, "coord")
 ```
 """
 function min(vec::Vector{Atom}, para)
@@ -108,8 +108,8 @@ Do this will add `tilt` to variable `para` for all types in `vec_unit`
 
 # Example
 ```julia-repl
-str = lmp_str.Si3N4()
-cell = lmp_str.genr_cell([10, 10, 10])
+str = Si3N4()
+cell = genr_cell([10, 10, 10])
 data = genr(cell, str)
 add(data.vec_bond, 3, "typ")
 ```
@@ -141,8 +141,8 @@ Do this will change variable `para` of all types in `vec_unit` to `tilt`
 
 # Example
 ```julia-repl
-str = lmp_str.Si3N4()
-cell = lmp_str.genr_cell([10, 10, 10])
+str = Si3N4()
+cell = genr_cell([10, 10, 10])
 data = genr(cell, str)
 change(data.vec_bond, 3, "typ")
 ```
@@ -228,7 +228,7 @@ Do this will return the distance between coord of `atom` and coord of `org`
 
 # Example
 ```julia-repl
-r = lmp_str.dist(atom, [0 0 0])
+r = dist(atom, [0 0 0])
 ```
 """
 function dist(atom::Atom, org::Array)
@@ -247,7 +247,7 @@ Do this will return the 2-d distance between coord of `atom` and coord of `org` 
 
 # Example
 ```julia-repl
-r = lmp_str.dist(atom, [0 0 0], 1)
+r = dist(atom, [0 0 0], 1)
 ```
 """
 function dist(atom::Atom, org::Array, dim)
@@ -267,7 +267,7 @@ Do this will return the distance between coord of `pos` and coord of `org`
 
 # Example
 ```julia-repl
-r = lmp_str.dist([1 2 3], [0 0 0], 1)
+r = dist([1 2 3], [0 0 0], 1)
 ```
 """
 function dist(pos::Array, org::Array)
@@ -286,7 +286,7 @@ Do this will return the 2-d distance between coord of `pos` and coord of `org` i
 
 # Example
 ```julia-repl
-r = lmp_str.dist([1 2 3], [0 0 0], 1)
+r = dist([1 2 3], [0 0 0], 1)
 ```
 """
 function dist(pos::Array, org::Array, dim)

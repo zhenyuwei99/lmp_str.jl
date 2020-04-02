@@ -6,9 +6,9 @@ Do this will write all information in `data` to file `name_file`
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([10 10 3])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
+data_cell = genr_cell([10 10 3])
+str = Si3N4()
+data_atom = genr_atom(data_cell, str)
 write(data_atom, "test.data")
 ```
 """

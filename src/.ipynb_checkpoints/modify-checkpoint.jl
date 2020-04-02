@@ -6,10 +6,10 @@ Do this will move the model uniformly respect to `move_vec` in unit of Angstrom
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([1 1 1])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-data_move = lmp_str.move(data_atom, [10 10 10])
+data_cell = genr_cell([1 1 1])
+str = Si3N4()
+data_atom = genr_atom(data_cell, str)
+data_move = move(data_atom, [10 10 10])
 ```
 """
 function move(data::Data, move_vec)
@@ -67,8 +67,8 @@ Do this will return a list of id of cells in specific region controled by variab
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([10 10 2])
-data_select = lmp_str.select(data_cell, mode="cylinder", para=[3, 3])
+data_cell = genr_cell([10 10 2])
+data_select = select(data_cell, mode="cylinder", para=[3, 3])
 ```
 """
 function select(data_cell::Data_Cell; mode::String, para)
@@ -117,10 +117,10 @@ Do this will return a list of id of atoms in specific region controled by variab
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([10 10 2])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-data_select = lmp_str.select(data_atom, mode="cylinder", para=[10, 3])
+data_cell = genr_cell([10 10 2])
+str = Si3N4()
+data_atom = genr_atom(data_cell, str)
+data_select = select(data_atom, mode="cylinder", para=[10, 3])
 ```
 """
 function select(data_atom::Data; mode::String, para)
@@ -162,9 +162,9 @@ Do this will delete all cells in `list_cell` from `data_cell`
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([10 10 2])
-data_select = lmp_str.select(data_cell, mode="cylinder", para=[3, 3])
-data_new = lmp_str.delete(data_cell, data_select)
+data_cell = genr_cell([10 10 2])
+data_select = select(data_cell, mode="cylinder", para=[3, 3])
+data_new = delete(data_cell, data_select)
 ```
 """
 function delete(data_cell::Data_Cell, list_cell)
@@ -191,10 +191,10 @@ Do this will delete all atoms in `list_atom` themselves and other infomation rel
 # Example
 ```julia-repl
 data_cell = lmp_str.genr_cell([10 10 2])
-str = lmp_str.Si3N4()
-data_atom = lmp_str.genr_atom(data_cell, str)
-data_select = lmp_str.select(data_atom, mode="cylinder", para=[3, 3])
-data_new = lmp_str.delete(data_atom, data_select)
+str = Si3N4()
+data_atom = genr_atom(data_cell, str)
+data_select = select(data_atom, mode="cylinder", para=[3, 3])
+data_new = delete(data_atom, data_select)
 ```
 """
 function delete(data::Data, list_atom::Array)
