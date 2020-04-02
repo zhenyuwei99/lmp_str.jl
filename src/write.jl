@@ -121,22 +121,23 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
     io = open(name_file, "a")
     fields = fieldnames(typeof(info[1]))
     num_fields = length(fields)
-
+    
     # Writing Output
     para = string(typeof(info[1]))
-    write(io, join([para[findall(x->in('.', x), para)[1]+1 : end], "s\n\n"])) # Get "xxx" from "lmp_str.xxx"
-
-    for bond in info
+    write(io, join([para, "s\n\n"]))
+    #para[findall(x->in('.', x), para)+1 : end]
+    for item in info
         for para in 1 : num_fields - 1
-            write(io, join([string(getfield(bond, fields[para])), " "]))
+            write(io, join([string(getfield(item, fields[para])), " "]))
         end
-        atom = getfield(bond, fields[end])
+        atom = getfield(item, fields[end])
         for para in atom
             write(io, join([string(para), " "]))
         end
         write(io, "\n")
     end
     write(io, "\n\n")
-
+    
     close(io)
 end
+
