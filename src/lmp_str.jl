@@ -28,11 +28,13 @@ export Family_C, Graphene, Graphene_Ort
 include("./Family/Family_Ion.jl")
 export Family_Ion
 
+include("Data.jl")
+export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
+
 include("useful_funcs.jl")
 export max, min, add, change, diag, conv, dist
 
-include("Data.jl")
-export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
+
 
 include("genr.jl")
 export genr, genr_cell, genr_atom, genr_bond, genr_angle
