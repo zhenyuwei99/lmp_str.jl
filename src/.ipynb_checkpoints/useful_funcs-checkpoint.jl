@@ -114,7 +114,7 @@ data = genr(cell, str)
 add(data.vec_bond, 3, "typ")
 ```
 """
-function add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -147,7 +147,7 @@ data = genr(cell, str)
 change(data.vec_bond, 3, "typ")
 ```
 """
-function change(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
+function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -162,7 +162,7 @@ function change(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     end
 end
 
-function change(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
+function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     dims = size(goal)[2]
