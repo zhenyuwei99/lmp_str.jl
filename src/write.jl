@@ -141,3 +141,7 @@ function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union
     close(io)
 end
 
+function write_info(info::Int64, name_file::AbstractString)
+    # do nothing for vec_bond or vec_angle = 0
+end
+
