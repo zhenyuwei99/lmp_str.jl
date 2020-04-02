@@ -45,7 +45,7 @@ include("addions.jl")
 export addions
 
 include("combine.jl")
-export cat_data, sort_data
+export cat_data, sort_data!
 
 include("write.jl")
 export write_data, write_info
