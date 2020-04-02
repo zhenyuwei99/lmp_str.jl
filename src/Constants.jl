@@ -12,10 +12,10 @@ Const_kg2g = 1e3;
 Const_gm2g = 1/Const_n_a;
 Const_gm2kg = Const_g2kg/Const_n_a;
 # Length Converters
-Const_a2m = 1e-10;
-Const_a2nm = 1e-1;
+Const_an2m = 1e-10;
+Const_an2nm = 1e-1;
 Const_nm2m = 1e-9;
-Const_cm2a = 1e8;
+Const_cm2an = 1e8;
 Const_dm2m = 1e-1;
 Const_m2dm = 1/Const_dm2m;
 # Time Converters
