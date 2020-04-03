@@ -106,7 +106,7 @@ function sort_data!(data::Data_Unit, list_atom::Array)
                 end
             end
             vec_id .-= num_atoms
-            change(vec_now, vec_id, "atom")
+            change!(vec_now, vec_id, "atom")
         end
     end
     data
