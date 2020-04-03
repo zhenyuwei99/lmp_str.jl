@@ -20,12 +20,12 @@ function cat_data(vec_data::Data...)
                 typ_tilt = max(data.vec_atom, "typ")
                 vec_data[id].data_str.vec_type_id .+= typ_tilt
                 data.vec_str = vcat(data.vec_str, vec_data[id].data_str)
-                add(vec_data[id].vec_atom, typ_tilt, "typ")
+                add!(vec_data[id].vec_atom, typ_tilt, "typ")
             else
                 flag_str = 0 # Same Structure
                 typ_tilt = data.vec_str[findall(x->x==typeof(vec_data[id].data_str), str_now)[1]].vec_type_id[1]
                 typ_tilt = typ_tilt - vec_data[id].vec_atom[1].typ
-                add(vec_data[id].vec_atom, typ_tilt, "typ")
+                add!(vec_data[id].vec_atom, typ_tilt, "typ")
             end
 
             # Basic Info
@@ -43,18 +43,18 @@ function cat_data(vec_data::Data...)
 
             atom_tilt = max(data.vec_atom, "atom")
             # Atom Info
-            add(vec_data[id].vec_atom, atom_tilt, "atom")
+            add!(vec_data[id].vec_atom, atom_tilt, "atom")
             data.vec_atom = vcat(data.vec_atom, vec_data[id].vec_atom)
 
             # Bond Info
             if typeof(data.vec_bond) == Int64
                 if typeof(vec_data[id].vec_bond) != Int64
-                    add(vec_data[id].vec_bond, atom_tilt, "atom")
+                    add!(vec_data[id].vec_bond, atom_tilt, "atom")
                     data.vec_bond = vec_data[id].vec_bond
                 end
             else
                 if typeof(vec_data[id].vec_bond) != Int64
-                    add(vec_data[id].vec_bond, atom_tilt, "atom")
+                    add!(vec_data[id].vec_bond, atom_tilt, "atom")
                     data.vec_bond = vcat(data.vec_bond, vec_data[id].vec_bond)
                 end
             end
@@ -62,12 +62,12 @@ function cat_data(vec_data::Data...)
             # Angle Info
             if typeof(data.vec_angle) == Int64
                 if typeof(vec_data[id].vec_angle) != Int64
-                    add(vec_data[id].vec_angle, atom_tilt, "atom")
+                    add!(vec_data[id].vec_angle, atom_tilt, "atom")
                     data.vec_angle = vec_data[id].vec_angle
                 end
             else
                 if typeof(vec_data[id].vec_angle) != Int64
-                    add(vec_data[id].vec_angle, atom_tilt, "atom")
+                    add!(vec_data[id].vec_angle, atom_tilt, "atom")
                     data.vec_angle = vcat(data.vec_angle, vec_data[id].vec_angle)
                 end
             end

@@ -1,4 +1,3 @@
-# genr_cell
 """
     genr_cell(cell_vec)
 
