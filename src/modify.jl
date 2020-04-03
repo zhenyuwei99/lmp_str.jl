@@ -156,7 +156,7 @@ function select(data_atom::Data; mode::String, para)
 end
 
 """
-    delete(data_cell::Data_Cell, list_cell::Array)
+    delete!(data_cell::Data_Cell, list_cell::Array)
 
 Do this will delete all cells in `list_cell` from `data_cell`
 
@@ -164,7 +164,7 @@ Do this will delete all cells in `list_cell` from `data_cell`
 ```julia-repl
 data_cell = genr_cell([10 10 2])
 data_select = select(data_cell, mode="cylinder", para=[3, 3])
-data_new = delete(data_cell, data_select)
+data_new = delete!(data_cell, data_select)
 ```
 """
 function delete!(data_cell::Data_Cell, list_cell)
@@ -184,17 +184,17 @@ function delete!(data_cell::Data_Cell, list_cell)
 end
 
 """
-    delete(data::Data, list_atom::Array)
+    delete!(data::Data, list_atom::Array)
 
 Do this will delete all atoms in `list_atom` themselves and other infomation related to them  from `data`
 
 # Example
 ```julia-repl
-data_cell = lmp_str.genr_cell([10 10 2])
+data_cell = genr_cell([10 10 2])
 str = Si3N4()
 data_atom = genr_atom(data_cell, str)
 data_select = select(data_atom, mode="cylinder", para=[3, 3])
-data_new = delete(data_atom, data_select)
+data_new = delete!(data_atom, data_select)
 ```
 """
 function delete!(data::Data, list_atom::Array)
@@ -218,10 +218,10 @@ function delete!(data::Data, list_atom::Array)
             setfield!(data.data_basic, para_now, para_result)
 
             # Changing Vector of each field
-            setfield!(data, fields[field], delete(getfield(data, fields[field]), list_id)) # delete(vec::Vector{T} , id::Array) where T<:Unit
+            setfield!(data, fields[field], delete!(getfield(data, fields[field]), list_id)) # delete!(vec::Vector{T} , id::Array) where T<:Unit
         end
     end
-    sort_data(data, list_atom)
+    sort_data!(data, list_atom)
 end
 
 function delete!(vec::Union{Vector{T}, Int64}, id::Array) where T <: Unit

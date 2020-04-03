@@ -78,9 +78,9 @@ end
 
 # sort_data
 """
-    sort_data(data::Data_Unit, list_atom::Array)
+    sort_data!(data::Data_Unit, list_atom::Array)
 
-Do this will rearrange the atom id to consecutive one after calling `delete`
+Do this will rearrange the atom id to consecutive one after calling `delete!`
 """
 function sort_data!(data::Data_Unit, list_atom::Array)
     fields = fieldnames(typeof(data))
