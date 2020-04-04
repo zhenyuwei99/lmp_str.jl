@@ -26,7 +26,7 @@ function move(data::Data, move_vec)
     data_new
 end
 
-# select and delete
+# select and remove
 
 function find(vec_unit::Union{Vector{T}, Int64}, list_atom) where T <: Unit
     len = length(vec_unit)
@@ -158,7 +158,7 @@ end
 """
     remove!(data_cell::Data_Cell, list_cell::Array)
 
-Do this will delete all cells in `list_cell` from `data_cell`
+Do this will remove all cells in `list_cell` from `data_cell`
 
 # Example
 ```julia-repl
@@ -186,7 +186,7 @@ end
 """
     remove!(data::Data, list_atom::Array)
 
-Do this will delete all atoms in `list_atom` themselves and other infomation related to them  from `data`
+Do this will remove all atoms in `list_atom` themselves and other infomation related to them  from `data`
 
 # Example
 ```julia-repl
@@ -204,7 +204,7 @@ function remove!(data::Data, list_atom::Array)
     list_fields = findall(x->occursin("vec", x), name_fields)
 
     for field in  list_fields
-        # Find all elements that need to be deleted
+        # Find all elements that need to be removed
         list_id = find(getfield(data, fields[field]), list_atom)
 
         if list_id == 0
@@ -218,7 +218,7 @@ function remove!(data::Data, list_atom::Array)
             setfield!(data.data_basic, para_now, para_result)
 
             # Changing Vector of each field
-            setfield!(data, fields[field], delete!(getfield(data, fields[field]), list_id)) # delete!(vec::Vector{T} , id::Array) where T<:Unit
+            setfield!(data, fields[field], remove!(getfield(data, fields[field]), list_id)) # remove!(vec::Vector{T} , id::Array) where T<:Unit
         end
     end
     sort_data!(data, list_atom)
