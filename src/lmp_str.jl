@@ -1,6 +1,7 @@
 module lmp_str
 
 import Dates
+using Printf
 
 abstract type Str end
 abstract type Data end
