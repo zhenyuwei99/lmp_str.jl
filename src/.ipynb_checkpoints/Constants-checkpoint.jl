@@ -24,6 +24,8 @@ function constants()
     res["Const_fs2s"] = 1e-15;
     res["Const_ps2s"] = 1e-12;
     res["Const_ns2s"] = 1e-9;
+    
+    return res
 end
 
 # Physical Constants
