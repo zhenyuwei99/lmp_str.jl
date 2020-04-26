@@ -80,7 +80,7 @@ end
 """
     sort_data!(data::Data_Unit, list_atom::Array)
 
-Do this will rearrange the atom id to consecutive one after calling `delete!`
+Do this will rearrange the atom id to consecutive one after calling `remove!`
 """
 function sort_data!(data::Data_Unit, list_atom::Array)
     fields = fieldnames(typeof(data))
@@ -89,11 +89,11 @@ function sort_data!(data::Data_Unit, list_atom::Array)
     list_fields = findall(x->occursin("vec", x), name_fields)
     list_atom .-= 1    # Find atom next to the deleted one
     num_atoms = length(list_atom)
-
+    
     for field in list_fields
         vec_now = getfield(data, fields[field])
         if typeof(vec_now) != Int64
-            len = length(vec_now)
+            len = length(vec_now) 
             dims = length(vec_now[1].atom)
             vec_id = [vec_now[n].atom[i] for n = 1 : len, i = 1 : dims]
             atom_now = 1
@@ -105,11 +105,10 @@ function sort_data!(data::Data_Unit, list_atom::Array)
                     end
                 end
             end
-            vec_id .-= num_atoms
-            change!(vec_now, vec_id, "atom")
+            vec_id .-= vec_id[1, 1] - 1
+            change(vec_now, vec_id, "atom")
         end
     end
     data
 end
-
 

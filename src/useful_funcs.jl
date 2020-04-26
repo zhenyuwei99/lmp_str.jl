@@ -298,3 +298,11 @@ function dist(pos::Array, org::Array, dim)
     end
     sqrt(r)
 end
+
+"""
+    norm_vec(vec::Vector)
+Do this will return a normalized vector along the direction of `vec`
+"""
+function norm_vec(vec::Vector)
+    return vec ./ sqrt(vec' * vec)
+end

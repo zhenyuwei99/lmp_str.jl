@@ -38,7 +38,7 @@ include("Data.jl")
 export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
 
 include("useful_funcs.jl")
-export max, min, add!, change!, diag, conv, dist
+export max, min, add!, change!, diag, conv, dist, norm_vec
 
 
 include("genr.jl")

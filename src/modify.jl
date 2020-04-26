@@ -64,6 +64,7 @@ Do this will return a list of id of cells in specific region controled by variab
 
 - `"cylinder"`: `[radius dim]`, `dim` represents which axies cylinder will be prallel to
 - `"sphere"`: `[radius]`
+- `"plane"`: `[vec_plane, radius, origin]`, `vec_plane` is a vector prependicular to plane that you want to cut, `radius` is the cutoff radius cells whose projection to `vec_plane` over it will be selected, `origin` is the origin point of `vec_plane`, `[0, 0, 0]` is set defaultly
 
 # Example
 ```julia-repl
@@ -72,32 +73,46 @@ data_select = select(data_cell, mode="cylinder", para=[3, 3])
 ```
 """
 function select(data_cell::Data_Cell; mode::String, para)
-    list_mode = split("cylinder sphere")
+    list_mode = split("cylinder sphere plane")
     if !in(mode, list_mode)
         error(join(["Error, mode: ",mode," is not supported."]))
     end
-
+    
     center = data_cell.cell_vec ./ 2
-
+    
     cell_list = 0
-
+    
     if mode == "cylinder"
         for cell in 1:data_cell.num_cells
             if dist(data_cell.cell_mat[cell, :], center, para[2]) <= para[1]
                 cell_list = vcat(cell_list, cell)
             end
         end
-    end
-
-    if mode == "sphere"
+    elseif mode == "sphere"
         for cell in 1:data_cell.num_cells
             if dist(data_cell.cell_mat[cell, :], center) <= para[1]
                 cell_list = vcat(cell_list, cell)
             end
         end
+    elseif mode == "plane"
+        vec = norm_vec(para[1:3])
+        dist_proj = para[4]
+        if length(para) == 4
+            org = [0, 0, 0]
+        else
+            org = para[5:7]
+        end
+        for cell = 1:data_cell.num_cells
+            dist_now = (data_cell.cell_mat[cell, :] .- org)' * vec
+            if dist_now >= dist_proj
+                cell_list = vcat(cell_list, cell)
+            end
+        end
     end
-
-    cell_list[2:end]
+    if length(cell_list) == 1
+        error("No cell has been selected")
+    end
+    return cell_list[2:end]
 end
 
 """
@@ -112,8 +127,9 @@ Do this will return a list of id of atoms in specific region controled by variab
 
 # Parameters List
 
-- `"cylinder"`: `[radius dim]`, `dim` represents which axies cylinder will be prallel to
+- `"cylinder"`: `[radius, dim]`, `dim` represents which axies cylinder will be prallel to
 - `"sphere"`: `[radius]`
+- `"plane"`: `[vec_plane, radius, origin]`, `vec_plane` is a vector prependicular to plane that you want to cut, `radius` is the cutoff radius atoms whose projection to `vec_plane` over it will be selected, `origin` is the origin point of `vec_plane`, `[0, 0, 0]` is set defaultly
 
 # Example
 ```julia-repl
@@ -123,36 +139,53 @@ data_atom = genr_atom(data_cell, str)
 data_select = select(data_atom, mode="cylinder", para=[10, 3])
 ```
 """
-function select(data_atom::Data; mode::String, para)
-    list_mode = split("cylinder sphere")
+function select(data_unit::Data_Unit; mode::String, para)
+    list_mode = split("cylinder sphere plane")
     if !in(mode, list_mode)
         error(join(["Error, mode: ",mode," is not supported."]))
     end
 
-    box_size = data_atom.data_basic.box_size
-    box_tilt = data_atom.data_basic.box_tilt
-    center = (max(data_atom.vec_atom, "coord")-min(data_atom.vec_atom, "coord")) ./ 2
+    box_size = data_unit.data_basic.box_size
+    box_tilt = data_unit.data_basic.box_tilt
+    center = (max(data_unit.vec_atom, "coord")-min(data_unit.vec_atom, "coord")) ./ 2
     #center[1] += box_tilt[1] + box_tilt[2]
     #center[2] += box_tilt[3]
 
     atom_list = 0
 
     if mode == "cylinder"
-        for atom in 1:data_atom.data_basic.num_atoms
-            if dist(data_atom.vec_atom[atom], center, para[2]) <= para[1]
+        for atom = 1:data_unit.data_basic.num_atoms
+            if dist(data_unit.vec_atom[atom], center, para[2]) <= para[1]
                 atom_list = vcat(atom_list, atom)
             end
         end
-    end
-
-    if mode == "sphere"
-        for atom in 1:data_atom.data_basic.num_atoms
-            if dist(data_atom.vec_atom[atom], center) <= para[1]
+    elseif mode == "sphere"
+        for atom = 1:data_unit.data_basic.num_atoms
+            if dist(data_unit.vec_atom[atom], center) <= para[1]
                 atom_list = vcat(atom_list, atom)
             end
         end
+    elseif mode == "plane"
+        vec = norm_vec(para[1:3])
+        dist_proj = para[4]
+        if length(para) == 4
+            org = [0, 0, 0]
+        else
+            org = para[5:7]
+        end
+        for atom = 1:data_unit.data_basic.num_atoms
+            dist_now = (data_unit.vec_atom[atom].coord .- org)' * vec
+            #dist_now = sqrt(dist_now' * dist_now)
+            if dist_now >= dist_proj
+                atom_list = vcat(atom_list, atom)
+            end
+        end
+    end    
+    
+    if length(atom_list) == 1
+        error("No atom has been selected")
     end
-    atom_list[2:end]
+    return atom_list[2:end]
 end
 
 """
