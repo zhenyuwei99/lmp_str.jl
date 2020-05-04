@@ -306,3 +306,31 @@ Do this will return a normalized vector along the direction of `vec`
 function norm_vec(vec::Vector)
     return vec ./ sqrt(vec' * vec)
 end
+
+"""
+    function rot_mat(θx, θy, θz)
+This will return a rotation matrix, coord times which will have a rotation along x, y, and z axies with angle θx, θy, θz respectively.
+
+More details in [Wiki](https://zh.wikipedia.org/wiki/%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5)
+"""
+function rot_mat(θx, θy, θz)
+    x_mat = [
+        1  0        0
+        0  cos(θx)  -sin(θx)
+        0  sin(θx)  cos(θx)
+    ]
+    
+    y_mat = [
+        cos(θy)  0  sin(θy)
+        0        1  0
+        -sin(θy) 0  cos(θy)
+    ]
+    
+    z_mat = [
+        cos(θz)  -sin(θz) 0
+        sin(θz)  cos(θz)  0
+        0        0        1
+    ]
+    
+    return x_mat * y_mat * z_mat
+end
