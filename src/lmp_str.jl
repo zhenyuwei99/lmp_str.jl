@@ -47,8 +47,8 @@ export genr, genr_cell, genr_atom, genr_bond, genr_angle
 include("modify.jl")
 export move, find, select, remove!
 
-include("addions.jl")
-export addions
+include("genr_ions.jl")
+export genr_ions
 
 include("combine.jl")
 export cat_data, sort_data!

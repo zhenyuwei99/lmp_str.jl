@@ -1,6 +1,6 @@
 # addions
 """
-    function addions(data::Data, ion_type::String; num_pairs=false, conc=false)
+    function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
 
 This will return a variable in "Data_Unit" type containing information of ions. Two options are offered, determining by which parameters, `num_pairs` or `conc`, has been specified. 
 - `num_pairs` will create ion composite with the number of `num_ions`.
@@ -22,18 +22,18 @@ data = genr_atom(cell, str)
 data = addions(data, "Na Cl", conc=0.5)
 ```
 """
-function addions(data::Data, ion_type::String; num_pairs=false, conc=false)
+function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     # Supported List
     list_ion = split("K Na Fe Al Cl")
     list_charge = [1, 1, 2, 3, -1]
     list_mass = [39.09, 22.99, 55.845, 26.98, 35.453]
     
     # Reading Input
-    if num_pairs==false | conc==false
+    if isa(num_pairs, Bool) & isa(conc, Bool)
         error("One of `num_pairs` or `conc` should be specified")
     end
     
-    if num_pairs!=false | conc!=false
+    if !(isa(num_pairs, Bool) | isa(conc, Bool))
         error("Only one of `num_pairs` or `conc` can be specified")
     end
     
