@@ -2,6 +2,7 @@
 
 /target/
 developing_files
+push.sh
 
 # OS generated files #
 .DS_Store
