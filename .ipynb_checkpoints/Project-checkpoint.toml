@@ -1,8 +1,0 @@
-name = "lmp_str"
-uuid = "3f6172cb-8b69-401b-9f4b-fa3d4af45650"
-authors = ["Zhenyu Wei <zhenyuwei99@gmail.com>"]
-version = "0.1.0"
-
-[deps]
-Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
-Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
