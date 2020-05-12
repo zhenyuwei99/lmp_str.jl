@@ -121,7 +121,7 @@ end
 Do this will return a list of id of atoms in specific region controled by variables `mode` and `para`
 
 # Arguments
-- `data_cell`:
+- `data_atom`:
 - `mode`: "cylinder" and "sphere" are supported currently.
 - `para`: parameters needed to describe a region correspond to each modes
 

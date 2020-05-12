@@ -334,3 +334,23 @@ function rot_mat(θx, θy, θz)
     
     return x_mat * y_mat * z_mat
 end
+
+"""
+    function central_point_atom(data::Data)
+This will return a vector of the coordinate of the center points, based on the atom infomation.
+**Recommand** to use when model is small.
+"""
+function central_point_atom(data::Data)
+	coord_vec = hcat([data.vec_atom[n].coord for n = 1:data.data_basic.num_atoms]...)
+	return mean(coord_vec, dims=2)
+end
+
+"""
+    function central_point_atom(data::Data)
+This will return a vector of the coordinate of the center points, based on the box infomation.
+**Recommand** to use when model is large.
+"""
+function central_point_box(data::Data)
+	box_size = data.data_basic.box_size
+	return (box_size[:, 2] .- box_size[:, 1])/2
+end

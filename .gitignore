@@ -3,6 +3,6 @@
 /target/
 developing_files
 push.sh
-
+*/.vscode
 # OS generated files #
 .DS_Store

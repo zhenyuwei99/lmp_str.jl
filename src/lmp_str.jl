@@ -2,6 +2,7 @@ module lmp_str
 
 import Dates
 using Printf
+using Statistics
 
 abstract type Str end
 abstract type Data end
@@ -29,7 +30,10 @@ include("./Family/Family_C.jl")
 export Family_C, Graphene, Graphene_Ort
 
 include("./Family/Family_Ti.jl")
-export Family_Ti, TiO2
+export Family_Ti, TiO2_Anatase, TiO2_Rutile
+
+include("./Family/Family_Ca.jl")
+export Family_Ca, CaCO3
 
 include("./Family/Family_Ion.jl")
 export Family_Ion
@@ -38,8 +42,7 @@ include("Data.jl")
 export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
 
 include("useful_funcs.jl")
-export max, min, add!, change!, diag, conv, dist, norm_vec, rot_mat
-
+export max, min, add!, change!, diag, conv, dist, norm_vec, rot_mat, central_point_atom, central_point_box
 
 include("genr.jl")
 export genr, genr_cell, genr_atom, genr_bond, genr_angle

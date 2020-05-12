@@ -152,6 +152,11 @@ function Data_Unit(data::Data_Unit)
     Data_Unit(Data_Basic(data.data_basic), data.data_str, vec_atom[:], vec_bond, vec_angle)
 end
 
+"""
+    mutable struct Data_Sum <:Data
+
+This contains all information needed for an unit Lammps Model (could be a combination of different sub-models).
+"""
 mutable struct Data_Sum <: Data
     data_basic::Data_Basic
     vec_str::Vector{Str}

@@ -41,11 +41,11 @@ function Graphene()
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
+    Family_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
 end
 
 """
-    SiO2()
+    Graphene_Ort()
 
 Do this will generate a Famliy_C type which contains all information needed to build a Graphene moedel with orthogonal unit cell.
 """
@@ -67,5 +67,5 @@ function Graphene_Ort()
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
+    Family_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
 end
