@@ -276,3 +276,23 @@ function remove!(mat; id=1, dim=1)
     end
     result
 end
+
+"""
+    remove_else!(data::Data, list_atom::Array)
+
+Do this will remove all atoms but atoms in `list_atom` themselves and other infomation related to them  from `data`
+
+# Example
+```julia-repl
+data_cell = genr_cell([10 10 2])
+str = Si3N4()
+data_atom = genr_atom(data_cell, str)
+data_select = select(data_atom, mode="cylinder", para=[3, 3])
+data_new = remove_else!(data_atom, data_select)
+```
+"""
+function remove_else!(data::Data, list_atom::Array)
+    atom_all = get_data(data.vec_atom, "atom")
+    atom_else = setdiff(atom_all, list_atom) # Notice: order of `atom_all` and `atom_else` is vital
+    remove!(data, atom_else)
+end

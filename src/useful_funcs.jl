@@ -102,9 +102,36 @@ function min(array_01::AbstractArray, array_02::AbstractArray)
 end
 
 """
+    get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
+Do this will return a vector of variable `para` for all elements in `vec_unit`.
+# Example
+```julia-repl
+str = Si3N4()
+cell = genr_cell([10, 10, 10])
+data = genr(cell, str)
+get_data(data.vec_angle, "atom")
+```
+"""
+function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
+    fields = fieldnames(typeof(vec_unit[1]))
+    para = Meta.parse(para)
+    if !in(para, fields)
+        error(join(["Data_Type Atom doesn't have field: ", string(para)]))
+    end
+    num_units = length(vec_unit)
+    data = getfield(vec_unit[1], para)
+    res = zeros(typeof(data[1]), num_units, length(data))
+
+    for unit = 1 : num_units
+        res[unit, :] .= getfield(vec_unit[unit], para) # try a=zeros(3, 1) a[1, :] = 1 
+    end
+    return res
+end
+
+"""
     add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 
-Do this will add `tilt` to variable `para` for all types in `vec_unit`
+Do this will add `tilt` to variable `para` for all elements in `vec_unit`
 
 # Example
 ```julia-repl
@@ -137,7 +164,7 @@ end
 """
     change(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 
-Do this will change variable `para` of all types in `vec_unit` to `tilt`
+Do this will change variable `para` of all elements in `vec_unit` to `tilt`
 
 # Example
 ```julia-repl

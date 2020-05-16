@@ -42,13 +42,13 @@ include("Data.jl")
 export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
 
 include("useful_funcs.jl")
-export max, min, add!, change!, diag, conv, dist, norm_vec, rot_mat, central_point_atom, central_point_box
+export max, min, get_data, add!, change!, diag, conv, dist, norm_vec, rot_mat, central_point_atom, central_point_box
 
 include("genr.jl")
 export genr, genr_cell, genr_atom, genr_bond, genr_angle
 
 include("modify.jl")
-export move, find, select, remove!
+export move, find, select, remove!, remove_else!
 
 include("genr_ions.jl")
 export genr_ions
