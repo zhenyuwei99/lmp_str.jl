@@ -33,7 +33,7 @@ function Graphene()
     cell_vec = [
         2.46 0                0
         1.23 2.46 * sin(pi/3) 0
-        0    0                0.35
+        0    0                3.35
     ]
     atom_type = [1 1]
     atom_charge = 0 .* atom_type

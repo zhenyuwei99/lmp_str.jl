@@ -114,6 +114,40 @@ end
 
 # genr_bond
 """
+    genr_bond(data::Data; bond_radius=3.5)
+
+This will genrate the bond information for `data` based on the geomarty judgement, bond will be genrated only if distance between two atoms with in `bond_radius`.
+
+Notice: 
+- PBC issues has been considered.
+- only structures with orthogonal unit cell are fine to use this function.
+"""
+function genr_bond(data::Data; bond_radius=3.5)
+	coord = get_data(data.vec_atom, "coord")
+	num_atoms = data.data_basic.num_atoms
+	box_diag = genr_box_diag(data)
+	box_inv = inv(box_diag)
+	coord_scl = coord * box_inv
+	vec_bond = Vector{Bond}(undef, 1)
+
+	for atom_01 = 1:num_atoms
+		for atom_02 = atom_01+1:num_atoms
+			r_diff = coord_scl[atom_02, :] - coord_scl[atom_01, :]
+			r_diff -= round.(r_diff)
+			r_diff = box_diag * r_diff
+			r_diff = sqrt(sum(r_diff.^2))
+			if r_diff < bond_radius
+				vec_bond = vcat(vec_bond, lmp_str.Bond(length(vec_bond), 1, [atom_01, atom_02]))
+			end
+		end
+	end
+	data.vec_bond = vec_bond[2:end]
+	data.data_basic.num_bonds = length(vec_bond) - 1
+    data.data_basic.num_bond_types = 1
+    @printf("%4d bonds has been genrated within cutoff radius of %2.2f", data.data_basic.num_bonds, bond_radius)
+end
+
+"""
     genr_bond(data_cell::Data_Cell, data::Data)
 
 This will be called by `genr(...)` if `bond_mode` is contained in `str`, genrating information of bonds

@@ -381,3 +381,23 @@ function central_point_box(data::Data)
 	box_size = data.data_basic.box_size
 	return (box_size[:, 2] .- box_size[:, 1])/2
 end
+
+"""
+    genr_box_diag(data::Data)
+This will return the matrix of box size information.
+"""
+function genr_box_diag(data::Data)
+	box_info = data.data_basic.box_size
+	box_info = box_info[:, 2] - box_info[:, 1]
+	return diag(box_info)
+end
+
+"""
+    genr_box_inv(data::Data)
+This will return the inverse matrix of box size information.
+"""
+function genr_box_inv(data::Data)
+	box_info = data.data_basic.box_size
+	box_info = box_info[:, 2] - box_info[:, 1]
+	return inv(diag(box_info))
+end
