@@ -114,7 +114,7 @@ end
 
 # genr_bond
 """
-    genr_bond(data::Data; bond_radius=3.5)
+    genr_bond!(data::Data; bond_radius=3.5)
 
 This will genrate the bond information for `data` based on the geomarty judgement, bond will be genrated only if distance between two atoms with in `bond_radius`.
 
@@ -122,7 +122,7 @@ Notice:
 - PBC issues has been considered.
 - only structures with orthogonal unit cell are fine to use this function.
 """
-function genr_bond(data::Data; bond_radius=3.5)
+function genr_bond!(data::Data; bond_radius=3.5)
 	coord = get_data(data.vec_atom, "coord")
 	num_atoms = data.data_basic.num_atoms
 	box_diag = genr_box_diag(data)
@@ -135,7 +135,7 @@ function genr_bond(data::Data; bond_radius=3.5)
 			r_diff = coord_scl[atom_02, :] - coord_scl[atom_01, :]
 			r_diff -= round.(r_diff)
 			r_diff = box_diag * r_diff
-			r_diff = sqrt(sum(r_diff.^2))
+			r_diff = norm(r_diff)
 			if r_diff < bond_radius
 				vec_bond = vcat(vec_bond, lmp_str.Bond(length(vec_bond), 1, [atom_01, atom_02]))
 			end

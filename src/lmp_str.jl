@@ -3,6 +3,7 @@ module lmp_str
 import Dates
 using Printf
 using Statistics
+using LinearAlgebra
 
 abstract type Str end
 abstract type Data end
@@ -42,7 +43,7 @@ include("Data.jl")
 export Atom, Bond, Angle, Data_Cell, Data_Basic, Data_Unit, Data_Sum
 
 include("useful_funcs.jl")
-export max, min, get_data, add!, change!, diag, conv, dist, norm_vec, rot_mat, central_point_atom, central_point_box
+export max, min, get_data, add!, change!, diag, conv, dist, norm_vec, rot_mat, central_point_atom, central_point_box, copy_array
 
 include("genr.jl")
 export genr, genr_cell, genr_atom, genr_bond, genr_angle

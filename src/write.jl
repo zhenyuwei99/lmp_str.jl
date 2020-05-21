@@ -45,10 +45,12 @@ function write_info(info::Data_Basic, name_file::AbstractString)
 
     para += 1
     box_tilt = getfield(info, fields[para])
-    for tilt in box_tilt
-        write(io, join([string(tilt), "\t"]))
+    if !(length(findall(x->x==0, box_tilt)) == length(box_tilt))
+        for tilt in box_tilt
+            write(io, join([string(tilt), "\t"]))
+        end
+        write(io, "xy xz yz\n")
     end
-    write(io, "xy xz yz\n")
 
     close(io)
 end

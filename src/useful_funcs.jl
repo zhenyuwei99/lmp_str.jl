@@ -331,7 +331,7 @@ end
 Do this will return a normalized vector along the direction of `vec`
 """
 function norm_vec(vec::Vector)
-    return vec ./ sqrt(vec' * vec)
+    return vec ./ norm(vec)
 end
 
 """
@@ -389,7 +389,16 @@ This will return the matrix of box size information.
 function genr_box_diag(data::Data)
 	box_info = data.data_basic.box_size
 	box_info = box_info[:, 2] - box_info[:, 1]
-	return diag(box_info)
+	box_diag = diag(box_info)
+	try
+		data.data_basic.box_tilt
+	catch
+		return box_diag
+	end
+	box_diag[2, 1] = data.data_basic.box_tilt[1]
+	box_diag[3, 1] = data.data_basic.box_tilt[2]
+	box_diag[3, 2] = data.data_basic.box_tilt[3]
+	return box_diag
 end
 
 """
@@ -397,7 +406,12 @@ end
 This will return the inverse matrix of box size information.
 """
 function genr_box_inv(data::Data)
-	box_info = data.data_basic.box_size
-	box_info = box_info[:, 2] - box_info[:, 1]
-	return inv(diag(box_info))
+	box_diag = genr_box_diag(data)
+	return inv(box_diag)
+end
+
+function copy_array(goal)
+    res = zeros(typeof(goal).parameters[1], size(goal))
+    res[:] = goal[:]
+    return res
 end
