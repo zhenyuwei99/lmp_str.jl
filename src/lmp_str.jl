@@ -3,7 +3,7 @@ module lmp_str
 import Dates
 using Printf
 using Statistics
-using LinearAlgebra
+import LinearAlgebra.norm
 
 abstract type Str end
 abstract type Data end
