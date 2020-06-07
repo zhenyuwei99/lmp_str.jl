@@ -22,7 +22,7 @@ include("./Family/Family_Basic.jl")
 export Family_Basic, transform, SC, BCC, FCC, DC
 
 include("./Family/Family_Wat.jl")
-export Family_Wat, Tip3p, SPC, SPCE
+export Family_Wat, Tip3p, SPC, SPCE, Tip4p, Tip4p_2005, Tip4p_Ew, Tip4p_FQ, Tip4p_Ice, Tip5p, Tip5p_2018
 
 include("./Family/Family_Si.jl")
 export Family_Si, Si, Si3N4, Si3N4_Ort, SiO2
