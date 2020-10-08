@@ -10,6 +10,18 @@ module lmp_str
     abstract type Potential_Unit end
     abstract type Data end
     abstract type Unit end
+    
+    # Main Files
+    include("Data.jl")
+    export Atom, Bond, Angle, Dihedral, Improper
+    export Data_Cell, Data_Basic, Data_Unit, Data_Sum
+
+    include("useful_funcs.jl")
+    export max, min, get_data, diag, conv, dist, norm_vec, rot_mat
+    export add!, change!, central_point_atom, central_point_box, copy_array
+
+    include("write.jl")
+    export write_data, write_info, write_xyz
 
     include("Constants.jl")
     export const_list
@@ -81,16 +93,5 @@ module lmp_str
     include("converter/converter_vmd.jl")
     export converter_vmd
 
-    # Main Files
-    include("Data.jl")
-    export Atom, Bond, Angle, Dihedral, Improper
-    export Data_Cell, Data_Basic, Data_Unit, Data_Sum
-
-    include("useful_funcs.jl")
-    export max, min, get_data, diag, conv, dist, norm_vec, rot_mat
-    export add!, change!, central_point_atom, central_point_box, copy_array
-
-    include("write.jl")
-    export write_data, write_info, write_xyz
 
 end # module
