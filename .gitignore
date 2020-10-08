@@ -4,5 +4,8 @@
 developing_files
 push.sh
 */.vscode
+.ipynb_checkpoints
+*/.ipynb_checkpoints
+*/*/.ipynb_checkpoints
 # OS generated files #
 .DS_Store

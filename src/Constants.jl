@@ -63,6 +63,8 @@ function constants()
     return res
 end
 
+const_list = constants()
+
 # Physical Constants
 Const_mu_0 = 4e-7 * π;
 Const_epsilong_0 = 8.854188e-12;

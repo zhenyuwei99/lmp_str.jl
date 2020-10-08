@@ -216,7 +216,7 @@ This will convert a set of files which created by VMD (.pdb and .psf) file into 
 - `file_psf`: String of path of .psf file.
 - `poetntial`: Subclass of `Potential` which contains all information of forcefiled to automatically generate parameters, e.g. pair_coeff, bond_coeff etc.
 """
-function convert_vmd(file_pdb::String, file_psf::String, potential::Potential, box_padding=2)
+function converter_vmd(file_pdb::String, file_psf::String, potential::Potential, box_padding=2)
     # Reading Input
     id_vec, atom_vec, mol_vec, coord_mat = read_pdb(file_pdb) 
     type_vec, charge_vec, bond_topo, angle_topo, dihedral_topo, improper_topo = read_psf(file_psf)
