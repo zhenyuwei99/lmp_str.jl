@@ -56,7 +56,7 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     
     # Calculate # of solute molecules
     if conc!= false
-        ratio_sol2wat = conc / (Const_density_wat * Const_kg2g / Const_m2dm^3 / sum(data.data_str.atom_mass)) 
+        ratio_sol2wat = conc / (Const_density_wat * Const_kg2g / Const_m2dm^3 / sum(data.data_str.para_mass)) 
         num_wat = data.data_basic.num_atoms
         num_sol = convert(Int64, round(num_wat * ratio_sol2wat))
     else
@@ -82,7 +82,7 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     end
     
     # Generate new Data
-    data_str = Family_Ion(ion, ion_charge, ion_mass, len, [n for n = 1:len])
+    data_str = Structure_Ion(ion, ion_charge, ion_mass, len, [n for n = 1:len])
     data_basic = Data_Basic(data.data_basic)
     data_basic.num_atoms = num_atoms
     data_basic.num_atom_types = len
@@ -90,6 +90,10 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     data_basic.num_bond_types = 0
     data_basic.num_angles = 0
     data_basic.num_angle_types = 0
+    data_basic.num_dihedrals = 0
+    data_basic.num_dihedral_types = 0
+    data_basic.num_impropers = 0
+    data_basic.num_improper_types = 0
     
     # Output
     data_ion = Data_Unit(data_basic, data_str, vec_atom_new, 0, 0)

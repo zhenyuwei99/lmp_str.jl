@@ -1,33 +1,32 @@
 """
-    mutable struct Family_Si  <: Str
+    mutable struct Structure_Si  <: Str
 
 This contains information for model constructing of Si and its compounds.
 
 # Supported list:
-- Si
-- SiN4
-- SiN4_Ort
-- SiO2
-Notice:Case sensetive
+- structure_si()
+- structure_si3n4()
+- structure_si3n4_ort()
+- structure_sio2()
 """
-mutable struct Family_Si <: Str
+mutable struct Structure_Si <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
     atom_name
     atom_charge
-    atom_mass
+    para_mass
     num_atoms
     num_atom_types
     vec_type_id
 end
 
 """
-    Si()
+    structure_si()
 
 Do this will generate a Famliy_Si type which contains all information needed to build a Si moedel.
 """
-function Si()
+function structure_si()
     atom_vec = [
         0       0       0
         0       0.5     0.5
@@ -45,19 +44,19 @@ function Si()
     ]
     atom_type = [1 1 1 1 1 1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [28.085501] # Si: 28.085501. Unit: g/mol
+    para_mass = [28.085501] # Si: 28.085501. Unit: g/mol
     atom_name = split("Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
-    Si3N4()
+    structure_si3n4()
 
 Do this will generate a Famliy_Si type which contains all information needed to build a Si3N4 moedel.
 """
-function Si3N4()
+function structure_si3n4()
     atom_vec = [
         -0.0977580565637542 0.195516113127508   0
         0.0588368288671674  0.307869462739661   0
@@ -81,19 +80,19 @@ function Si3N4()
     ]
     atom_type = [2 1 2 2 1 1 1 1 2 2 1 2 1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
+    para_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
-    Si3N4_Ort()
+    structure_si3n4_ort()
 
 Do this will generate a Famliy_Si type which contains all information needed to build a Si3N4 moedel with orthogonal unit cell.
 """
-function Si3N4_Ort()
+function structure_si3n4_ort()
     atom_vec = [
     0                       0.597031356376194   0
     0.000658327847268042    0.521394509327430   0.500000000000000
@@ -131,19 +130,19 @@ function Si3N4_Ort()
     ]
     atom_type = [2 1 2 2 1 2 1 1 2 1 1 2 1 1 2 1 2 2 1 2 1 1 2 1 1 2 1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
+    para_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
-    SiO2()
+    structure_sio2()
 
 Do this will generate a Famliy_Si type which contains all information needed to build a SiO2 moedel.
 """
-function SiO2()
+function structure_sio2()
     atom_vec = [
         0.196866211329851   0.196866211329851   0
         0.136601044596223   0                   0.178468624064479
@@ -165,9 +164,9 @@ function SiO2()
     ]
     atom_type = [2 1 2 1 2 1 2 1 1 1 1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [15.999400 28.0855] # O: 15.999400. Si: 28.085501. Unit: g/mol
+    para_mass = [15.999400 28.0855] # O: 15.999400. Si: 28.085501. Unit: g/mol
     atom_name = split("O Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end

@@ -1,21 +1,36 @@
 """
-    mutable struct Family_Wat  <: Str
+    mutable struct Structure_Wat  <: Str
 
-This contains information for model constructing of the famliy of water models.
+This contains information for model constructing of a series of water models.
 
 # Supported list:
- - Tip3p
- - SPC
- - SPCE
-Notice:Case sensetive
+ - structure_tip3p()
+ - structure_spc()
+ - structure_spce()
+ - structure_tip4p()
+ - structure_tip4p_ew()
+ - structure_tip4p_fq()
+ - structure_tip4p_2005()
+ - structure_tip4p_ice()
+ - structure_tip5p()
+ - structure_tip4p_2005()
+ - structure_tip5p_2018()
+ - structure_tip7p()
+
+# Parameters source:
+- https://en.wikipedia.org/wiki/Water_model
+- http://www1.lsbu.ac.uk/water/water_models.html
+- https://lammps.sandia.gov/doc/Howto_tip3p.html
+- https://lammps.sandia.gov/doc/Howto_tip4p.html
+- https://lammps.sandia.gov/doc/Howto_spc.html
 """
-mutable struct Family_Wat <: Str
+mutable struct Structure_Wat <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
     atom_name
     atom_charge
-    atom_mass
+    para_mass
     num_atoms
     num_atom_types
     bond_mode
@@ -28,11 +43,11 @@ mutable struct Family_Wat <: Str
 end
 
 """
-    Tip3p()
+    structure_tip3p()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip3p moedel.
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip3p moedel.
 """
-function Tip3p()
+function structure_tip3p()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.25;
@@ -43,7 +58,7 @@ function Tip3p()
 
     atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994]
+    para_mass = [1.00784, 15.9994]
     atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -57,7 +72,7 @@ function Tip3p()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
@@ -74,15 +89,15 @@ function Tip3p()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-    SPC()
+    structure_spc()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a SPC moedel.
+This will generate a `Structure_Wat` type which contains all information needed to build a SPC moedel.
 """
-function SPC()
+function structure_spc()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 109.47;
@@ -93,7 +108,7 @@ function SPC()
 
     atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994]
+    para_mass = [1.00784, 15.9994]
     atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -107,7 +122,7 @@ function SPC()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
@@ -124,15 +139,15 @@ function SPC()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-    SPCE()
+    structure_spce()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a SPCE moedel.
+This will generate a `Structure_Wat` type which contains all information needed to build a SPCE moedel.
 """
-function SPCE()
+function structure_spce()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 109.47;
@@ -143,7 +158,7 @@ function SPCE()
 
     atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994]
+    para_mass = [1.00784, 15.9994]
     atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -157,7 +172,7 @@ function SPCE()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     cell_vec = diag(cell_vec)
 
@@ -174,15 +189,15 @@ function SPCE()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip4p()
+structure_tip4p()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip4p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip4p()
+function structure_tip4p()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -194,7 +209,7 @@ function Tip4p()
 
     atom_type = [1, 2, 1, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -203,7 +218,7 @@ function Tip4p()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0
@@ -228,15 +243,15 @@ function Tip4p()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip4p_Ew()
+structure_tip4p_ew()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip4p_Ew moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_Ew moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip4p_Ew()
+function structure_tip4p_ew()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -248,7 +263,7 @@ function Tip4p_Ew()
 
     atom_type = [1, 2, 1, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -257,7 +272,7 @@ function Tip4p_Ew()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0
@@ -282,15 +297,15 @@ function Tip4p_Ew()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip4p_FQ()
+structure_tip4p_fq()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip4p_FQ moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_FQ moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip4p_FQ()
+function structure_tip4p_fq()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -302,7 +317,7 @@ function Tip4p_FQ()
 
     atom_type = [1, 2, 1, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -311,7 +326,7 @@ function Tip4p_FQ()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0
@@ -336,15 +351,15 @@ function Tip4p_FQ()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip4p_2005()
+structure_tip4p_2005()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip4p_2005 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_2005 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip4p_2005()
+function structure_tip4p_2005()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -356,7 +371,7 @@ function Tip4p_2005()
 
     atom_type = [1, 2, 1, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -365,7 +380,7 @@ function Tip4p_2005()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0
@@ -390,16 +405,16 @@ function Tip4p_2005()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 
 """
-Tip4p_Ice()
+structure_tip4p_ice()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip4p_Ice moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_Ice moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip4p_Ice()
+function structure_tip4p_ice()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -411,7 +426,7 @@ function Tip4p_Ice()
 
     atom_type = [1, 2, 1, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -420,7 +435,7 @@ function Tip4p_Ice()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0
@@ -445,15 +460,15 @@ function Tip4p_Ice()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip5p()
+structure_tip5p()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip5p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip5p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip5p()
+function structure_tip5p()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -466,7 +481,7 @@ function Tip5p()
 
     atom_type = [1, 2, 1, 3, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -475,7 +490,7 @@ function Tip5p()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0.5
@@ -502,15 +517,15 @@ function Tip5p()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip5p_2018()
+structure_tip5p_2018()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip5p_2018 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip5p_2018 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip5p_2018()
+function structure_tip5p_2018()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -523,7 +538,7 @@ function Tip5p_2018()
 
     atom_type = [1, 2, 1, 3, 3]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0]
+    para_mass = [1.00784, 15.9994, 0]
     atom_name = split("H O Dummy")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -532,7 +547,7 @@ function Tip5p_2018()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0.5
@@ -559,15 +574,15 @@ function Tip5p_2018()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-Tip7p()
+structure_tip7p()
 
-Do this will generate a Famliy_Wat type which contains all information needed to build a Tip7p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip7p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
-function Tip7p()
+function structure_tip7p()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -580,7 +595,7 @@ function Tip7p()
 
     atom_type = [1, 2, 1, 3, 3, 4, 4]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    atom_mass = [1.00784, 15.9994, 0, 0]
+    para_mass = [1.00784, 15.9994, 0, 0]
     atom_name = split("H O Dummy01 Dummy02")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
@@ -589,7 +604,7 @@ function Tip7p()
     cell_vec = [
         ratio[1] * bond_len * sin(angle/2)
         ratio[2] * bond_len * cos(angle/2)
-        ( (atom_mass[1]*2+atom_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
         0          0          0.5
@@ -620,5 +635,5 @@ function Tip7p()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Family_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end

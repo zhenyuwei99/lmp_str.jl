@@ -1,30 +1,29 @@
 """
-    mutable struct Family_Ca  <: Str
+    mutable struct Structure_Ca  <: Str
 
 This contains information for model constructing of C and its compounds.
 
 # Supported list:
-- CaCO3
-Notice:Case sensetive
+- structure_caco3()
 """
-mutable struct Family_Ca <: Str
+mutable struct Structure_Ca <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
     atom_name
     atom_charge
-    atom_mass
+    para_mass
     num_atoms
     num_atom_types
     vec_type_id
 end
 
 """
-    CaCO3()
+    structure_caco3()
 
-Do this will generate a Family_Ca type which contains all information needed to build a CaCO3 moedel.
+Do this will generate a Structure_Ca type which contains all information needed to build a CaCO3 moedel.
 """
-function CaCO3()
+function structure_caco3()
     atom_vec = [
 		0.772116  0.360801   0.0909051
 		0.32908   0.721614   0.454547 
@@ -64,9 +63,9 @@ function CaCO3()
     ]
     atom_type = vcat([1 for n=1:6], [2 for n=1:6], [3 for n=1:18])
     atom_charge = 0 .* atom_type
-    atom_mass = [40.078, 12.011, 15.999]
+    para_mass = [40.078, 12.011, 15.999]
     atom_name = split("Ca C O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Ca(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
+    Structure_Ca(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
 end

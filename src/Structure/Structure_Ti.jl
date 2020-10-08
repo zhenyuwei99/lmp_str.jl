@@ -1,30 +1,29 @@
 """
-    mutable struct Family_Ti  <: Str
+    mutable struct Structure_Ti  <: Str
 
 This contains information for model constructing of Ti and its compounds.
 
 # Supported list:
-- TiO2_Anatase
-- TiO2_Rutile
-Notice:Case sensetive
+- structure_tio2_anatase()
+- structure_tio2_rutile()
 """
-mutable struct Family_Ti <: Str
+mutable struct Structure_Ti <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
     atom_name
     atom_charge
-    atom_mass
+    para_mass
     num_atoms
     num_atom_types
     vec_type_id
 end
 
 """
-    function TiO2_Anatase()
-Do this will generate a Family_Ti type which contains all information needed to build a TiO2 moedel in structure of Anatase.
+    function structure_tio2_anatase()
+Do this will generate a Structure_Ti type which contains all information needed to build a TiO2 moedel in structure of Anatase.
 """
-function TiO2_Anatase()
+function structure_tio2_anatase()
     atom_vec = [
         0.500	0.000	0.000
         0.500	0.500	0.250
@@ -46,18 +45,18 @@ function TiO2_Anatase()
     ] 
     atom_type = vcat([1 for n = 1:4], [2 for n = 5:12])
     atom_charge = 0 .* atom_type
-    atom_mass = [47.867, 15.999] # Ti: 47.867, O: 15.999. Unit: g/mol
+    para_mass = [47.867, 15.999] # Ti: 47.867, O: 15.999. Unit: g/mol
     atom_name = split("Ti O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end
 
 """
-    function TiO2_Rutile()
-Do this will generate a Family_Ti type which contains all information needed to build a TiO2 moedel in structure of Rutile.
+    function structure_tio2_rutile()
+Do this will generate a Structure_Ti type which contains all information needed to build a TiO2 moedel in structure of Rutile.
 """
-function TiO2_Rutile()
+function structure_tio2_rutile()
     atom_vec = [
         0.804921  0.804921  0.0     
         0.305029  0.305029  0.499831
@@ -73,9 +72,9 @@ function TiO2_Rutile()
     ] 
     atom_type = vcat([1 for n = 1:2], [2 for n = 1:4])
     atom_charge = 0 .* atom_type
-    atom_mass = [47.867, 15.999] # Ti: 47.867, O: 15.999. Unit: g/mol
+    para_mass = [47.867, 15.999] # Ti: 47.867, O: 15.999. Unit: g/mol
     atom_name = split("Ti O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1, 2])
+    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
 end

@@ -32,10 +32,14 @@ function cat_data(vec_data::Data...)
             data.data_basic.num_atoms += vec_data[id].data_basic.num_atoms
             data.data_basic.num_bonds += vec_data[id].data_basic.num_bonds
             data.data_basic.num_angles += vec_data[id].data_basic.num_angles
+            data.data_basic.num_dihedrals += vec_data[id].data_basic.num_dihedrals
+            data.data_basic.num_impropers += vec_data[id].data_basic.num_impropers
             if flag_str == 1
                 data.data_basic.num_atom_types += vec_data[id].data_basic.num_atom_types
                 data.data_basic.num_bond_types += vec_data[id].data_basic.num_bond_types
                 data.data_basic.num_angle_types += vec_data[id].data_basic.num_angle_types
+                data.data_basic.num_dihedral_types += vec_data[id].data_basic.num_dihedral_types
+                data.data_basic.num_improper_types += vec_data[id].data_basic.num_improper_types
             end
             data.data_basic.box_size[:, 2] = max(data.data_basic.box_size[:, 2], vec_data[id].data_basic.box_size[:, 2])
             data.data_basic.box_size[:, 1] = min(data.data_basic.box_size[:, 1], vec_data[id].data_basic.box_size[:, 1])
@@ -71,6 +75,32 @@ function cat_data(vec_data::Data...)
                     data.vec_angle = vcat(data.vec_angle, vec_data[id].vec_angle)
                 end
             end
+
+            # Dihedral Info
+            if typeof(data.vec_dihedral) == Int64
+                if typeof(vec_data[id].vec_dihedral) != Int64
+                    add!(vec_data[id].vec_dihedral, atom_tilt, "atom")
+                    data.vec_dihedral = vec_data[id].vec_dihedral
+                end
+            else
+                if typeof(vec_data[id].vec_dihedral) != Int64
+                    add!(vec_data[id].vec_dihedral, atom_tilt, "atom")
+                    data.vec_dihedral = vcat(data.vec_dihedral, vec_data[id].vec_dihedral)
+                end
+            end
+
+            # Improper Info
+            if typeof(data.vec_improper) == Int64
+                if typeof(vec_data[id].vec_improper) != Int64
+                    add!(vec_data[id].vec_improper, atom_tilt, "atom")
+                    data.vec_improper = vec_data[id].vec_improper
+                end
+            else
+                if typeof(vec_data[id].vec_improper) != Int64
+                    add!(vec_data[id].vec_improper, atom_tilt, "atom")
+                    data.vec_improper = vcat(data.vec_improper, vec_data[id].vec_improper)
+                end
+            end
         end
     end
     data
@@ -79,7 +109,7 @@ end
 # sort_data
 """
     sort_data!(data::Data_Unit, list_atom::Array)
-
+    
 Do this will rearrange the atom id to consecutive one after calling `remove!`
 """
 function sort_data!(data::Data_Unit, list_atom::Array)

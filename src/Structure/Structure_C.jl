@@ -1,31 +1,30 @@
 """
-    mutable struct Family_C  <: Str
+    mutable struct Structure_C  <: Str
 
 This contains information for model constructing of C and its compounds.
 
 # Supported list:
-- Graphene
-- Graphene_Ort
-Notice:Case sensetive
+- structure_graphene()
+- structure_graphene_ort()
 """
-mutable struct Family_C <: Str
+mutable struct Structure_C <: Str
     atom_vec::Matrix{Float64}
     cell_vec::Matrix{Float64}
     atom_type
     atom_name
     atom_charge
-    atom_mass
+    para_mass
     num_atoms
     num_atom_types
     vec_type_id
 end
 
 """
-    Graphene()
+    structure_graphene()
 
-Do this will generate a Family_C type which contains all information needed to build a Graphene moedel.
+Do this will generate a Structure_C type which contains all information needed to build a Graphene moedel.
 """
-function Graphene()
+function structure_graphene()
     atom_vec = [
         1/3 1/3 0
         2/3 2/3 0
@@ -37,19 +36,19 @@ function Graphene()
     ]
     atom_type = [1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [12]
+    para_mass = [12]
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
+    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
 end
 
 """
-    Graphene_Ort()
+    structure_graphene_ort()
 
 Do this will generate a Famliy_C type which contains all information needed to build a Graphene moedel with orthogonal unit cell.
 """
-function Graphene_Ort()
+function structure_graphene_ort()
     atom_vec = [
         0   0   0
         0   1/3 0
@@ -63,9 +62,9 @@ function Graphene_Ort()
     ]
     atom_type = [1 1 1 1]
     atom_charge = 0 .* atom_type
-    atom_mass = [12]
+    para_mass = [12]
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Family_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, atom_mass, num_atoms, num_atom_types, [1])
+    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
 end

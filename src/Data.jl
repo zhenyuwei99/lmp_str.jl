@@ -75,6 +75,54 @@ function Angle(angle::Angle)
 end
 
 """
+    mutable struct Dihedral <: Unit
+
+This contains information needed to describe an dihedral in Lammps Data File.
+"""
+mutable struct Dihedral <: Unit
+    id::Int64
+    typ::Int64
+    atom::Vector{Int64}
+end
+
+"""
+    Dihedral(dihedral::Dihedral)
+
+Do this will generate a new variable of `Dihedral` type same as variable `dihedral`.
+"""
+function Dihedral(dihedral::Dihedral)
+    id = dihedral.id
+    typ = dihedral.typ
+    atom = Vector{Int64}(undef, length(dihedral.atom))
+    atom[:] = dihedral.atom[:]
+    Dihedral(id, typ, atom)
+end
+
+"""
+    mutable struct Improper <: Unit
+
+This contains information needed to describe an improper in Lammps Data File.
+"""
+mutable struct Improper <: Unit
+    id::Int64
+    typ::Int64
+    atom::Vector{Int64}
+end
+
+"""
+    Improper(improper::Improper)
+
+Do this will generate a new variable of `Improper` type same as variable `improper`.
+"""
+function Improper(improper::Improper)
+    id = improper.id
+    typ = improper.typ
+    atom = Vector{Int64}(undef, length(improper.atom))
+    atom[:] = improper.atom[:]
+    Improper(id, typ, atom)
+end
+
+"""
     mutable struct Data_Cell
 
 This contains information of cell matrix.
@@ -135,6 +183,8 @@ mutable struct Data_Unit <: Data
     vec_atom::Union{Vector{Atom}, Int64}
     vec_bond::Union{Vector{Bond}, Int64}
     vec_angle::Union{Vector{Angle}, Int64}
+    vec_dihedral::Union{Vector{Dihedral}, Int64}
+    vec_improper::Union{Vector{Improper}, Int64}
 end
 
 function Data_Unit(data::Data_Unit)
@@ -149,7 +199,18 @@ function Data_Unit(data::Data_Unit)
     else
         vec_angle = 0
     end
-    Data_Unit(Data_Basic(data.data_basic), data.data_str, vec_atom[:], vec_bond, vec_angle)
+    if typeof(data.vec_dihedral) != Int64
+        vec_dihedral = [Dihedral(data.vec_dihedral[n]) for n = 1 : length(data.vec_dihedral)]
+    else
+        vec_dihedral = 0
+    end
+    if typeof(data.vec_improper) != Int64
+        vec_improper = [Improper(data.vec_improper[n]) for n = 1 : length(data.vec_improper)]
+    else
+        vec_improper = 0
+    end
+    Data_Unit(Data_Basic(data.data_basic), data.data_str, 
+            vec_atom[:], vec_bond, vec_angle, vec_dihedral, vec_improper)
 end
 
 """
@@ -163,12 +224,22 @@ mutable struct Data_Sum <: Data
     vec_atom::Union{Vector{Atom}, Int64}
     vec_bond::Union{Vector{Bond}, Int64}
     vec_angle::Union{Vector{Angle}, Int64}
+    vec_dihedral::Union{Vector{Dihedral}, Int64}
+    vec_improper::Union{Vector{Improper}, Int64}
 end
 
 function Data_Sum(data::Data_Unit)
-    Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:])
+    Data_Sum(Data_Basic(data.data_basic), [data.data_str], data.vec_atom[:], 
+        typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], 
+        typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:],
+        typeof(data.vec_dihedral)==Int64 ? data.vec_dihedral : data.vec_dihedral[:],
+        typeof(data.vec_improper)==Int64 ? data.vec_improper : data.vec_improper[:])
 end
 
 function Data_Sum(data::Data_Sum)
-    Data_Sum(Data_Basic(data.data_basic), [data.vec_str[n] for n = 1:length(data.vec_str)], data.vec_atom[:], typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:])
+    Data_Sum(Data_Basic(data.data_basic), [data.vec_str[n] for n = 1:length(data.vec_str)], data.vec_atom[:],
+        typeof(data.vec_bond)==Int64 ? data.vec_bond : data.vec_bond[:], 
+        typeof(data.vec_angle)==Int64 ? data.vec_angle : data.vec_angle[:],
+        typeof(data.vec_dihedral)==Int64 ? data.vec_dihedral : data.vec_dihedral[:],
+        typeof(data.vec_improper)==Int64 ? data.vec_improper : data.vec_improper[:])
 end

@@ -61,12 +61,75 @@ function write_info(info::Str, name_file::AbstractString)
     io = open(name_file, "a")
 
     # Judgement and Output
-    if in(:atom_mass, fields)
+    if in(:para_mass, fields)
         write(io, "\n\nMasses\n\n")
         for atom = 1 : info.num_atom_types
-            write(io, join([string(atom), "\t", string(info.atom_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
+            write(io, join([string(atom), "\t", string(info.para_mass[atom]), "\t\t# ", info.atom_name[atom], "\n"]))
         end
     end
+
+    if in(:para_pair, fields)
+        write(io, "\n\nPair Coeffs\n\n")
+        for atom = 1 : info.num_atom_types
+            para_now = info.para_pair[atom, :]
+            write(io, join([string(atom)]))
+            for para in para_now
+                write(io, join(["\t\t", string(para)]))
+            end
+            write(io, "\n")
+        end
+    end
+
+    if in(:para_bond, fields)
+        write(io, "\n\nBond Coeffs\n\n")
+        for bond = 1 : info.num_bond_types
+            para_now = info.para_bond[bond, :]
+            write(io, join([string(bond)]))
+            for para in para_now
+                write(io, join(["\t\t", string(para)]))
+            end
+            write(io, "\n")
+        end
+    end
+
+    if in(:para_angle, fields)
+        write(io, "\n\nAngle Coeffs\n\n")
+        for angle = 1 : info.num_angle_types
+            para_now = info.para_angle[angle, :]
+            write(io, join([string(angle)]))
+            for para in para_now
+                write(io, join(["\t\t", string(para)]))
+            end
+            write(io, "\n")
+        end
+    end
+
+    if in(:para_dihedral, fields)
+        write(io, "\n\nDihedral Coeffs\n\n")
+        for dihedral = 1 : info.num_dihedral_types
+            para_now = info.para_dihedral[dihedral, :]
+            write(io, join([string(dihedral)])) 
+            write(io, join(["\t\t", string(para_now[1])]))
+            write(io, join(["\t\t", string(Int(para_now[2]))]))
+            write(io, join(["\t\t", string(Int(para_now[3]))]))
+            write(io, join(["\t\t", string(para_now[4])]))
+            write(io, "\n")
+        end
+    end
+
+    if in(:para_improper, fields)
+        write(io, "\n\nImproper Coeffs\n\n")
+        for improper = 1 : info.num_improper_types
+            para_now = info.para_improper[improper, :]
+            write(io, join([string(improper)]))
+            for para in para_now
+                write(io, join(["\t\t", string(para)]))
+            end
+            write(io, "\n")
+        end
+    end
+
+
     write(io, "\n\n")
 
     close(io)
@@ -78,12 +141,12 @@ function write_info(info::Vector{Str}, name_file::AbstractString)
     io = open(name_file, "a")
 
     # Judgement and Output
-    if in(:atom_mass, fields)
+    if in(:para_mass, fields)
         write(io, "\n\nMasses\n\n")
         id = 1
         for str = 1 : length(info)
             for atom = 1 : info[str].num_atom_types
-                write(io, join([string(id), "\t", string(info[str].atom_mass[atom]), "\t\t# ", info[str].atom_name[atom], "\n"]))
+                write(io, join([string(id), "\t", string(info[str].para_mass[atom]), "\t\t# ", info[str].atom_name[atom], "\n"]))
                 id += 1
             end
         end
@@ -118,7 +181,7 @@ function write_info(info::Vector{Atom}, name_file::AbstractString)
     close(io)
 end
 
-function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union{Bond, Angle}
+function write_info(info::Vector{T}, name_file::AbstractString) where T <: Union{Bond, Angle, Dihedral, Improper}
     # Reading Input
     io = open(name_file, "a")
     fields = fieldnames(typeof(info[1]))
@@ -145,6 +208,7 @@ end
 
 function write_info(info::Int64, name_file::AbstractString)
     # do nothing for vec_bond or vec_angle = 0
+    # It is very important although no code inside
 end
 
 """

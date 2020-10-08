@@ -102,7 +102,7 @@ function min(array_01::AbstractArray, array_02::AbstractArray)
 end
 
 """
-    get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
+    get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Data_Unit
 Do this will return a vector of variable `para` for all elements in `vec_unit`.
 # Example
 ```julia-repl
@@ -112,7 +112,7 @@ data = genr(cell, str)
 get_data(data.vec_angle, "atom")
 ```
 """
-function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
+function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Data_Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -129,7 +129,7 @@ function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
 end
 
 """
-    add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+    add(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_Unit
 
 Do this will add `tilt` to variable `para` for all elements in `vec_unit`
 
@@ -141,7 +141,7 @@ data = genr(cell, str)
 add(data.vec_bond, 3, "typ")
 ```
 """
-function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -162,7 +162,7 @@ function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 end
 
 """
-    change(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+    change(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_Unit
 
 Do this will change variable `para` of all elements in `vec_unit` to `tilt`
 
@@ -174,7 +174,7 @@ data = genr(cell, str)
 change(data.vec_bond, 3, "typ")
 ```
 """
-function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
+function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Data_Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -189,7 +189,7 @@ function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Uni
     end
 end
 
-function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
+function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Data_Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     dims = size(goal)[2]

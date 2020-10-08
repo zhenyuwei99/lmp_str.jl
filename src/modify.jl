@@ -251,13 +251,13 @@ function remove!(data::Data, list_atom::Array)
             setfield!(data.data_basic, para_now, para_result)
 
             # Changing Vector of each field
-            setfield!(data, fields[field], remove!(getfield(data, fields[field]), list_id)) # remove!(vec::Vector{T} , id::Array) where T<:Unit
+            setfield!(data, fields[field], remove!(getfield(data, fields[field]), list_id)) # remove!(vec::Vector{T} , id::Array) where T<:Data_Unit
         end
     end
     sort_data!(data, list_atom)
 end
 
-function remove!(vec::Union{Vector{T}, Int64}, id::Array) where T <: Unit
+function remove!(vec::Union{Vector{T}, Int64}, id::Array) where T <: Data_Unit
     len = length(vec)
     judge = trues(len)
     for i in id
