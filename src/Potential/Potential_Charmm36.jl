@@ -38,13 +38,13 @@ function Potential_Charmm36_Unit(para_info, complete_mode="normal", para_complet
     elseif complete_mode == "copy"
         if para_complete == 0
             error("`para_complete` should be specified while `copy` mode is choosen")
-        elseif num_paras <= para_complete
+        elseif num_paras < para_complete
             para = cat(para, para, dims=1)
         end
     elseif complete_mode == "one"
         if para_complete == 0
             para = cat(para, ones(1), dims=1)
-        elseif num_paras <= para_complete
+        elseif num_paras < para_complete
             para = cat(para, ones(para_complete - num_paras), dims=1)
         end
     end
