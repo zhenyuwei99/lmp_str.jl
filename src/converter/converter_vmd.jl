@@ -223,8 +223,8 @@ function converter_vmd(file_pdb::String, file_psf::String, potential::Potential,
     type_vec, charge_vec, bond_topo, angle_topo, dihedral_topo, improper_topo = read_psf(file_psf)
     
     box_size = Array(cat(minimum(coord_mat, dims=1), maximum(coord_mat, dims=1), dims=1)')
-    box_size[:, 1] .-= box_padding / 2
-    box_size[:, 2] .+= box_padding / 2
+    #box_size[:, 1] .-= box_padding / 2
+    #box_size[:, 2] .+= box_padding / 2
     box_tilt = [0, 0, 0] 
 
     # Assign parameters
