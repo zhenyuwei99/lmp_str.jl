@@ -109,9 +109,6 @@ function assign_para_atom(id_vec, mol_vec, type_vec, charge_vec, coord_mat, pote
 
     para_pair = [findfirst(x->judgeequal(x, [type_list[i] for i in id_vec[atom]]),
                              potential.para_pair) for atom = 1:num_atom_types]
-    for a in potential.para_pair[para_pair]
-        println(a)
-    end
     para_pair = vcat([pair.para for pair in potential.para_pair[para_pair]]...)
 
     para_pair = reshape(para_pair, (4, :))'
