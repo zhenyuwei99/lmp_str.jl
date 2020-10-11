@@ -234,7 +234,21 @@ function converter_vmd(file_pdb::String, file_psf::String, potential::Potential,
     num_angles, num_angle_types, vec_angle, para_angle = assign_para_angle(type_vec, angle_topo, potential)
     num_dihedrals, num_dihedral_types, vec_dihedral, para_dihedral = assign_para_dihedral(type_vec, dihedral_topo, potential)
     num_impropers, num_improper_types, vec_improper, para_improper = assign_para_improper(type_vec, improper_topo, potential)
-
+    
+    # Judgement
+    if num_bonds == 0
+        vec_bond = 0
+    end
+    if num_angles == 0
+        vec_angle = 0
+    end
+    if num_dihedrals == 0
+        vec_dihedral = 0
+    end
+    if num_impropers == 0
+        vec_improper = 0
+    end
+    
     # Creat Data instance
     data_basic = Data_Basic(num_atoms, num_bonds, num_angles, num_dihedrals, num_impropers, 
     num_atom_types, num_bond_types, num_angle_types, num_dihedral_types, num_improper_types, box_size, box_tilt)
