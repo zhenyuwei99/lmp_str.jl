@@ -81,6 +81,9 @@ function write_info(info::Str, name_file::AbstractString)
     end
 
     if in(:para_bond, fields)
+        if info.num_bond_types == 0
+            break
+        end
         write(io, "\n\nBond Coeffs\n\n")
         for bond = 1 : info.num_bond_types
             para_now = info.para_bond[bond, :]
@@ -93,6 +96,9 @@ function write_info(info::Str, name_file::AbstractString)
     end
 
     if in(:para_angle, fields)
+        if info.num_angle_types == 0
+            break
+        end
         write(io, "\n\nAngle Coeffs\n\n")
         for angle = 1 : info.num_angle_types
             para_now = info.para_angle[angle, :]
@@ -105,6 +111,9 @@ function write_info(info::Str, name_file::AbstractString)
     end
 
     if in(:para_dihedral, fields)
+        if info.num_dihedral_types == 0
+            break
+        end
         write(io, "\n\nDihedral Coeffs\n\n")
         for dihedral = 1 : info.num_dihedral_types
             para_now = info.para_dihedral[dihedral, :]
@@ -118,6 +127,9 @@ function write_info(info::Str, name_file::AbstractString)
     end
 
     if in(:para_improper, fields)
+        if info.num_improper_types == 0
+            break
+        end
         write(io, "\n\nImproper Coeffs\n\n")
         for improper = 1 : info.num_improper_types
             para_now = info.para_improper[improper, :]
