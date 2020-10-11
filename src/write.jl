@@ -80,53 +80,60 @@ function write_info(info::Str, name_file::AbstractString)
         end
     end
 
-    if in(:para_bond, fields) & info.num_bond_types != 0
-        write(io, "\n\nBond Coeffs\n\n")
-        for bond = 1 : info.num_bond_types
-            para_now = info.para_bond[bond, :]
-            write(io, join([string(bond)]))
-            for para in para_now
-                write(io, join(["\t\t", string(para)]))
+    if in(:para_bond, fields) 
+        if info.num_bond_types != 0
+            write(io, "\n\nBond Coeffs\n\n")
+            for bond = 1 : info.num_bond_types
+                para_now = info.para_bond[bond, :]
+                write(io, join([string(bond)]))
+                for para in para_now
+                    write(io, join(["\t\t", string(para)]))
+                end
+                write(io, "\n")
             end
-            write(io, "\n")
         end
     end
 
     if in(:para_angle, fields)
-        write(io, "\n\nAngle Coeffs\n\n") & info.num_angle_types != 0
-        for angle = 1 : info.num_angle_types
-            para_now = info.para_angle[angle, :]
-            write(io, join([string(angle)]))
-            for para in para_now
-                write(io, join(["\t\t", string(para)]))
+        write(io, "\n\nAngle Coeffs\n\n") 
+        if info.num_angle_types != 0
+            for angle = 1 : info.num_angle_types
+                para_now = info.para_angle[angle, :]
+                write(io, join([string(angle)]))
+                for para in para_now
+                    write(io, join(["\t\t", string(para)]))
+                end
+                write(io, "\n")
             end
-            write(io, "\n")
         end
     end
 
-    if in(:para_dihedral, fields) & info.num_dihedral_types != 0
-        print(info.num_dihedral_types != 0)
-        write(io, "\n\nDihedral Coeffs\n\n")
-        for dihedral = 1 : info.num_dihedral_types
-            para_now = info.para_dihedral[dihedral, :]
-            write(io, join([string(dihedral)])) 
-            write(io, join(["\t\t", string(para_now[1])]))
-            write(io, join(["\t\t", string(Int(para_now[2]))]))
-            write(io, join(["\t\t", string(Int(para_now[3]))]))
-            write(io, join(["\t\t", string(para_now[4])]))
-            write(io, "\n")
+    if in(:para_dihedral, fields) 
+        if info.num_dihedral_types != 0
+            write(io, "\n\nDihedral Coeffs\n\n")
+            for dihedral = 1 : info.num_dihedral_types
+                para_now = info.para_dihedral[dihedral, :]
+                write(io, join([string(dihedral)])) 
+                write(io, join(["\t\t", string(para_now[1])]))
+                write(io, join(["\t\t", string(Int(para_now[2]))]))
+                write(io, join(["\t\t", string(Int(para_now[3]))]))
+                write(io, join(["\t\t", string(para_now[4])]))
+                write(io, "\n")
+            end
         end
     end
 
-    if in(:para_improper, fields) & info.num_improper_types != 0 
-        write(io, "\n\nImproper Coeffs\n\n")
-        for improper = 1 : info.num_improper_types
-            para_now = info.para_improper[improper, :]
-            write(io, join([string(improper)]))
-            for para in para_now
-                write(io, join(["\t\t", string(para)]))
+    if in(:para_improper, fields) 
+        if info.num_improper_types != 0 
+            write(io, "\n\nImproper Coeffs\n\n")
+            for improper = 1 : info.num_improper_types
+                para_now = info.para_improper[improper, :]
+                write(io, join([string(improper)]))
+                for para in para_now
+                    write(io, join(["\t\t", string(para)]))
+                end
+                write(io, "\n")
             end
-            write(io, "\n")
         end
     end
 
