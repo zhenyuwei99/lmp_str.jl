@@ -77,8 +77,9 @@ This will convert the Charmm36 force filed data into an array which assign the a
 function Potential_Charmm36()
     para_mass = [Potential_Charmm36_Unit(info) for info in mass_para_info]
     para_pair = [Potential_Charmm36_Unit(info, "copy", 4) for info in pair_para_info]
-    para_pair[:, 2] *= 2 / 2^(1/6)
-    para_pair[:, 4] *= 2 / 2^(1/6)
+    for pair in para_pair
+        pair.para[[2, 4]] *= 2 / 2^(1/6)
+    end
     para_bond = [Potential_Charmm36_Unit(info) for info in bond_para_info]
     para_angle = [Potential_Charmm36_Unit(info, "zero", 4) for info in angle_para_info]
     para_dihedral = [Potential_Charmm36_Unit(info, "one") for info in dihedral_para_info]
