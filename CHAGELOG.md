@@ -7,7 +7,7 @@
   - `converter_vmd()`
 - `Stucture_VMD`: Along with converter_vmd(), used to store potential information for `write_data()`
 - Potential series
-  - `potential_charmm36`: variables contain all information in Potential_Charmm36
+  - `potential_charmm36`: variables contain all information in Potential_Charmm36.jl
 - `Angle`
 - `Dihedral`
 - `Improper`
