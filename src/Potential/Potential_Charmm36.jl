@@ -12,7 +12,7 @@ This will transform a string list like "HAL2   0.028     1.3400" to a `Potential
    - `zero`: automatically fullfill zeros make `para` have the same length specified by `para_complete`
    - `copy`: automatically fullfill `para` with exist parameters in `para_info`
 """
-function Potential_Charmm36_Unit(para_info, complete_mode="normal", para_complete=0)
+function Potential_Charmm36_Unit_copy(para_info, complete_mode="normal", para_complete=0)
     res = split(para_info)
     num_info = length(res)
     col_para = 0
@@ -2925,13 +2925,13 @@ improper_para_info = split("OBL  X    X    CL         100.00       0.00
     CC   X    X    CT3    96.0000        0.0000", "\n")
                 
 # Output
-para_mass = [Potential_Charmm36_Unit(info) for info in mass_para_info]
-para_pair = [Potential_Charmm36_Unit(info, "copy", 4) for info in pair_para_info]
+para_mass = [Potential_Charmm36_Unit_copy(info) for info in mass_para_info]
+para_pair = [Potential_Charmm36_Unit_copy(info, "copy", 4) for info in pair_para_info]
 for pair in para_pair
     pair.para[[2, 4]] *= 2 / 2^(1/6)
 end
-para_bond = [Potential_Charmm36_Unit(info) for info in bond_para_info]
-para_angle = [Potential_Charmm36_Unit(info, "zero", 4) for info in angle_para_info]
-para_dihedral = [Potential_Charmm36_Unit(info, "one") for info in dihedral_para_info]
-para_improper = [Potential_Charmm36_Unit(info) for info in improper_para_info]
+para_bond = [Potential_Charmm36_Unit_copy(info) for info in bond_para_info]
+para_angle = [Potential_Charmm36_Unit_copy(info, "zero", 4) for info in angle_para_info]
+para_dihedral = [Potential_Charmm36_Unit_copy(info, "one") for info in dihedral_para_info]
+para_improper = [Potential_Charmm36_Unit_copy(info) for info in improper_para_info]
 potential_charmm36 = Potential_Charmm36(para_mass, para_pair, para_bond, para_angle, para_dihedral, para_improper)
