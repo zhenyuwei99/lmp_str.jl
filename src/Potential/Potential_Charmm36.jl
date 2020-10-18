@@ -62,30 +62,18 @@ mutable struct Potential_Charmm36 <: Potential
     para_improper::Array{Potential_Charmm36_Unit}
 end
 
-
-"""
-    function potential_charmm36_split_para(para_string, atom_name_vec, col_atom_end, num_cols=0)
-
-This will convert the Charmm36 force filed data into an array which assign the atom ID according to the order of atom_name_vec.
-- `para_string`: String contains the parameters of Charmm36 (like :
-    "CT2A CC    200.000     1.5220 
-    CT1  CS    190.000     1.5380")
-- `atom_name_vec`: String vectors contains all atom names that used in the potential file.
-- `col_atom_end`: The last columns of atom name in `para_string`, e.g: For bonds parameters which account two atoms interaction, atom_range=2
-- `num_cols`: The # of columns of parameters, specified only while number of parameters varies between differnet rows.
-"""
-function Potential_Charmm36()
-    para_mass = [Potential_Charmm36_Unit(info) for info in mass_para_info]
-    para_pair = [Potential_Charmm36_Unit(info, "copy", 4) for info in pair_para_info]
-    for pair in para_pair
-        pair.para[[2, 4]] *= 2 / 2^(1/6)
-    end
-    para_bond = [Potential_Charmm36_Unit(info) for info in bond_para_info]
-    para_angle = [Potential_Charmm36_Unit(info, "zero", 4) for info in angle_para_info]
-    para_dihedral = [Potential_Charmm36_Unit(info, "one") for info in dihedral_para_info]
-    para_improper = [Potential_Charmm36_Unit(info) for info in improper_para_info]
-    return Potential_Charmm36(para_mass, para_pair, para_bond, para_angle, para_dihedral, para_improper)
-end
+#function Potential_Charmm36()
+#    para_mass = [Potential_Charmm36_Unit(info) for info in mass_para_info]
+#    para_pair = [Potential_Charmm36_Unit(info, "copy", 4) for info in pair_para_info]
+#    for pair in para_pair
+#        pair.para[[2, 4]] *= 2 / 2^(1/6)
+#    end
+#    para_bond = [Potential_Charmm36_Unit(info) for info in bond_para_info]
+#    para_angle = [Potential_Charmm36_Unit(info, "zero", 4) for info in angle_para_info]
+#    para_dihedral = [Potential_Charmm36_Unit(info, "one") for info in dihedral_para_info]
+#    para_improper = [Potential_Charmm36_Unit(info) for info in improper_para_info]
+#    return Potential_Charmm36(para_mass, para_pair, para_bond, para_angle, para_dihedral, para_improper)
+#end
 
 ## Potential Info
 
@@ -2936,5 +2924,14 @@ improper_para_info = split("OBL  X    X    CL         100.00       0.00
     CC   X    X    CT2    96.0000        0.0000 
     CC   X    X    CT3    96.0000        0.0000", "\n")
                 
-# Summary
-potential_charmm36 = Potential_Charmm36()
+# Output
+para_mass = [Potential_Charmm36_Unit(info) for info in mass_para_info]
+para_pair = [Potential_Charmm36_Unit(info, "copy", 4) for info in pair_para_info]
+for pair in para_pair
+    pair.para[[2, 4]] *= 2 / 2^(1/6)
+end
+para_bond = [Potential_Charmm36_Unit(info) for info in bond_para_info]
+para_angle = [Potential_Charmm36_Unit(info, "zero", 4) for info in angle_para_info]
+para_dihedral = [Potential_Charmm36_Unit(info, "one") for info in dihedral_para_info]
+para_improper = [Potential_Charmm36_Unit(info) for info in improper_para_info]
+potential_charmm36 = Potential_Charmm36(para_mass, para_pair, para_bond, para_angle, para_dihedral, para_improper)

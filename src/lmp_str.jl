@@ -70,17 +70,17 @@ module lmp_str
     export Structure_VMD
 
     # generator Files
-    include("./genrator/genr.jl")
+    include("./generator/genr.jl")
     export genr, genr_cell, genr_atom
     export genr_bond, genr_angle, genr_dihedral, genr_improper
 
-    include("./genrator/modify.jl")
+    include("./generator/modify.jl")
     export move, find, select, remove!, remove_else!
 
-    include("./genrator/genr_ions.jl")
+    include("./generator/genr_ions.jl")
     export genr_ions
 
-    include("./genrator/combine.jl")
+    include("./generator/combine.jl")
     export cat_data, sort_data!
 
     # Potential Files
