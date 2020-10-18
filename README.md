@@ -10,7 +10,7 @@ This method is convenient while the path of "lmp_str" may take some time to foun
 More about Pkg: [Julia Pkg Manual](https://docs.julialang.org/en/v1/stdlib/Pkg/), [中文文档](https://cn.julialang.org/JuliaZH.jl/latest/stdlib/Pkg/)
 
 ## Install from source code
-- Download the source code with git clone in path `path_lmp_str`, not Zips!
+- Download the source code with git clone, assume in path `path_lmp_str`, not Zips!
   ```
   git clone https://github.com/zhenyuwei99/lmp_str.git
   ```
