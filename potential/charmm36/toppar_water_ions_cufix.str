@@ -1,12 +1,10 @@
 * Topology and parameters for Charmpaign-Urbana NBFIX, CUFIX.
 *
-
 !!!!!!!!!!!!!!!!!!!!!!!!!
 !!!! IMPORTANT NOTE !!!!!
 ! To use this Champaign-Urbana NBFIX (CUFIX) corrections, use this file 
 ! instead of using the standard toppar_water_ions.str.
 !
-
 ! Reference
 !
 ! Our website has information required to use CUFIX for the other MD packages such as 
