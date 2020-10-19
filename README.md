@@ -2,7 +2,7 @@
 ## Install with Julia Pkg
 ```julia-repl
 julia> ]
-(@v1.x) pkg> add https://github.com/zhenyuwei99/lmp_str.git
+(@v1.x) pkg> add https://github.com/zhenyuwei99/lmp_str.jl.git
 ```
 This method is convenient, while the path of `lmp_str` may take some time to found. Usually it will be `$HOME/.julia/packages/lmp_str/{version code}`. Meanwhile, files in this path are read-only.
 
@@ -12,7 +12,7 @@ More about Pkg: [Julia Pkg Manual](https://docs.julialang.org/en/v1/stdlib/Pkg/)
 - Download the source code with git clone, not Zips!
   ```
   cd {target_path}
-  git clone https://github.com/zhenyuwei99/lmp_str.git
+  git clone https://github.com/zhenyuwei99/lmp_str.git lmp_str
   ```
 - Add package in julia
 
