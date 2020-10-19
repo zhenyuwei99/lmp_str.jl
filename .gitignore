@@ -3,6 +3,7 @@
 /target/
 developing_files
 push.sh
+.vscode
 */.vscode
 .ipynb_checkpoints
 */.ipynb_checkpoints
