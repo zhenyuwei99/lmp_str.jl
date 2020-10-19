@@ -1,4 +1,9 @@
 # lmp_str.jl
+***MD modeling package in Julia***
+
+
+## Requirements
+The current version of `lmp_str.jl` requires **Julia 1.0** or higher.
 
 ## Quick start
 ### (a) Install with Julia Pkg
