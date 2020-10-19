@@ -1,5 +1,4 @@
 # Installation
-
 ## Install with Julia Pkg
 ```julia-repl
 julia> ]
