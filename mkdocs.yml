@@ -1,11 +1,11 @@
 site_name: lmp_str.jl
 site_author: 'Zhenyu Wei'
-copyright: Copyright © 2020 [Zhenyu Wei](zhenyuwei99@gmail.com)
+copyright: Copyright © 2020 Zhenyu Wei zhenyuwei99@gmail.com
 theme: 
-  name: readthedocs
+  name: rtd-dropdown #readthedocs
 
 nav:
-  - Home: home/home.md
+  - Home: home.md
   - Introduction:
     - framework: intro/framework/framework.md
     - lmp_str.jl features: intro/features/features.md
