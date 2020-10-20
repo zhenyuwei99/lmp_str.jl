@@ -1,6 +1,7 @@
 ##ignore this file
 
 /target/
+site
 developing_files
 push.sh
 .vscode
