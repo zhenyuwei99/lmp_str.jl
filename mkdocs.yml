@@ -1,0 +1,18 @@
+site_name: lmp_str.jl
+site_author: 'Zhenyu Wei'
+copyright: Copyright © 2020 [Zhenyu Wei](zhenyuwei99@gmail.com)
+theme: 
+  name: readthedocs
+
+nav:
+  - Home: home/home.md
+  - Introduction:
+    - framework: intro/framework/framework.md
+    - lmp_str.jl features: intro/features/features.md
+  - User documentation: 
+    - Install lmp_str.jl: 'manual/install/install.md'
+    - manual: 'manual/manual.md'
+  - Examples and Gallery: 
+    - generator.jl: 'examples/generator/generator.md'
+    - converter.jl: 'examples/converter/converter.md'
+ 
