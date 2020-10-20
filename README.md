@@ -1,9 +1,9 @@
 # lmp_str.jl
-***molecule builder for LAMMPS in Julia***
+***molecule builder for LAMMPS in Julia***, see [documentation](https://lmp-strjl.readthedocs.io/en/latest/) here.
 
 | **Documentation** |  **Licence** |
 |:---------------------------:|:----------------------:|
-|[![Documentation Status](https://readthedocs.org/projects/lmp-strjl/badge/?version=latest)](https://lmp-strjl.readthedocs.io/en/latest/?badge=latest)| [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)
+|[![Documentation Status](https://readthedocs.org/projects/lmp-strjl/badge/?version=latest)](https://lmp-strjl.readthedocs.io/en/latest/?badge=latest)| [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://github.com/zhenyuwei99/lmp_str.jl/blob/master/LICENSE)
 
 ## Requirements
 The current version of `lmp_str.jl` requires **Julia 1.0** or higher.
