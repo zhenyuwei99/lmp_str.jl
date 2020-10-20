@@ -3,16 +3,35 @@ site_author: 'Zhenyu Wei'
 copyright: Copyright © 2020 Zhenyu Wei zhenyuwei99@gmail.com
 theme: 
   name: readthedocs
+  nav_style: light
+  custom_dir: docs/resources/
+
 
 nav:
-  - Home: home.md
-  - Introduction:
-    - framework: intro/framework/framework.md
-    - lmp_str.jl features: intro/features/features.md
-  - User documentation: 
-    - Install lmp_str.jl: 'manual/install/install.md'
-    - manual: 'manual/manual.md'
-  - Examples and Gallery: 
-    - generator.jl: 'examples/generator/generator.md'
-    - converter.jl: 'examples/converter/converter.md'
+  - 1 Introduction:
+    - 1.1 Framework: intro/framework/framework.md
+    - 1.2 Features: intro/features/features.md
+  - 2 User documentation: 
+    - 2.1 Install: 'user_docs/install/install.md'
+    - 2.2 Constants: 'user_docs/constants/constants.md'
+    - 2.3 Generator: 'user_docs/generator/generator.md'
+    - 2.4 Structure: 'user_docs/structure/structure.md'
+    - 2.5 Modifier: 'user_docs/modifier/modifier.md'
+    - 2.6 Combine: 'user_docs/combine/combine.md'
+    - 2.7 Converter: 'user_docs/converter/converter.md'
+    - 2.8 Potential: 'user_docs/potential/potential.md'
+    - 2.9 Output: 'user_docs/output/output.md'
+  - 3 Developer guidance:
+    - 3.1 Class overview: 
+      - 3.1.1 Unit series: 'developer_guide/class/unit/unit.md' 
+      - 3.1.2 Data series: 'developer_guide/class/data/data.md' 
+      - 3.1.3 Structure series: 'developer_guide/class/structure/structure.md' 
+      - 3.1.4 Potential series: 'developer_guide/class/potential/potential.md' 
+    - 3.2 Structure development: 'developer_guide/structure/structure.md'
+    - 3.3 Potential development: 'developer_guide/potential/potential.md'
+    - 3.4 Modifier development: 'developer_guide/modifier/modifier.md'
+    - 3.5 Converter development: 'developer_guide/converter/converter.md'
+  - 4 Examples and Gallery: 
+    - 4.1 generator.jl: 'examples/generator/generator.md'
+    - 4.2 converter.jl: 'examples/converter/converter.md'
  

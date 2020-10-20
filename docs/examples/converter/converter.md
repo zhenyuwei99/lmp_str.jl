@@ -1,9 +1,10 @@
-# converter.jl
+# 4.2 converter.jl
 
 ## example abstract
 This example shows the simple conversion from `.pdb` and `.psf` file created by VMD into `.data` file, which can be used in LAMMPS. The parameters for pair potential, bond, angle, dihedral, improper are all generated automatically.
 
 ## Code
+
 ```julia-repl
 file_pdb = "test.pdb"
 file_psf = "test.psf"

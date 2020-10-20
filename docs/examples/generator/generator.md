@@ -1,4 +1,4 @@
-# generator.jl
+# 4.1 generator.jl
 
 ## example abstract
 This example shows the basic pipline used in generator part of `lmp_str` to create lattice.
