@@ -1,7 +1,7 @@
 # lmp_str.jl
 ***molecule builder for LAMMPS in Julia***
 
-| ** Documentation ** |
+| **Documentation** |
 |:-------------------:|
 |[![Documentation Status](https://readthedocs.org/projects/lmp-strjl/badge/?version=latest)](https://lmp-strjl.readthedocs.io/en/latest/?badge=latest)|
 ## Requirements
