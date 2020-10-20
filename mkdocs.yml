@@ -2,7 +2,7 @@ site_name: lmp_str.jl
 site_author: 'Zhenyu Wei'
 copyright: Copyright © 2020 Zhenyu Wei zhenyuwei99@gmail.com
 theme: 
-  name: rtd-dropdown #readthedocs
+  name: readthedocs
 
 nav:
   - Home: home.md
