@@ -1,6 +1,6 @@
 # lmp_str.jl
 ***molecule builder for LAMMPS in Julia***
-
+[![Documentation Status](https://readthedocs.org/projects/lmp-strjl/badge/?version=latest)](https://lmp-strjl.readthedocs.io/en/latest/?badge=latest)
 
 ## Requirements
 The current version of `lmp_str.jl` requires **Julia 1.0** or higher.
@@ -29,7 +29,7 @@ More about Pkg: [Julia Pkg Manual](https://docs.julialang.org/en/v1/stdlib/Pkg/)
   (@v1.x) pkg> add "{target_path}/lmp_str"
   ```
 This method require one more steps but more flexible.
-ß
+
 ## Basic Description:
 `lmp_str` is a Julia module used to generate the `.data` file for LAMMPS (MD simulation package). You can construct models with build-in functions and convert models created by other software, e.g. VMD, into a `.data` file. The workflow is shown in the flowchart below:
 
