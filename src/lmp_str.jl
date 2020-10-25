@@ -41,8 +41,9 @@ module lmp_str
     include("./Structure/Structure_Wat.jl")
     export Structure_Wat
     export structure_tip3p, structure_spc, structure_spce
-    export structure_tip4p_cut, structure_tip4p_long, structure_tip4p_ew, structure_tip4p_fq
+    export structure_tip4p_cut, structure_tip4p_long
     export structure_tip4p_2005, structure_tip4p_ice
+    export structure_tip4p_ew, structure_tip4p_fq
     export structure_tip5p, structure_tip4p_2005, structure_tip5p_2018
     export structure_tip7p
 
