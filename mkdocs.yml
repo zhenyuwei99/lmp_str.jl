@@ -3,7 +3,10 @@ site_author: 'Zhenyu Wei'
 copyright: Copyright © 2020 Zhenyu Wei zhenyuwei99@gmail.com
 theme: 
   name: readthedocs
-  
+  highlightjs: true
+  hljs_languages: 
+      - julia
+
 nav:
   - 1 Introduction:
     - 1.1 Framework: intro/framework/framework.md

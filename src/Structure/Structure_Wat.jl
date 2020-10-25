@@ -7,11 +7,10 @@ This contains information for model constructing of a series of water models.
  - structure_tip3p()
  - structure_spc()
  - structure_spce()
- - structure_tip4p()
- - structure_tip4p_ew()
- - structure_tip4p_fq()
+ - structure_tip4p_cut()
  - structure_tip4p_2005()
  - structure_tip4p_ice()
+ - structure_tip4p_long()
  - structure_tip5p()
  - structure_tip4p_2005()
  - structure_tip5p_2018()
@@ -193,11 +192,24 @@ function structure_spce()
 end
 
 """
-structure_tip4p()
+    structure_tip4p_cut()
 
-This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p moedel used in lammps with lj/cut/tip4p/cut. Detail info: https://lammps.sandia.gov/doc/Howto_tip4p.html
+
+# Model info
+- O mass = 15.9994
+- H mass = 1.008
+- O charge = -1.040
+- H charge = 0.520
+- ``r_0`` of OH bond = 0.9572
+- ``θ`` of HOH angle = 104.52
+- OM distance = 0.15
+- LJ ``ε`` of O-O = 0.1550
+- LJ `` σ`` of O-O = 3.1536
+- LJ ``ε``, `` σ`` of OH, HH = 0.0
+- Coulomb cutoff = 8.5
 """
-function structure_tip4p()
+function structure_tip4p_cut()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
     angle = 104.52;
@@ -205,12 +217,12 @@ function structure_tip4p()
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
     dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.52, 0.0, -1.04]
+    charge_vec = [0.52, -1.04]
 
-    atom_type = [1, 2, 1, 3]
+    atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.00784, 15.9994, 0]
-    atom_name = split("H O Dummy")
+    para_mass = [1.008, 15.9994]
+    atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -224,7 +236,6 @@ function structure_tip4p()
         0          0          0
         1/ratio[1] 1/ratio[2] 0
         2/ratio[1] 0          0
-        1/ratio[1] 1/cell_vec[2]*dummy_len 0
     ]
     cell_vec = diag(cell_vec)
 
@@ -232,22 +243,84 @@ function structure_tip4p()
     bond_mode = Vector{Bond}(undef, 3)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
-    bond_mode[3] = Bond(0, 1, [2, 4])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 2)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
-    angle_mode[2] = Angle(2, 1, [1, 2, 4])
     num_angles = length(angle_mode)
-    num_angle_types = 2
+    num_angle_types = 1
 
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-structure_tip4p_ew()
+    structure_tip4p_long()
+
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p moedel used in lammps with lj/cut/tip4p/long. Detail info: https://lammps.sandia.gov/doc/Howto_tip4p.html
+
+# Model info
+- O mass = 15.9994
+- H mass = 1.008
+- O charge = -1.0484
+- H charge = 0.5242
+- ``r_0`` of OH bond = 0.9572
+- ``θ`` of HOH angle = 104.52
+- OM distance = 0.1250
+- LJ ``ε`` of O-O = 0.16275
+- LJ `` σ`` of O-O = 3.16435
+- LJ ``ε``, `` σ`` of OH, HH = 0.0
+- Coulomb cutoff = 8.5
+"""
+function structure_tip4p_long()
+    # Parameters of water
+    density = 1 / Const_cm2an^3;      # Unit: g/A^3
+    angle = 104.52;
+    angle = angle / 180 * pi;   # Convert int to rad
+    ratio = [4, 5]              # Ratio to determing shape of box
+    bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
+    dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
+    charge_vec = [0.52, -1.04]
+
+    atom_type = [1, 2, 1]
+    atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
+    para_mass = [1.008, 15.9994]
+    atom_name = split("H O")
+    num_atoms = length(atom_type)
+    num_atom_types = length(atom_name)
+
+    # Setting Atom Args
+    cell_vec = [
+        ratio[1] * bond_len * sin(angle/2)
+        ratio[2] * bond_len * cos(angle/2)
+        ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
+    ]
+    atom_vec = [
+        0          0          0
+        1/ratio[1] 1/ratio[2] 0
+        2/ratio[1] 0          0
+    ]
+    cell_vec = diag(cell_vec)
+
+    # Setting Bond Modes
+    bond_mode = Vector{Bond}(undef, 3)
+    bond_mode[1] = Bond(0, 1, [1, 2])
+    bond_mode[2] = Bond(0, 1, [2, 3])
+    num_bonds = length(bond_mode)
+    num_bond_types = 1
+
+    # Setting Angle Modes
+    angle_mode = Vector{Angle}(undef, 2)
+    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    num_angles = length(angle_mode)
+    num_angle_types = 1
+
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+end
+
+"""
+    structure_tip4p_ew()
 
 This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_Ew moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
@@ -301,7 +374,7 @@ function structure_tip4p_ew()
 end
 
 """
-structure_tip4p_fq()
+    structure_tip4p_fq()
 
 This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_FQ moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
@@ -355,9 +428,22 @@ function structure_tip4p_fq()
 end
 
 """
-structure_tip4p_2005()
+    structure_tip4p_2005()
 
-This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_2005 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_2005 moedel used in lammps with lj/cut/tip4p/cut. Detail info: https://lammps.sandia.gov/doc/Howto_tip4p.html
+
+# Model info
+- O mass = 15.9994
+- H mass = 1.008
+- O charge = -1.1128
+- H charge = 0.5564
+- ``r_0`` of OH bond = 0.9572
+- ``θ`` of HOH angle = 104.52
+- OM distance = 0.1546
+- LJ ``ε`` of O-O = 0.1852
+- LJ `` σ`` of O-O = 3.1589
+- LJ ``ε``, `` σ`` of OH, HH = 0.0
+- Coulomb cutoff = 8.5
 """
 function structure_tip4p_2005()
     # Parameters of water
@@ -366,13 +452,13 @@ function structure_tip4p_2005()
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
-    dummy_len = 0.1546          # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.5564, 0.0, -1.1128]
+    dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
+    charge_vec = [0.5564, -1.1128]
 
-    atom_type = [1, 2, 1, 3]
+    atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.00784, 15.9994, 0]
-    atom_name = split("H O Dummy")
+    para_mass = [1.008, 15.9994]
+    atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -386,7 +472,6 @@ function structure_tip4p_2005()
         0          0          0
         1/ratio[1] 1/ratio[2] 0
         2/ratio[1] 0          0
-        1/ratio[1] 1/cell_vec[2]*dummy_len 0
     ]
     cell_vec = diag(cell_vec)
 
@@ -394,26 +479,36 @@ function structure_tip4p_2005()
     bond_mode = Vector{Bond}(undef, 3)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
-    bond_mode[3] = Bond(0, 1, [2, 4])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 2)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
-    angle_mode[2] = Angle(2, 1, [1, 2, 4])
     num_angles = length(angle_mode)
-    num_angle_types = 2
+    num_angle_types = 1
 
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 
 """
-structure_tip4p_ice()
+    structure_tip4p_ice()
 
-This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_Ice moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
-"""
+This will generate a `Structure_Wat` type which contains all information needed to build a Tip4p_Ice moedel used in lammps with lj/cut/tip4p/cut. Detail info: https://lammps.sandia.gov/doc/Howto_tip4p.html
+
+# Model info
+- O mass = 15.9994
+- H mass = 1.008
+- O charge = -1.1794
+- H charge = 0.5897
+- ``r_0`` of OH bond = 0.9572
+- ``θ`` of HOH angle = 104.52
+- OM distance = 0.1577
+- LJ ``ε`` of O-O = 0.21084
+- LJ `` σ`` of O-O = 3.1668
+- LJ ``ε``, `` σ`` of OH, HH = 0.0
+- Coulomb cutoff = 8.5"""
 function structure_tip4p_ice()
     # Parameters of water
     density = 1 / Const_cm2an^3;      # Unit: g/A^3
@@ -421,13 +516,13 @@ function structure_tip4p_ice()
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
-    dummy_len = 0.1577          # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.5897, 0.0, -1.1794]
+    dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
+    charge_vec = [0.52, -1.04]
 
-    atom_type = [1, 2, 1, 3]
+    atom_type = [1, 2, 1]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.00784, 15.9994, 0]
-    atom_name = split("H O Dummy")
+    para_mass = [1.008, 15.9994]
+    atom_name = split("H O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -441,7 +536,6 @@ function structure_tip4p_ice()
         0          0          0
         1/ratio[1] 1/ratio[2] 0
         2/ratio[1] 0          0
-        1/ratio[1] 1/cell_vec[2]*dummy_len 0
     ]
     cell_vec = diag(cell_vec)
 
@@ -449,22 +543,20 @@ function structure_tip4p_ice()
     bond_mode = Vector{Bond}(undef, 3)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
-    bond_mode[3] = Bond(0, 1, [2, 4])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 2)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
-    angle_mode[2] = Angle(2, 1, [1, 2, 4])
     num_angles = length(angle_mode)
-    num_angle_types = 2
+    num_angle_types = 1
 
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
-structure_tip5p()
+    structure_tip5p()
 
 This will generate a `Structure_Wat` type which contains all information needed to build a Tip5p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
@@ -521,7 +613,7 @@ function structure_tip5p()
 end
 
 """
-structure_tip5p_2018()
+    structure_tip5p_2018()
 
 This will generate a `Structure_Wat` type which contains all information needed to build a Tip5p_2018 moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
@@ -578,7 +670,7 @@ function structure_tip5p_2018()
 end
 
 """
-structure_tip7p()
+    structure_tip7p()
 
 This will generate a `Structure_Wat` type which contains all information needed to build a Tip7p moedel. Detail info: http://www1.lsbu.ac.uk/water/water_models.html
 """
