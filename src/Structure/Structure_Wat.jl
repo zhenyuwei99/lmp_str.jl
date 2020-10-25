@@ -218,13 +218,12 @@ function structure_tip4p_cut()
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
-    dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.52, -1.04]
+    charge_vec = [-1.040, 0.520]
 
-    atom_type = [1, 2, 1]
+    atom_type = [1, 2, 2]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.008, 15.9994]
-    atom_name = split("H O")
+    para_mass = [15.9994, 1.008]
+    atom_name = split("O H")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -235,8 +234,8 @@ function structure_tip4p_cut()
         ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
-        0          0          0
         1/ratio[1] 1/ratio[2] 0
+        0          0          0
         2/ratio[1] 0          0
     ]
     cell_vec = diag(cell_vec)
@@ -244,17 +243,18 @@ function structure_tip4p_cut()
     # Setting Bond Modes
     bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
-    bond_mode[2] = Bond(0, 1, [2, 3])
+    bond_mode[2] = Bond(0, 1, [1, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 1)
-    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    angle_mode[1] = Angle(1, 1, [2, 1, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
@@ -282,13 +282,12 @@ function structure_tip4p_long()
     angle = angle / 180 * pi;   # Convert int to rad
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
-    dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.52, -1.04]
+    charge_vec = [-1.0484, 0.5242]
 
-    atom_type = [1, 2, 1]
+    atom_type = [1, 2, 2]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.008, 15.9994]
-    atom_name = split("H O")
+    para_mass = [15.9994, 1.008]
+    atom_name = split("O H")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -299,8 +298,8 @@ function structure_tip4p_long()
         ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
-        0          0          0
         1/ratio[1] 1/ratio[2] 0
+        0          0          0
         2/ratio[1] 0          0
     ]
     cell_vec = diag(cell_vec)
@@ -308,17 +307,18 @@ function structure_tip4p_long()
     # Setting Bond Modes
     bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
-    bond_mode[2] = Bond(0, 1, [2, 3])
+    bond_mode[2] = Bond(0, 1, [1, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 1)
-    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    angle_mode[1] = Angle(1, 1, [2, 1, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
@@ -457,10 +457,10 @@ function structure_tip4p_2005()
     dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
     charge_vec = [0.5564, -1.1128]
 
-    atom_type = [1, 2, 1]
+    atom_type = [1, 2, 2]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.008, 15.9994]
-    atom_name = split("H O")
+    para_mass = [15.9994, 1.008]
+    atom_name = split("O H")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -471,8 +471,8 @@ function structure_tip4p_2005()
         ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
-        0          0          0
         1/ratio[1] 1/ratio[2] 0
+        0          0          0
         2/ratio[1] 0          0
     ]
     cell_vec = diag(cell_vec)
@@ -480,17 +480,18 @@ function structure_tip4p_2005()
     # Setting Bond Modes
     bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
-    bond_mode[2] = Bond(0, 1, [2, 3])
+    bond_mode[2] = Bond(0, 1, [1, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 1)
-    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    angle_mode[1] = Angle(1, 1, [2, 1, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 
@@ -519,12 +520,12 @@ function structure_tip4p_ice()
     ratio = [4, 5]              # Ratio to determing shape of box
     bond_len = 0.9572           # Unit: Anstrom. https://en.wikipedia.org/wiki/Water_model for more details
     dummy_len = 0.15            # Unit: Anstrom. http://www1.lsbu.ac.uk/water/water_models.html for more details
-    charge_vec = [0.52, -1.04]
+    charge_vec = [0.5897, -1.1794]
 
-    atom_type = [1, 2, 1]
+    atom_type = [1, 2, 2]
     atom_charge = [charge_vec[atom_type[n]] for n=1:length(atom_type)]
-    para_mass = [1.008, 15.9994]
-    atom_name = split("H O")
+    para_mass = [15.9994, 1.008]
+    atom_name = split("O H")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
 
@@ -535,8 +536,8 @@ function structure_tip4p_ice()
         ( (para_mass[1]*2+para_mass[2]) * Const_gm2g) / (density*ratio[1]*bond_len*sin(angle/2) * ratio[2]*bond_len*cos(angle/2))
     ]
     atom_vec = [
-        0          0          0
         1/ratio[1] 1/ratio[2] 0
+        0          0          0
         2/ratio[1] 0          0
     ]
     cell_vec = diag(cell_vec)
@@ -544,17 +545,18 @@ function structure_tip4p_ice()
     # Setting Bond Modes
     bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
-    bond_mode[2] = Bond(0, 1, [2, 3])
+    bond_mode[2] = Bond(0, 1, [1, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
     angle_mode = Vector{Angle}(undef, 1)
-    angle_mode[1] = Angle(1, 1, [1, 2, 3])
+    angle_mode[1] = Angle(1, 1, [2, 1, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
 end
 
 """
