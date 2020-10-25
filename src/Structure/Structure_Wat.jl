@@ -242,14 +242,14 @@ function structure_tip4p_cut()
     cell_vec = diag(cell_vec)
 
     # Setting Bond Modes
-    bond_mode = Vector{Bond}(undef, 3)
+    bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
-    angle_mode = Vector{Angle}(undef, 2)
+    angle_mode = Vector{Angle}(undef, 1)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
@@ -306,14 +306,14 @@ function structure_tip4p_long()
     cell_vec = diag(cell_vec)
 
     # Setting Bond Modes
-    bond_mode = Vector{Bond}(undef, 3)
+    bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
-    angle_mode = Vector{Angle}(undef, 2)
+    angle_mode = Vector{Angle}(undef, 1)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
@@ -478,14 +478,14 @@ function structure_tip4p_2005()
     cell_vec = diag(cell_vec)
 
     # Setting Bond Modes
-    bond_mode = Vector{Bond}(undef, 3)
+    bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
-    angle_mode = Vector{Angle}(undef, 2)
+    angle_mode = Vector{Angle}(undef, 1)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
@@ -542,14 +542,14 @@ function structure_tip4p_ice()
     cell_vec = diag(cell_vec)
 
     # Setting Bond Modes
-    bond_mode = Vector{Bond}(undef, 3)
+    bond_mode = Vector{Bond}(undef, 2)
     bond_mode[1] = Bond(0, 1, [1, 2])
     bond_mode[2] = Bond(0, 1, [2, 3])
     num_bonds = length(bond_mode)
     num_bond_types = 1
 
     # Setting Angle Modes
-    angle_mode = Vector{Angle}(undef, 2)
+    angle_mode = Vector{Angle}(undef, 1)
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
