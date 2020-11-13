@@ -415,3 +415,26 @@ function copy_array(goal)
     res[:] = goal[:]
     return res
 end
+
+"""
+    function grid(x, y)
+This will generate two array from two vector for contour.
+"""
+function grid(x, y)
+    len_x = length(x)
+    len_y = length(y)
+
+    x_mat = zeros(len_y, len_x)
+    y_mat = zeros(len_y, len_x)
+    z_mat = zeros(len_y, len_x)
+
+    for i = 1:len_y
+        for j = 1:len_x
+            x_mat[i, j] = x[j]
+            y_mat[i, j] = y[i]
+        end
+    end
+
+    return x_mat, y_mat
+end
+
