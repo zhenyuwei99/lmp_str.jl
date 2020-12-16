@@ -2,6 +2,7 @@ function write_pdb(data::Data, name_file::AbstractString)
     io = open(name_file, "w")
     write_pdb_CRYST1(io, data)
     write_pdb_ATOM(io, data)
+    write_pdb_END(io)
     close(io)
 end
 
@@ -101,3 +102,6 @@ function write_pdb_ATOM(io, data::Data_Sum)
     end
 end
 
+function write_pdb_END(io)
+    @printf(io, "END")
+end
