@@ -24,9 +24,10 @@ data = addions(data, "Na Cl", conc=0.5)
 """
 function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     # Supported List
-    list_ion = split("K Na Fe Al Cl")
-    list_charge = [1, 1, 2, 3, -1]
-    list_mass = [39.09, 22.99, 55.845, 26.98, 35.453]
+    list_ion = split("K Na Fe Al La Cl")
+    list_residue = split("POT SOD FE AL LAN CLA")
+    list_charge = [1, 1, 2, 3, 3, -1]
+    list_mass = [39.09, 22.99, 55.845, 26.98, 138.04, 35.453]
     
     # Reading Input
     if isa(num_pairs, Bool) & isa(conc, Bool)
@@ -40,6 +41,7 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     ion = split(ion_type)
     len = length(ion)
     ion_id =  [findall(x->x==ion[n], list_ion)[1] for n = 1:len]
+    ion_residue_name = [list_residue[ion_id[n]] for n = 1:len]
     ion_charge = [list_charge[ion_id[n]] for n = 1:len]
     ion_mass = [list_mass[ion_id[n]] for n = 1:len]
 
@@ -81,11 +83,16 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
         end
     end
     
-    # Generate new Data
-    data_str = Structure_Ion(ion, ion_charge, ion_mass, len, [n for n = 1:len])
+    # Generate Data instance
+    vec_atom_cation = vec_atom_new[findall(x->x>0, get_data(vec_atom_new, "charge"))]
+    for (id, atom) in enumerate(vec_atom_cation)
+        atom.atom = id
+        atom.mol = id
+    end
+    data_str = Structure_Ion(ion[1], ion_charge[1], ion_mass[1], 1, [1], ion_residue_name[1])
     data_basic = Data_Basic(data.data_basic)
-    data_basic.num_atoms = num_atoms
-    data_basic.num_atom_types = len
+    data_basic.num_atoms = length(vec_atom_cation)
+    data_basic.num_atom_types = 1
     data_basic.num_bonds = 0
     data_basic.num_bond_types = 0
     data_basic.num_angles = 0
@@ -94,7 +101,28 @@ function genr_ions(data::Data, ion_type::String; num_pairs=false, conc=false)
     data_basic.num_dihedral_types = 0
     data_basic.num_impropers = 0
     data_basic.num_improper_types = 0
+    data_cation = Data_Unit(data_basic, data_str, vec_atom_cation, 0, 0, 0, 0)
+
+    vec_atom_anion = vec_atom_new[findall(x->x<0, get_data(vec_atom_new, "charge"))]
+    for (id, atom) in enumerate(vec_atom_anion)
+        atom.atom = id
+        atom.mol = id
+        atom.typ = 1
+    end
+    data_str = Structure_Ion(ion[2], ion_charge[2], ion_mass[2], 1, [1], ion_residue_name[2])
+    data_basic = Data_Basic(data.data_basic)
+    data_basic.num_atoms = length(vec_atom_anion)
+    data_basic.num_atom_types = 1
+    data_basic.num_bonds = 0
+    data_basic.num_bond_types = 0
+    data_basic.num_angles = 0
+    data_basic.num_angle_types = 0
+    data_basic.num_dihedrals = 0
+    data_basic.num_dihedral_types = 0
+    data_basic.num_impropers = 0
+    data_basic.num_improper_types = 0
+    data_anion = Data_Unit(data_basic, data_str, vec_atom_anion, 0, 0, 0, 0)
     
     # Output
-    data_ion = Data_Unit(data_basic, data_str, vec_atom_new, 0, 0)
+    return data_cation, data_anion
 end

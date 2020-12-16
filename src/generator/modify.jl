@@ -12,9 +12,23 @@ data_atom = genr_atom(data_cell, str)
 data_move = move(data_atom, [10 10 10])
 ```
 """
-function move(data::Data, move_vec)
+function move(data::Data_Unit, move_vec)
     # Motion of box
     data_new = Data_Unit(data)
+    if typeof(move_vec) == Array{Int64,2}
+        move_vec = conv(move_vec, 1)
+    end
+    data_new.data_basic.box_size = broadcast(+, data_new.data_basic.box_size, move_vec)
+    # Motion of atoms
+    for atom = 1 : data_new.data_basic.num_atoms
+        data_new.vec_atom[atom].coord += move_vec
+    end
+    data_new
+end
+
+function move(data::Data_Sum, move_vec)
+    # Motion of box
+    data_new = Data_Sum(data)
     if typeof(move_vec) == Array{Int64,2}
         move_vec = conv(move_vec, 1)
     end

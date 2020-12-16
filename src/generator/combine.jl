@@ -15,7 +15,8 @@ function cat_data(vec_data::Data...)
             flag_str = 0
             # Str Info
             str_now = [typeof(data.vec_str[n]) for n = 1:length(data.vec_str)]
-            if !in(typeof(vec_data[id].data_str), str_now)
+            #if !in(typeof(vec_data[id].data_str), str_now)
+            if !in_str(vec_data[id].data_str, data.vec_str)
                 flag_str = 1  # Differnet Structure
                 typ_tilt = max(data.vec_atom, "typ")
                 vec_data[id].data_str.vec_type_id .+= typ_tilt

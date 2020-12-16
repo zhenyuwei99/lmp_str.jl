@@ -20,9 +20,6 @@ module lmp_str
     export max, min, get_data, diag, conv, dist, norm_vec, rot_mat
     export add!, change!, central_point_atom, central_point_box, copy_array
 
-    include("write.jl")
-    export write_data, write_info, write_xyz
-
     include("Constants.jl")
     export const_list
     #=
@@ -89,10 +86,18 @@ module lmp_str
     export Potential_Charmm36, Potential_Charmm36_Unit, potential_charmm36
 
     # converter Files
-    include("converter/useful_funcs.jl")
+    include("./converter/useful_funcs.jl")
 
     include("converter/converter_vmd.jl")
     export converter_vmd
 
+    # writeer Files
+    include("./Writer/write_data.jl")
+    export write_data, write_info
+
+    include("./Writer/write_xyz.jl")
+    export write_xyz
+
+    include("./Writer/write_pdb.jl")
 
 end # module

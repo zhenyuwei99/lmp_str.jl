@@ -15,7 +15,8 @@ mutable struct Structure_Ca <: Str
     para_mass
     num_atoms
     num_atom_types
-    vec_type_id
+	vec_type_id
+	res_name
 end
 
 """
@@ -66,6 +67,7 @@ function structure_caco3()
     para_mass = [40.078, 12.011, 15.999]
     atom_name = split("Ca C O")
     num_atoms = length(atom_type)
-    num_atom_types = length(atom_name)
-    Structure_Ca(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
+	num_atom_types = length(atom_name)
+	res_name = "CaCO"
+    Structure_Ca(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1], res_name)
 end

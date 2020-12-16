@@ -41,6 +41,7 @@ mutable struct Structure_Wat <: Str
     num_angles
     num_angle_types
     vec_type_id
+    res_name
 end
 
 """
@@ -89,8 +90,9 @@ function structure_tip3p()
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
+    res_name = "TIP3"
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -139,8 +141,9 @@ function structure_spc()
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
+    res_name="SPC"
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -189,8 +192,8 @@ function structure_spce()
     angle_mode[1] = Angle(1, 1, [1, 2, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
-
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "SPCE"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -252,9 +255,9 @@ function structure_tip4p_cut()
     angle_mode[1] = Angle(1, 1, [2, 1, 3])
     num_angles = length(angle_mode)
     num_angle_types = 1
-
+    res_name = "TIP4P"
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
-    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -317,8 +320,9 @@ function structure_tip4p_long()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
+    res_name = "TIP4P"
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
-    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -372,7 +376,9 @@ function structure_tip4p_ew()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "TIP4P"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -426,7 +432,9 @@ function structure_tip4p_fq()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "TIP4P"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -490,8 +498,9 @@ function structure_tip4p_2005()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
+    res_name = "TIP4P"
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
-    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 
@@ -555,8 +564,9 @@ function structure_tip4p_ice()
     num_angles = length(angle_mode)
     num_angle_types = 1
 
+    res_name = "TIP4P"
     Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
-    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -613,7 +623,9 @@ function structure_tip5p()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "TIP5P"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -670,7 +682,9 @@ function structure_tip5p_2018()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "TIP5P"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
 
 """
@@ -731,5 +745,7 @@ function structure_tip7p()
     num_angles = length(angle_mode)
     num_angle_types = 2
 
-    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2])
+    res_name = "TIP7P"
+    Structure_Wat(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, 
+    num_atom_types, bond_mode, num_bonds, num_bond_types, angle_mode, num_angles, num_angle_types, [1, 2], res_name)
 end
