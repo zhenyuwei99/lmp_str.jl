@@ -92,13 +92,13 @@ module lmp_str
     export converter_vmd
 
     # writeer Files
-    include("./Writer/write_data.jl")
+    include("./writer/write_data.jl")
     export write_data, write_info
 
-    include("./Writer/write_xyz.jl")
+    include("./writer/write_xyz.jl")
     export write_xyz
 
-    include("./Writer/write_pdb.jl")
+    include("./writer/write_pdb.jl")
     export write_pdb
 
 end # module
