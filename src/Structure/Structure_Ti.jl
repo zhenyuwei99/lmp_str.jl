@@ -17,6 +17,7 @@ mutable struct Structure_Ti <: Str
     num_atoms
     num_atom_types
     vec_type_id
+    res_name 
 end
 
 """
@@ -49,7 +50,8 @@ function structure_tio2_anatase()
     atom_name = split("Ti O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "TIO"
+    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end
 
 """
@@ -76,5 +78,6 @@ function structure_tio2_rutile()
     atom_name = split("Ti O")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "TIO"
+    Structure_Ti(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end

@@ -17,6 +17,7 @@ mutable struct Structure_C <: Str
     num_atoms
     num_atom_types
     vec_type_id
+    res_name
 end
 
 """
@@ -40,7 +41,8 @@ function structure_graphene()
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
+    res_name = "Graph"
+    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1], res_name)
 end
 
 """
@@ -66,5 +68,6 @@ function structure_graphene_ort()
     atom_name = split("C")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1])
+    res_name = "Graph"
+    Structure_C(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1], res_name)
 end
