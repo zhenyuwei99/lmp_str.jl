@@ -162,7 +162,7 @@ function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 end
 
 """
-    change!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
+    set!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 
 Do this will change variable `para` of all elements in `vec_unit` to `tilt`
 
@@ -174,7 +174,7 @@ data = genr(cell, str)
 change(data.vec_bond, 3, "typ")
 ```
 """
-function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
+function set!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -189,7 +189,7 @@ function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Uni
     end
 end
 
-function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
+function set!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     dims = size(goal)[2]
