@@ -18,7 +18,7 @@ module lmp_str
 
     include("useful_funcs.jl")
     export max, min, get_data, diag, conv, dist, norm_vec, rot_mat
-    export add!, change!, central_point_atom, central_point_box, copy_array
+    export add!, set!, central_point_atom, central_point_box, copy_array
 
     include("Constants.jl")
     export const_list
@@ -99,5 +99,6 @@ module lmp_str
     export write_xyz
 
     include("./Writer/write_pdb.jl")
+    export write_pdb
 
 end # module
