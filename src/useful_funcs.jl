@@ -112,7 +112,7 @@ data = genr(cell, str)
 get_data(data.vec_angle, "atom")
 ```
 """
-function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Data_Unit
+function get_data(vec_unit::Vector{T}, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -138,10 +138,10 @@ Do this will add `tilt` to variable `para` for all elements in `vec_unit`
 str = Si3N4()
 cell = genr_cell([10, 10, 10])
 data = genr(cell, str)
-add(data.vec_bond, 3, "typ")
+add!(data.vec_bond, 3, "typ")
 ```
 """
-function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_Unit
+function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -162,7 +162,7 @@ function add!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_U
 end
 
 """
-    change(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Data_Unit
+    change!(vec_unit::Vector{T}, tilt, para::AbstractString) where T <: Unit
 
 Do this will change variable `para` of all elements in `vec_unit` to `tilt`
 
@@ -174,7 +174,7 @@ data = genr(cell, str)
 change(data.vec_bond, 3, "typ")
 ```
 """
-function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Data_Unit
+function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     if !in(para, fields)
@@ -189,7 +189,7 @@ function change!(vec_unit::Vector{T}, goal, para::AbstractString) where T <: Dat
     end
 end
 
-function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Data_Unit
+function change!(vec_unit::Vector{T}, goal::AbstractArray, para::AbstractString) where T <: Unit
     fields = fieldnames(typeof(vec_unit[1]))
     para = Meta.parse(para)
     dims = size(goal)[2]
@@ -438,3 +438,11 @@ function grid(x, y)
     return x_mat, y_mat
 end
 
+function in_str(data_str::Str, vec_str::Vector{T}) where T <: Str 
+    for str in vec_str
+        if str.atom_name == data_str.atom_name
+            return true
+        end
+    end
+    return false
+end

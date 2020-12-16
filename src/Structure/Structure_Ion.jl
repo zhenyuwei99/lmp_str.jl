@@ -4,4 +4,5 @@ mutable struct Structure_Ion <: Str
     para_mass
     num_atom_types
     vec_type_id
+    res_name
 end

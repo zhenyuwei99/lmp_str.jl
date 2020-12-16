@@ -19,6 +19,7 @@ mutable struct Structure_Si <: Str
     num_atoms
     num_atom_types
     vec_type_id
+    res_name
 end
 
 """
@@ -48,7 +49,8 @@ function structure_si()
     atom_name = split("Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "SI"
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end
 
 """
@@ -79,12 +81,13 @@ function structure_si3n4()
         0      0         2.902
     ]
     atom_type = [2 1 2 2 1 1 1 1 2 2 1 2 1 1]
-    atom_charge = 0 .* atom_type
+    atom_charge = [-0.575925, 0.7679]
     para_mass = [14.0067 28.0855] # N: 14.0067. Si: 28.085501. Unit: g/mol
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "SIN"
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end
 
 """
@@ -134,7 +137,8 @@ function structure_si3n4_ort()
     atom_name = split("N Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "SIN"
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end
 
 """
@@ -168,5 +172,6 @@ function structure_sio2()
     atom_name = split("O Si")
     num_atoms = length(atom_type)
     num_atom_types = length(atom_name)
-    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2])
+    res_name = "SIO"
+    Structure_Si(atom_vec, cell_vec, atom_type, atom_name, atom_charge, para_mass, num_atoms, num_atom_types, [1, 2], res_name)
 end

@@ -16,6 +16,7 @@ mutable struct Structure_Basic <: Str
     atom_charge
     num_atoms
     num_atom_types
+    res_name
 end
 
 function transform(atom_vec, atom_type, atom_charge)
@@ -54,7 +55,8 @@ function structure_sc(;atom_type=1, atom_charge=0, lattice_const=1)
         1   1   1
     ] .* lattice_const)
     atom_type, atom_charge, num_atoms, num_atom_types = transform(atom_vec, atom_type, atom_charge)
-    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types)
+    res_name = "SC"
+    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types, res_name)
 end
 
 """
@@ -85,7 +87,8 @@ function structure_bcc(;atom_type=1, atom_charge=0, lattice_const=1)
         1   1   1
     ] .* lattice_const)
     atom_type, atom_charge, num_atoms, num_atom_types = transform(atom_vec, atom_type, atom_charge)
-    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types)
+    res_name = "BCC"
+    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types, res_name)
 end
 
 """
@@ -118,7 +121,8 @@ function structure_fcc(;atom_type=1, atom_charge=0, lattice_const=1)
         1   1   1
     ] .* lattice_const)
     atom_type, atom_charge, num_atoms, num_atom_types = transform(atom_vec, atom_type, atom_charge)
-    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types)
+    res_name = "FCC"
+    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types, res_name)
 end
 
 """
@@ -155,5 +159,6 @@ function structure_dc(;atom_type=1, atom_charge=0, lattice_const=1)
         1   1   1
     ] .* lattice_const)
     atom_type, atom_charge, num_atoms, num_atom_types = transform(atom_vec, atom_type, atom_charge)
-    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types)
+    res_name = "DC"
+    Structure_Basic(atom_vec, cell_vec, atom_type, atom_charge, num_atoms, num_atom_types, res_name)
 end
