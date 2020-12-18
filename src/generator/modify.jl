@@ -271,7 +271,7 @@ function remove!(data::Data, list_atom::Array)
     sort_data!(data, list_atom)
 end
 
-function remove!(vec::Union{Vector{T}, Int64}, id::Array) where T <: Data_Unit
+function remove!(vec::Union{Vector{T}, Int64}, id::Array) where T <: Unit
     len = length(vec)
     judge = trues(len)
     for i in id
