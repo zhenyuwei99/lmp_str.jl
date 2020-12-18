@@ -53,7 +53,7 @@ function write_pdb_ATOM(io, data::Data_Unit)
         @printf(io, "%6.2f", 1.0)                       # 55 - 60        Real(6.2)     occupancy    Occupancy.
         @printf(io, "%6.2f", 0.0)                       # 61 - 66        Real(6.2)     tempFactor   Temperature  factor.
         @printf(io, "%6s", " ")
-        @printf(io, "%-3s%3s", type_name, uppercase(atom_name[atom.typ]))# 73 - 78        LString(2)    element      Element symbol, right-justified.
+        @printf(io, "%-3s%3s", type_name, uppercase(atom_name[atom.typ][1:end-1]))# 73 - 78        LString(2)    element      Element symbol, right-justified.
         # 79 - 80        LString(2)    charge       Charge  on the atom.
         @printf(io, "\n")
     end
@@ -95,7 +95,7 @@ function write_pdb_ATOM(io, data::Data_Sum)
         @printf(io, "%6.2f", 0.5)                                           # 55 - 60        Real(6.2)     occupancy    Occupancy.
         @printf(io, "%6.2f", 300)                                           # 61 - 66        Real(6.2)     tempFactor   Temperature  factor.
         @printf(io, "%6s", " ")
-        @printf(io, "%-3s%3s", type_name[chain_id[atom.typ]], uppercase(atom_name[atom.typ]))# 73 - 78        LString(2)    element      Element symbol, right-justified.
+        @printf(io, "%-3s%3s", type_name[chain_id[atom.typ]], uppercase(atom_name[atom.typ][1:end-1]))# 73 - 78        LString(2)    element      Element symbol, right-justified.
         #@printf(io, "%9s%6s", type_name[chain_id[atom.typ]], atom_name[atom.typ])# 73 - 78        LString(2)    element      Element symbol, right-justified.
         # 79 - 80        LString(2)    charge       Charge  on the atom.
         @printf(io, "\n")
