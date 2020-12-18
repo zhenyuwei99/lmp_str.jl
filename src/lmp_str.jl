@@ -47,7 +47,7 @@ module lmp_str
     include("./Structure/Structure_Si.jl")
     export Structure_Si
     export structure_si, structure_sio2
-    export structure_si3n4, structure_si3n4_ort
+    export structure_si3n4, structure_si3n4_ort, structure_si3n4_pdb, structure_si3n4_ort_pdb
 
     include("./Structure/Structure_C.jl")
     export Structure_C
